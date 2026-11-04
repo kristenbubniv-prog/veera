@@ -317,29 +317,22 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 @media (prefers-reduced-motion:reduce){.hb.pulse{animation:none}}
 .me2.live{opacity:.7}
 .me2.live p::after{content:'…'}
-.stage{display:contents}
-#side{display:none}
-@media (min-width:900px){
+.coach2{align-self:stretch;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:#F3F1FF;font-size:14px;color:var(--ink-2)}
+.coach2 b{color:var(--ink);font-weight:600;font-size:15px}
+.fastb.calm{color:#3F46A8;background:#EEF0FF}
+.scr.enter{animation:scrIn 260ms cubic-bezier(.2,.8,.2,1) both}
+@keyframes scrIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.scr.enter{animation:none}}
+/* comfortable at 100 % zoom on laptops: scale the phone down a little when the window is short */
+@media (min-width:600px){
  body{background:radial-gradient(900px 600px at 10% -10%,rgba(139,92,246,.10),transparent 70%),radial-gradient(800px 600px at 100% 100%,rgba(59,130,246,.08),transparent 70%),#F7F7FB}
- .stage{display:flex;align-items:center;justify-content:center;gap:72px;width:100%;min-height:100dvh;padding:16px}
- #side{display:flex;flex-direction:column;gap:24px;width:340px;flex:none}
- .sb-brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-family:var(--fd);font-size:18px}
- .sb-brand span{font-family:var(--ft);font-size:14px;color:var(--ink-2);font-weight:500}
- .sb-sec{display:flex;flex-direction:column;gap:8px}
- .sb-sec .lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
- .sb-sec p{margin:0;font-size:16px;line-height:1.5;color:var(--ink-2)}
- .sb-h{margin:0;font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
- .sb-m{font-size:14px!important;color:#0B6B3A!important;background:#F0FDF6;border-radius:10px;padding:6px 10px;align-self:flex-start}
- .sb-p{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:15px;color:var(--ink);cursor:pointer}
- .sb-p span{font-size:13px;color:var(--ink-2)}
- .sb-p.on{border:2px solid var(--ink);background:var(--accent-tint)}
- .sb-p:focus-visible,.sb-link:focus-visible{outline:3px solid #8B5CF6;outline-offset:2px}
- .sb-link{font-size:15px;color:#3F46A8;font-weight:600}
 }
+@media (min-width:600px) and (max-height:900px){#app{zoom:.88;height:calc((100dvh - 24px) / .88)}}
+@media (min-width:600px) and (max-height:760px){#app{zoom:.8;height:calc((100dvh - 20px) / .8)}}
 </style>
 </head>
 <body>
-<div class="stage"><aside id="side" aria-label="About this screen"></aside><main id="app" aria-live="polite"></main></div>
+<main id="app" aria-live="polite"></main>
 <script>window.__ICONS=(function(){var D={"heart": "<path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"></path>", "bell": "<path d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9\"></path><path d=\"M10.3 21a1.94 1.94 0 0 0 3.4 0\"></path>", "helmet": "<path d=\"M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v2z\"></path><path d=\"M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5\"></path><path d=\"M4 15v-3a6 6 0 0 1 6-6\"></path><path d=\"M14 6a6 6 0 0 1 6 6v3\"></path>", "brief": "<rect width=\"20\" height=\"14\" x=\"2\" y=\"7\" rx=\"2\"></rect><path d=\"M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\"></path>", "pause": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><line x1=\"10\" x2=\"10\" y1=\"15\" y2=\"9\"></line><line x1=\"14\" x2=\"14\" y1=\"15\" y2=\"9\"></line>", "sprout": "<path d=\"M7 20h10\"></path><path d=\"M10 20c5.5-2.5.8-6.4 3-10\"></path><path d=\"M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z\"></path><path d=\"M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z\"></path>", "bank": "<line x1=\"3\" x2=\"21\" y1=\"22\" y2=\"22\"></line><line x1=\"6\" x2=\"6\" y1=\"18\" y2=\"11\"></line><line x1=\"10\" x2=\"10\" y1=\"18\" y2=\"11\"></line><line x1=\"14\" x2=\"14\" y1=\"18\" y2=\"11\"></line><line x1=\"18\" x2=\"18\" y1=\"18\" y2=\"11\"></line><polygon points=\"12 2 20 7 4 7\"></polygon>", "trend": "<polyline points=\"22 7 13.5 15.5 8.5 10.5 2 17\"/><polyline points=\"16 7 22 7 22 13\"/>", "face": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M16 16s-1.5-2-4-2-4 2-4 2\"></path><line x1=\"9\" x2=\"9.01\" y1=\"9\" y2=\"9\"></line><line x1=\"15\" x2=\"15.01\" y1=\"9\" y2=\"9\"></line>", "map": "<path d=\"M14.1 4.4 9.9 2.6a2 2 0 0 0-1.8 0L3.6 4.8A1 1 0 0 0 3 5.7v14.7a1 1 0 0 0 1.4.9l4.5-2.2a2 2 0 0 1 1.8 0l4.2 1.9a2 2 0 0 0 1.8 0l4.5-2.2a1 1 0 0 0 .6-.9V3.2a1 1 0 0 0-1.4-.9l-4.5 2.2a2 2 0 0 1-1.8 0z\"></path><path d=\"M15 5.8v15\"></path><path d=\"M9 2.8v15\"></path>", "unlock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\"></rect><path d=\"M7 11V7a5 5 0 0 1 9.9-1\"></path>", "wallet": "<path d=\"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1\"></path><path d=\"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4\"></path>", "tap": "<path d=\"M18 11V6a2 2 0 0 0-4 0v1\"></path><path d=\"M14 10V4a2 2 0 0 0-4 0v2\"></path><path d=\"M10 10.5V6a2 2 0 0 0-4 0v8\"></path><path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"></path>", "back": "<path d=\"m15 18-6-6 6-6\"></path>", "x": "<path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path>", "play": "FILL<polygon points=\"6 3 20 12 6 21 6 3\"></polygon>", "slow": "<path d=\"M2 13a6 6 0 1 0 12 0 4 4 0 1 0-8 0 2 2 0 0 0 4 0\"></path><circle cx=\"10\" cy=\"13\" r=\"8\"></circle><path d=\"M2 21h12c4.4 0 8-3.6 8-8V7a2 2 0 1 0-4 0v6\"></path>", "repeat": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"></path><path d=\"M3 3v5h5\"></path>", "translate": "<path d=\"m5 8 6 6\"></path><path d=\"m4 14 6-6 2-3\"></path><path d=\"M2 5h12\"></path><path d=\"M7 2h1\"></path><path d=\"m22 22-5-10-5 10\"></path><path d=\"M14 18h6\"></path>", "mic": "<path d=\"M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z\"></path><path d=\"M19 10v2a7 7 0 0 1-14 0v-2\"></path><line x1=\"12\" x2=\"12\" y1=\"19\" y2=\"22\"></line>", "micoff": "<line x1=\"2\" x2=\"22\" y1=\"2\" y2=\"22\"></line><path d=\"M18.89 13.23A7.12 7.12 0 0 0 19 12v-2\"></path><path d=\"M5 10v2a7 7 0 0 0 12 5\"></path><path d=\"M15 9.34V5a3 3 0 0 0-5.68-1.33\"></path><path d=\"M9 9v3a3 3 0 0 0 5.12 2.12\"></path><line x1=\"12\" x2=\"12\" y1=\"19\" y2=\"22\"></line>", "check": "<path d=\"M20 6 9 17l-5-5\"></path>", "star": "<polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"></polygon>", "starf": "FILL<polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"></polygon>", "book": "<path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"></path><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"></path>", "home": "<path d=\"M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"></path>", "list": "<path d=\"m3 17 2 2 4-4\"></path><path d=\"m3 7 2 2 4-4\"></path><path d=\"M13 6h8\"></path><path d=\"M13 12h8\"></path><path d=\"M13 18h8\"></path>", "sliders": "<path d=\"M21 4h-7\"></path><path d=\"M10 4H3\"></path><path d=\"M21 12h-9\"></path><path d=\"M8 12H3\"></path><path d=\"M21 20h-5\"></path><path d=\"M12 20H3\"></path><path d=\"M14 2v4\"></path><path d=\"M8 10v4\"></path><path d=\"M16 18v4\"></path>", "bulb": "<path d=\"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5\"></path><path d=\"M9 18h6\"></path><path d=\"M10 22h4\"></path>", "info": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 16v-4\"></path><path d=\"M12 8h.01\"></path>", "mail": "<rect width=\"20\" height=\"16\" x=\"2\" y=\"4\" rx=\"2\"></rect><path d=\"m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7\"></path>", "cal": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"></rect><path d=\"M16 2v4\"></path><path d=\"M8 2v4\"></path><path d=\"M3 10h18\"></path>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 6v6l4 2\"></path>", "bolt": "<path d=\"M13 2 4 14h7l-1 8 9-12h-7l1-8z\"></path>", "flag": "<path d=\"M4 22V4a1 1 0 0 1 1-1h13l-2.5 4L18 11H5\"></path>", "send": "<path d=\"m22 2-7 20-4-9-9-4Z\"></path><path d=\"M22 2 11 13\"></path>", "more": "FILL<circle cx=\"5\" cy=\"12\" r=\"2\"></circle><circle cx=\"12\" cy=\"12\" r=\"2\"></circle><circle cx=\"19\" cy=\"12\" r=\"2\"></circle>", "box": "<path d=\"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\"></path><path d=\"M3.3 7 12 12l8.7-5\"></path><path d=\"M12 22V12\"></path>", "factory": "<path d=\"M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z\"></path>", "truck": "<path d=\"M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2\"></path><path d=\"M15 18H9\"></path><path d=\"M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14\"></path><circle cx=\"17\" cy=\"18\" r=\"2\"></circle><circle cx=\"7\" cy=\"18\" r=\"2\"></circle>", "dots": "<circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle>", "globe": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"></path><path d=\"M2 12h20\"></path>", "ear": "<path d=\"M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0\"></path><path d=\"M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4\"></path>", "thermo": "<path d=\"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z\"></path>", "swap": "<path d=\"M8 3 4 7l4 4\"></path><path d=\"M4 7h16\"></path><path d=\"m16 21 4-4-4-4\"></path><path d=\"M20 17H4\"></path>", "alert": "<path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"></path><path d=\"M12 9v4\"></path><path d=\"M12 17h.01\"></path>", "coffee": "<path d=\"M10 2v2\"></path><path d=\"M14 2v2\"></path><path d=\"M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1\"></path><path d=\"M6 2v2\"></path>", "quiet": "<path d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"></path><path d=\"M8 12h8\"></path>", "nod": "<circle cx=\"12\" cy=\"8\" r=\"5\"></circle><path d=\"M20 21a8 8 0 0 0-16 0\"></path>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"></path><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"></path>", "chat": "<path d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"></path>", "sunrise": "<path d=\"M12 2v8\"></path><path d=\"m4.93 10.93 1.41 1.41\"></path><path d=\"M2 18h2\"></path><path d=\"M20 18h2\"></path><path d=\"m19.07 10.93-1.41 1.41\"></path><path d=\"M22 22H2\"></path><path d=\"m8 6 4-4 4 4\"></path><path d=\"M16 18a4 4 0 0 0-8 0\"></path>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"></path>", "bus": "<path d=\"M8 6v6\"></path><path d=\"M15 6v6\"></path><path d=\"M2 12h19.6\"></path><path d=\"M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3\"></path><circle cx=\"7\" cy=\"18\" r=\"2\"></circle><path d=\"M9 18h5\"></path><circle cx=\"16\" cy=\"18\" r=\"2\"></circle>", "calweek": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"></rect><path d=\"M16 2v4\"></path><path d=\"M8 2v4\"></path><path d=\"M3 10h18\"></path><path d=\"M8 14h.01\"></path><path d=\"M12 14h.01\"></path><path d=\"M16 14h.01\"></path><path d=\"M8 18h.01\"></path><path d=\"M12 18h.01\"></path>", "target": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><circle cx=\"12\" cy=\"12\" r=\"6\"></circle><circle cx=\"12\" cy=\"12\" r=\"2\"></circle>", "money": "<rect width=\"20\" height=\"12\" x=\"2\" y=\"6\" rx=\"2\"></rect><circle cx=\"12\" cy=\"12\" r=\"2\"></circle><path d=\"M6 12h.01M18 12h.01\"></path>", "timer": "<line x1=\"10\" x2=\"14\" y1=\"2\" y2=\"2\"></line><line x1=\"12\" x2=\"15\" y1=\"14\" y2=\"11\"></line><circle cx=\"12\" cy=\"14\" r=\"8\"></circle>", "eye": "<path d=\"M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle>", "volume": "<path d=\"M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z\"></path><path d=\"M16 9a5 5 0 0 1 0 6\"></path><path d=\"M19.4 18.4a9 9 0 0 0 0-12.7\"></path>", "wifi": "<path d=\"M12 20h.01\"></path><path d=\"M8.5 16.4a5 5 0 0 1 7 0\"></path><path d=\"M5 12.9a10 10 0 0 1 14 0\"></path>", "lock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\"></rect><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"></path>", "card": "<rect width=\"20\" height=\"14\" x=\"2\" y=\"5\" rx=\"2\"></rect><line x1=\"2\" x2=\"22\" y1=\"10\" y2=\"10\"></line>", "phone": "<rect width=\"14\" height=\"20\" x=\"5\" y=\"2\" rx=\"2\"></rect><path d=\"M12 18h.01\"></path>", "arrow": "<path d=\"M5 12h14\"></path><path d=\"m12 5 7 7-7 7\"></path>", "chev": "<path d=\"m9 18 6-6-6-6\"></path>", "sparkle": "<path d=\"M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z\"></path>", "refresh": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"></path><path d=\"M21 3v5h-5\"></path><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"></path><path d=\"M8 16H3v5\"></path>", "simple": "<path d=\"M4 7h16\"></path><path d=\"M4 12h10\"></path><path d=\"M4 17h6\"></path>"};
 return function(n,s,c,w){var d=D[n]||'';if(d.indexOf('FILL')===0)return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="'+c+'" stroke="none" aria-hidden="true">'+d.slice(4)+'</svg>';
 return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="'+w+'" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+d+'</svg>';};})();</script>
@@ -2992,9 +2985,8 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   function allLessons() { var all = []; PL.weeks.forEach(function (w) { all = all.concat(w.lessons); }); return all; }
   function nextLesson() { var a = allLessons(); return a[Math.min(S.done, a.length - 1)]; }
   var S = { done: 0, persona: 'persona-a', v: 'brief', briefHint: true, playing: -1, saved: {}, t: null, toast: false, save: { 0: true, 1: true, 2: true, 3: true }, remind: '', said: {} };
-  function newTalk() { return { step: 0, phase: 'idle', rev: {}, tr: {}, used: false, status: {}, text: false, mic: true, typed: '', said: {}, live: '', miss: false }; }
-  function mine(k) { return S.t.said[k] || ME[k]; }
-  function okLabel(k) { var sd = S.t.said[k]; return !sd || C.score(sd, ME[k]) >= 0.3; }
+  function newTalk() { return { step: 0, phase: 'idle', rev: {}, tr: {}, used: false, status: {}, text: false, mic: true, typed: '', live: '', miss: false, log: [], turns: [], tries: 0 }; }
+  function aiPush(k, how) { var A = AI[k]; S.t.log.push({ who: 'ai', k: k, en: A.en, ua: A.ua, fast: A.fast && how !== 'slow', slang: A.slang, how: how || '' }); say(A.en, how === 'slow' ? 0.7 : A.fast ? 1.1 : 0.85); }
   S.t = newTalk();
 
   function orb(state, size) { return '<span class="orb ' + (size || '') + ' ' + (state || 'idle') + '" aria-hidden="true"><span class="lh"></span><span class="sw"><span class="glow"></span><span class="core"></span><span class="lsw"></span><span class="core mint"></span><span class="gloss"></span></span></span>'; }
@@ -3024,25 +3016,53 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   };
   // A5 Conversation
   function feed() {
-    var t = S.t, out = '';
-    for (var k = 0; k <= t.step; k++) {
-      if (k > 0) { out += '<div class="me2"><p>' + esc(mine(k - 1)) + '</p></div>' + (k === 1 && okLabel(0) ? '<p class="ok2">' + ic('check', 14, '#0B6B44', 3) + esc(WHO.split(',')[0]) + ' understood you</p>' : ''); }
-      var A = AI[k]; if (!A) continue;
-      var rev = t.rev[k] || t.tr[k], latest = k === t.step && t.phase !== 'done';
-      out += '<div class="ai2' + (A.fast ? ' fast' : '') + '">' + (A.fast ? '<span class="fastb">' + ic('bolt', 12, '#8A5A00') + 'Fast</span>' : '') + (rev ? '<p>' + esc(A.en) + '</p>' : '<button class="reveal2" data-a="rev" data-i="' + k + '"><p class="blur">' + esc(A.en) + '</p><span>' + ic('eye', 14, '#3F46A8') + 'Tap to see the words</span></button>') +
-        (t.tr[k] ? '<div class="tr2"><p>' + esc(A.ua) + '</p>' + (gloss(A) ? '<p class="gl">' + esc(gloss(A)) + '</p>' : '') + '</div>' : '') + '</div>';
-      if (A.fast && latest) out += '<p class="tipc fast">' + ic('slow', 14, '#4A4F63') + 'Tap <b>Slower</b> — that\'s normal.</p>';
-      if (t.status[k]) out += '<p class="sys2">' + ic('volume', 14, '#6B7083') + esc(t.status[k]) + '</p>';
-      if (latest) {
-        out += '<div class="helpers">' + (t.text ? '<button class="hb" data-a="simpler" data-i="' + k + '">' + ic('simple', 16) + 'Simpler</button>' : '<button class="hb' + (A.fast ? ' pulse' : '') + '" data-a="slower" data-i="' + k + '">' + ic('slow', 16) + 'Slower</button><button class="hb" data-a="repeat" data-i="' + k + '">' + ic('repeat', 16) + 'Repeat</button>') +
-          '<button class="hb' + (t.tr[k] ? ' on' : '') + '" data-a="tr" data-i="' + k + '">' + ic('translate', 16) + 'Translate</button></div>';
+    var t = S.t, out = '', lastAi = -1;
+    t.log.forEach(function (e, i) { if (e.who === 'ai') lastAi = i; });
+    t.log.forEach(function (e, i) {
+      if (e.who === 'me') { out += '<div class="me2"><p>' + esc(e.text) + '</p></div>' + (e.ok ? '<p class="ok2">' + ic('check', 14, '#0B6B44', 3) + esc(WHO.split(',')[0]) + ' understood you</p>' : ''); return; }
+      if (e.who === 'coach') { out += '<div class="coach2">' + orb('idle', 's28') + '<div class="stack" style="gap:2px"><span>' + esc(e.text) + '</span>' + (e.tip ? '<b>“' + esc(e.tip) + '”</b>' : '') + '</div></div>'; return; }
+      var rev = t.rev[i] || t.tr[i] || e.how === 'slow', latest = i === lastAi && t.phase !== 'done';
+      out += '<div class="ai2' + (e.fast ? ' fast' : '') + '">' + (e.fast ? '<span class="fastb">' + ic('bolt', 12, '#8A5A00') + 'Fast</span>' : '') + (e.how === 'slow' ? '<span class="fastb calm">' + ic('slow', 12, '#3F46A8') + 'Again, slower</span>' : '') +
+        (rev ? '<p>' + esc(e.en) + '</p>' : '<button class="reveal2" data-a="rev" data-i="' + i + '"><p class="blur">' + esc(e.en) + '</p><span>' + ic('eye', 14, '#3F46A8') + 'Tap to see the words</span></button>') +
+        (t.tr[i] ? '<div class="tr2"><p>' + esc(e.ua) + '</p>' + (gloss(e) ? '<p class="gl">' + esc(gloss(e)) + '</p>' : '') + '</div>' : '') + '</div>';
+      if (e.fast && latest) out += '<p class="tipc fast">' + ic('slow', 14, '#4A4F63') + 'Tap <b>Slower</b> — that\'s normal.</p>';
+      if (t.status[i]) out += '<p class="sys2">' + ic('volume', 14, '#6B7083') + esc(t.status[i]) + '</p>';
+      if (latest && t.phase === 'idle') {
+        out += '<div class="helpers">' + (t.text ? '<button class="hb" data-a="simpler" data-i="' + i + '">' + ic('simple', 16) + 'Simpler</button>' : '<button class="hb' + (e.fast ? ' pulse' : '') + '" data-a="slower" data-i="' + i + '">' + ic('slow', 16) + 'Slower</button><button class="hb" data-a="repeat" data-i="' + i + '">' + ic('repeat', 16) + 'Repeat</button>') +
+          '<button class="hb' + (t.tr[i] ? ' on' : '') + '" data-a="tr" data-i="' + i + '">' + ic('translate', 16) + 'Translate</button></div>';
       }
-    }
+    });
     if (t.phase === 'listening' && t.live) out += '<div class="me2 live"><p>' + esc(t.live) + '</p></div>';
     if (t.miss && t.phase === 'idle') out += '<p class="sys2">' + ic('micoff', 14, '#6B7083') + 'Didn\'t catch that. Tap Veera and try again, or type it.</p>';
-    if (t.phase === 'typing' || t.phase === 'sent') { out += '<div class="me2"><p>' + esc(mine(t.step)) + '</p></div>' + (t.step === 0 && okLabel(0) ? '<p class="ok2">' + ic('check', 14, '#0B6B44', 3) + esc(WHO.split(',')[0]) + ' understood you</p>' : '') + (AI[t.step + 1] ? '<div class="ai2 typing" aria-label="Typing"><span class="dots"><i></i><i></i><i></i></span></div>' : ''); }
+    if (t.phase === 'typing') out += '<div class="ai2 typing" aria-label="Typing"><span class="dots"><i></i><i></i><i></i></span></div>';
     if (t.phase === 'done') out += '<div class="done2" role="status">' + orb('happy', 's28') + 'Talk complete</div>';
     return out;
+  }
+  // ---- rule-based conversation: reacts to what she actually said ----
+  var ASK_RE = /\b(sorry|again|repeat|slow(er|ly)?|pardon|what does|what do you mean|mean by|didn'?t (catch|get|understand)|don'?t understand|say that|one more time)\b/i;
+  var CLARIFY = ['Sorry, I didn\'t quite get that.', 'Sorry — what was that?', 'Hmm, say that again?'];
+  function bestPhrase(txt) { var best = { s: 0, t: '' }; ME.concat(LES.phrases.map(function (p) { return p[0]; })).forEach(function (t) { var sc = C.score(txt, t); if (sc > best.s) best = { s: sc, t: t }; }); return best; }
+  function respond(txt) {
+    var t = S.t, k = t.step, target = ME[k], sc = C.score(txt, target), any = bestPhrase(txt).s, ask = ASK_RE.test(txt), words = txt.split(/\s+/).filter(Boolean).length;
+    var onTarget = sc >= 0.45 || any >= 0.6 || (ask && ASK_RE.test(target));
+    var kind = onTarget ? 'ok' : ask ? 'repeat' : (t.tries < 1 ? 'clarify' : 'pass');
+    log('turn_judged', { step: k, said: txt, score: Math.round(sc * 100) / 100, kind: kind });
+    t.log.push({ who: 'me', text: txt, ok: kind === 'ok' && !t.log.some(function (e) { return e.ok; }) });
+    if (ASK_RE.test(txt)) t.asks = (t.asks || 0) + 1;
+    if (kind === 'ok' || kind === 'pass') t.turns.push({ k: k, said: txt, target: target, score: Math.max(sc, any), kind: kind });
+    tset({ phase: 'typing', typed: '', live: '' });
+    later(function () {
+      if (kind === 'repeat') { aiPush(k, 'slow'); return tset({ phase: 'idle' }); }
+      if (kind === 'clarify') {
+        t.tries++; t.log.push({ who: 'ai', k: k, en: CLARIFY[k % CLARIFY.length], ua: 'Вибач, я не зовсім зрозумів.', fast: false, slang: [], how: 'clarify' }); say(CLARIFY[k % CLARIFY.length], 0.9);
+        t.log.push({ who: 'coach', text: 'Veera: you could say', tip: target });
+        return tset({ phase: 'idle' });
+      }
+      var n = k + 1, end = n >= ME.length; t.tries = 0;
+      if (AI[n] && (!end || n < AI.length)) aiPush(n);
+      tset({ step: n, phase: end ? 'done' : 'idle' });
+      if (end) { log('conversation_complete', { lesson: LES.id, turns: t.turns.length, asks: t.asks || 0 }); later(function () { go('feedback'); }, 2400); }
+    }, 1100);
   }
   R.talk = function () {
     var t = S.t;
@@ -3063,14 +3083,34 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       '<div class="feed scroll"><div style="margin-top:auto"></div>' + feed() + '</div>' + dock, 'talk');
   };
   // A6 Feedback
+  function analyse() {
+    var turns = S.t.turns.filter(function (x) { return x.said; }), F = { asks: S.t.asks || 0 };
+    if (!turns.length) { F.worked = LES.worked[0]; F.workedWhy = LES.worked[1]; F.fix = { said: LES.better.said, try: LES.better.try, why: LES.better.why }; return F; }
+    var best = turns.slice().sort(function (a, b) { return b.score - a.score; })[0];
+    F.worked = '“' + best.said + '”';
+    F.workedWhy = ASK_RE.test(best.said) ? 'You asked instead of guessing.' : /\b(could|please|would|cheers|thank)/i.test(best.said) ? 'Polite and clear — that\'s how it sounds at work.' : best.score >= 0.7 ? 'Clear and to the point — they got it first time.' : LES.worked[1];
+    var weak = turns.filter(function (x) { return x !== best || turns.length === 1; }).filter(function (x) { return x.score < 0.75; }).sort(function (a, b) { return a.score - b.score; })[0];
+    if (weak) {
+      var w = weak.said, tw = weak.target, why;
+      if ((w.match(/\bsorry\b/gi) || []).length >= 2) why = 'Одного «sorry» досить — так звучить спокійно, а не винувато.';
+      else if (w.split(/\s+/).length < 4) why = 'Додай кілька слів — щоб людина точно зрозуміла, що ти маєш на увазі.';
+      else if (/\b(could|please)\b/i.test(tw) && !/\b(could|please)\b/i.test(w)) why = '«Could…» або «please» — і прохання звучить ввічливо, а не різко.';
+      else if (tw === LES.better.try) why = LES.better.why;
+      else why = 'Так кажуть на роботі — коротко й зрозуміло.';
+      F.fix = { said: w, try: tw, why: why };
+    }
+    return F;
+  }
   R.feedback = function () {
+    var F = analyse(); S._fixTry = F.fix ? F.fix.try : '';
     var rows = SAVED.map(function (p, i) { var on = S.save[i]; return '<button class="chk" data-a="chk" data-i="' + i + '" aria-pressed="' + on + '"><span class="cbx' + (on ? ' on' : '') + '">' + ic('check', 14, '#fff', 3) + '</span><span class="stack" style="gap:0;text-align:left"><span class="phr s">' + esc(p[0]) + '</span><span class="nat">' + esc(p[1]) + '</span></span></button>'; }).join('');
     var n = Object.keys(S.save).filter(function (k) { return S.save[k]; }).length;
     return scr('<header class="bar"><span style="width:44px"></span><span class="bar-t"></span><button class="iconbtn" data-a="finish" aria-label="Close">' + ic('x', 22) + '</button></header>' +
       '<div class="body scroll" style="gap:18px;padding-top:4px">' +
       '<div class="row" style="gap:14px">' + orb('happy', 's56') + '<div class="stack" style="gap:2px"><h1 class="h1">You did it ✓</h1><p class="sub">' + esc(WHO.split(',')[0]) + ' understood you.</p></div></div>' +
-      '<section class="fb good"><span class="lbl">What worked</span><p class="phr">' + esc(S.t.said[0] ? '“' + S.t.said[0] + '”' : LES.worked[0]) + '</p><p class="nat">' + esc(LES.worked[1]) + '</p></section>' +
-      '<section class="fb"><span class="lbl">Say it better</span><p class="was">You said: “' + esc(LES.better.said) + '”</p><div class="row" style="gap:10px;justify-content:space-between"><p class="phr">Try: “' + esc(LES.better.try) + '”</p><button class="pplay" data-a="playtxt" aria-label="Listen">' + ic('play', 16, '#3F46A8') + '</button></div><p class="nat">' + esc(LES.better.why) + '</p></section>' +
+      '<section class="fb good"><span class="lbl">What worked</span><p class="phr">' + esc(F.worked) + '</p><p class="nat">' + esc(F.workedWhy) + '</p>' + (F.asks ? '<p class="nat">You asked to repeat ' + F.asks + '× — that\'s exactly the skill.</p>' : '') + '</section>' +
+      (F.fix ? '<section class="fb"><span class="lbl">Say it better</span><p class="was">You said: “' + esc(F.fix.said) + '”</p><div class="row" style="gap:10px;justify-content:space-between"><p class="phr">Try: “' + esc(F.fix.try) + '”</p><button class="pplay" data-a="playtxt" aria-label="Listen">' + ic('play', 16, '#3F46A8') + '</button></div><p class="nat">' + esc(F.fix.why) + '</p></section>'
+        : '<section class="fb"><span class="lbl">Say it better</span><p class="phr">Nothing to fix this time.</p><p class="nat">Ти сказала все так, як кажуть на роботі. Наступного разу спробуй швидше — без підказок.</p></section>') +
       '<section class="fb"><span class="lbl">Save your phrases</span>' + rows + '</section>' +
       '<section class="fb tint"><span class="lbl">Use it tomorrow at work</span><p class="phr">Before your shift, remember: “' + esc(LES.phrases[0][0]) + '”</p></section>' +
       '<section class="fb"><span class="lbl">Reminder</span><p class="cl2" style="margin:0">' + ic('cal', 16, '#3F46A8') + ' Remind me tomorrow at 7:30</p>' +
@@ -3149,7 +3189,9 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   }
   function render(keep) {
     var sc = app.querySelector('.scroll'), y = sc ? sc.scrollTop : 0;
+    var changed = app.getAttribute('data-screen') !== S.v;
     app.innerHTML = R[S.v](); app.setAttribute('data-screen', S.v);
+    if (changed) { var sr = app.querySelector('.scr'); if (sr) sr.classList.add('enter'); }
     var sc2 = app.querySelector('.scroll'); if (sc2) { if (S.v === 'talk') sc2.scrollTop = sc2.scrollHeight; else if (keep) sc2.scrollTop = y; }
     side();
   }
@@ -3157,54 +3199,45 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   function tset(p) { Object.assign(S.t, p); render(); }
   function startListen() {
     tset({ phase: 'listening', used: true, live: '', miss: false });
-    if (!C.srSupported()) { log('speech_fallback', { reason: 'unsupported' }); var said = Object.assign({}, S.t.said); later(finishTurn, 2800); return; }
+    if (!C.srSupported()) { log('speech_fallback', { reason: 'unsupported' }); return tset({ phase: 'idle', text: true }); }
     var step = S.t.step;
     S.rec = C.listen({
       onText: function (txt) { if (S.v !== 'talk' || S.t.step !== step) return; S.t.live = txt; render(); },
       onEnd: function (txt) { S.rec = null; if (S.v !== 'talk' || S.t.step !== step) return; log('speech_result', { step: step, text: txt, score: C.score(txt, ME[step]) });
         if (!txt) return tset({ phase: 'idle', live: '', miss: true });
-        var sd = Object.assign({}, S.t.said); sd[step] = txt; tset({ said: sd, live: '', phase: 'sent' }); finishTurn(); },
+        respond(txt); },
       onError: function (code) { S.rec = null; log('speech_error', { code: code });
         if (code === 'not-allowed' || code === 'service-not-allowed' || code === 'audio-capture') return tset({ phase: 'idle', mic: false, text: true, live: '' });
         tset({ phase: 'idle', live: '', miss: true }); }
     });
-  }
-  function finishTurn() {
-    var t = S.t; if (t.phase !== 'listening' && t.phase !== 'sent') return;
-    tset({ phase: 'typing' });
-    later(function () {
-      var n = S.t.step + 1, end = n >= ME.length; tset({ step: n, phase: end ? 'done' : 'idle', typed: '' });
-      if (end) { log('conversation_complete', { lesson: LES.id }); later(function () { go('feedback'); }, 2600); }
-      var A = AI[n]; if (A) say(A.en, A.fast ? 1.1 : 0.85);
-    }, 1300);
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-a]'); if (!b) return;
     var a = b.getAttribute('data-a'), i = +b.getAttribute('data-i');
     if (a === 'play' || a === 'slowp') { S.briefHint = false; S.playing = i; render(true); say(i === 3 ? ASK[0] : BRIEF[i][0], a === 'slowp' ? 0.65 : 0.85); later(function () { S.playing = -1; render(true); }, 2200); return; }
     if (a === 'savep') { S.saved[i] = !S.saved[i]; return render(true); }
-    if (a === 'start') { S.t = newTalk(); go('talk'); log('conversation_start'); later(function () { say(AI[0].en, AI[0].fast ? 1.1 : 0.85); }, 400); return; }
+    if (a === 'start') { S.t = newTalk(); S.t.log.push({ who: 'ai', k: 0, en: AI[0].en, ua: AI[0].ua, fast: AI[0].fast, slang: AI[0].slang, how: '' }); go('talk'); log('conversation_start'); later(function () { say(AI[0].en, AI[0].fast ? 1.1 : 0.85); }, 400); return; }
     if (a === 'mode') { var m = b.getAttribute('data-m'); if (S.v === 'talk') { tset({ text: m === 'text' }); } return; }
     if (a === 'rev') { var r = Object.assign({}, S.t.rev); r[i] = true; return tset({ rev: r }); }
     if (a === 'tr') { var tr = Object.assign({}, S.t.tr); tr[i] = !tr[i]; log('helper_tap', { type: 'translate' }); return tset({ tr: tr, used: true }); }
     if (a === 'slower' || a === 'repeat' || a === 'simpler') {
       var st = Object.assign({}, S.t.status); st[i] = a === 'slower' ? 'Speaking slower now' : a === 'repeat' ? 'Playing again' : 'Said more simply';
-      log('helper_tap', { type: a }); say(AI[i].en, a === 'slower' ? 0.65 : 0.85); return tset({ status: st, used: true });
+      log('helper_tap', { type: a }); say(S.t.log[i].en, a === 'slower' ? 0.65 : 0.85); return tset({ status: st, used: true });
     }
     if (a === 'speak') {
       var t = S.t;
       if (t.phase === 'idle') { try { speechSynthesis.cancel(); } catch (e2) {} return startListen(); }
-      if (t.phase === 'listening') { if (S.rec) { S.rec.stop(); return; } return finishTurn(); }
+      if (t.phase === 'listening') { if (S.rec) S.rec.stop(); return; }
       return;
     }
     if (a === 'qc') { tset({ typed: (S.t.typed ? S.t.typed + ' ' : '') + b.getAttribute('data-v') }); return; }
-    if (a === 'send') { if (S.t.phase !== 'idle') return; var ty = (S.t.typed || '').trim(); if (!ty) return; var sd2 = Object.assign({}, S.t.said); sd2[S.t.step] = ty; tset({ said: sd2, phase: 'sent' }); finishTurn(); return; }
+    if (a === 'send') { if (S.t.phase !== 'idle') return; var ty = (S.t.typed || '').trim(); if (!ty) return; respond(ty); return; }
     if (a === 'micon') { return tset({ mic: true, text: false }); }
-    if (a === 'end') { if (S.rec) { S.rec.stop(); S.rec = null; } return go(S.t.step >= 1 ? 'feedback' : 'today'); }
+    if (a === 'end') { if (S.rec) { S.rec.stop(); S.rec = null; } return go(S.t.turns.length ? 'feedback' : 'today'); }
     if (a === 'phrases') { return; }
     if (a === 'chk') { S.save[i] = !S.save[i]; return render(true); }
     if (a === 'cal') { S.remind = b.getAttribute('data-c'); log('reminder_set', { calendar: S.remind }); return render(true); }
-    if (a === 'playtxt') { say(LES.better.try); return; }
+    if (a === 'playtxt') { say(S._fixTry || LES.better.try); return; }
     if (a === 'finish') { log('phrase_saved'); if (LES.id === allLessons()[S.done].id) S.done++; S.toastNext = true; return go('today'); }
     if (a === 'again') { S.t = newTalk(); return go('brief'); }
     if (a === 'tab') { return go(b.getAttribute('data-t') === 'today' ? 'today' : b.getAttribute('data-t')); }
@@ -3216,7 +3249,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     if (a === 'practise') { return go('phrases'); }
   });
   document.addEventListener('input', function (e) { if (e.target.getAttribute('data-in') === 'typed') S.t.typed = e.target.value; });
-  window.__app = { expected: function () { return ME[S.t.step]; }, S: S, go: go, render: render, newTalk: newTalk, load: function (p, l) { S.persona = p; load(p, l); } };
+  window.__app = { respond: function (x) { respond(x); }, expected: function () { return ME[S.t.step]; }, S: S, go: go, render: render, newTalk: newTalk, load: function (p, l) { S.persona = p; load(p, l); } };
   app = document.getElementById('app');
   var h = (location.hash || '').slice(1), m = h.match(/^(persona-[ab])(?:-(\w+))?$/);
   if (m) { S.persona = m[1]; h = m[2] || 'today'; }

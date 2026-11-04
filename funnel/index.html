@@ -217,9 +217,11 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .st.open{border:1.5px solid var(--line)}
 .ring{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;flex:none;margin-bottom:24px}
 .ring svg{position:absolute;inset:0;width:200px;height:200px}
-.ring svg circle{transition:stroke-dashoffset 120ms linear}
+.ring svg circle{transition:none}
 .pct{position:absolute;bottom:-34px;font-family:var(--fd);font-weight:800;font-size:20px}
-.lrow{gap:12px;opacity:.4;transition:opacity 300ms}
+.lrow{gap:12px;opacity:.4;transition:opacity 400ms ease}
+.lrow .st,.lrow .okc{width:28px;height:28px;flex:none}
+.scrim.out,.sheet.out{animation:fade 220ms ease reverse both}
 .lrow.act,.lrow.done{opacity:1}
 .scrim{position:absolute;inset:0;background:rgba(17,19,34,.35);animation:fade 300ms ease both}
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -326,6 +328,16 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .rv2 blockquote{margin:0;font-size:16px;line-height:1.45;color:var(--ink)}
 .chip.sm{height:auto;min-height:36px;padding:6px 12px;white-space:normal}
 
+.rvsample{font-size:12px;color:var(--ink-2);margin-top:2px}
+.rv2 blockquote{margin:0}
+.scr.enter{animation:scrIn 280ms cubic-bezier(.2,.8,.2,1) both}
+.scr.enter-back{animation:scrBack 280ms cubic-bezier(.2,.8,.2,1) both}
+@keyframes scrIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes scrBack{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+.opt{transition:background-color 160ms ease,border-color 160ms ease,transform 120ms ease}
+.opt:active{transform:scale(.985)}
+@media (prefers-reduced-motion:reduce){.scr.enter,.scr.enter-back{animation:fade 1ms both}}
+
 /* ---------- desktop web layout (no phone frame) ---------- */
 .webbrand{display:none}
 @media (min-width:900px){
@@ -336,18 +348,18 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
  .halo{display:none}
  .webbrand{display:flex;align-items:center;gap:8px;position:absolute;top:22px;left:32px;z-index:2;text-decoration:none;color:var(--ink);font-family:var(--fd);font-size:18px}
  .top,.uarow,.body,.dock,.pw-top{width:100%;max-width:640px;margin-left:auto;margin-right:auto}
- .top{padding:22px 8px 8px;min-height:76px}
+ .top{padding:16px 8px 4px;min-height:64px}
  .body{flex:0 0 auto;padding:16px 24px 0}
  .body.scroll{overflow:visible;padding-bottom:8px}
  .dock{padding:20px 24px 48px}
  .dock.sticky{background:none}
  .dock .btn{max-width:420px}
- .t-title{font-size:30px}
- .t-display{font-size:40px}
- .bignum{font-size:96px}
- .illo{max-height:220px}
- .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
- .opts .opt{min-height:72px}
+ .t-title{font-size:26px}
+ .t-display{font-size:34px}
+ .bignum{font-size:80px}
+ .illo{max-height:180px}
+ .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ .opts .opt{min-height:64px}
  .pw2{padding-top:8px}
  .pwcta .btn{max-width:none}
  .sheet{top:0;bottom:0;left:0;right:0;margin:auto;height:fit-content;max-width:480px;border-radius:28px;padding:20px 24px 24px}
@@ -357,13 +369,14 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
  #app[data-screen=landing] .webbrand{display:none}
  #app[data-screen=landing] .brand{position:absolute;top:22px;left:48px;padding:0}
  #app[data-screen=landing] .body{display:contents}
- #app[data-screen=landing] .hero{grid-area:hero;height:460px;align-self:center;grid-row:1 / span 3}
+ #app[data-screen=landing] .hero{grid-area:hero;height:min(440px,62vh);align-self:center;grid-row:1 / span 3}
  #app[data-screen=landing] .hero .btxt{font-size:20px}
- #app[data-screen=landing] h1{grid-area:h1;align-self:end;font-size:48px!important;line-height:1.08!important}
+ #app[data-screen=landing] h1{grid-area:h1;align-self:end;font-size:clamp(34px,3.6vw,46px)!important;line-height:1.08!important}
  #app[data-screen=landing] .body>p{grid-area:p;font-size:19px;margin-top:16px}
  #app[data-screen=landing] .dock{grid-area:dock;align-self:start;padding:28px 0 0;margin:0;max-width:420px}
  #app[data-screen=landing] .demo{justify-content:flex-start}
 }
+@media (min-width:600px) and (max-width:899px) and (max-height:900px){#app{zoom:.88;height:calc((100dvh - 24px) / .88)}}
 @media (min-width:900px) and (prefers-reduced-motion:reduce){.scr{scroll-behavior:auto}}
 
 .opt.off{opacity:.45}
@@ -3142,10 +3155,18 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       '<path d="M108 37 C150 30, 190 22, 232 22" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="4 5" fill="none"/></svg>';
   }
 
+  // Sample review for the demo (no real users yet). Swap for a real interview quote with permission before launch.
+  var REVIEWS = {
+    factory_warehouse: ['Oksana K.', 'Picker · Leicester', 'I used to nod and hope for the best. Now I ask my team leader to say it again, slower — and he does. Last week I asked for extra shifts myself.'],
+    hospitality_retail: ['Daria M.', 'Room attendant · Manchester', 'Talking to my manager scared me more than the job. I practised the exact words on the bus, and the next day I just said them.'],
+    care: ['Grace O.', 'Care assistant · Bristol', 'Handover used to be the hardest ten minutes of my day. Now I ask about the one thing I missed, and nobody minds.'],
+    construction: ['Marek W.', 'Labourer · Birmingham', 'On site everyone talks fast. Practising the toolbox talk with Veera meant I finally asked where the exclusion zone was.'],
+    other: ['Olga S.', 'Shop assistant · London', 'Ten minutes a day, real situations from my job. I stopped asking my daughter to make my phone calls.']
+  };
   function reviewCard() {
-    return '<figure class="rv2"><div class="row" style="gap:10px"><span class="rvav" aria-hidden="true">A</span><div class="stack" style="gap:0;flex:1"><span class="rvn">[First name, initial]</span><span class="rvm">[Job] · [City, UK/US]</span></div><span class="ph">placeholder</span></div>' +
-      '<div class="row" style="gap:8px"><span class="rvs" aria-label="5 out of 5">★★★★★</span><span class="rvm">[Date]</span></div>' +
-      '<blockquote>[Real quote from a user interview, in their own words, with permission]</blockquote></figure>';
+    var r = REVIEWS[P().sector] || REVIEWS.other;
+    return '<figure class="rv2"><div class="row" style="gap:10px"><span class="rvav" aria-hidden="true">' + r[0].charAt(0) + '</span><div class="stack" style="gap:0;flex:1"><span class="rvn">' + esc(r[0]) + '</span><span class="rvm">' + esc(r[1]) + '</span></div><span class="rvs" aria-label="5 out of 5">★★★★★</span></div>' +
+      '<blockquote>“' + esc(r[2]) + '”</blockquote><figcaption class="rvsample">Sample review · demo</figcaption></figure>';
   }
   // ---------- screens ----------
   var R = {};
@@ -3228,21 +3249,28 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       '<div class="dock">' + btn('Get my plan', 'email', { dis: !ok }) + '</div>');
   };
   R.loader = function () {
-    var p = S.load, lines = ['Analyzing your answers…', 'Picking talks from ' + WORK_SHORT[work()] + '…', 'Building your 4-week plan…'];
+    var p = Math.round(S.load), lines = ['Analyzing your answers…', 'Picking talks from ' + WORK_SHORT[work()] + '…', 'Building your 4-week plan…'];
     var li = lines.map(function (l, i) {
       var done = p >= (i + 1) * 33, act = !done && p >= i * 33;
-      return '<div class="row lrow' + (done ? ' done' : act ? ' act' : '') + '">' + (done ? '<span class="okc s">' + ic('check', 16, 'currentColor', 3) + '</span>' : '<span class="st open">' + (act ? '<span class="spin dk"></span>' : '') + '</span>') + '<span class="t-body">' + esc(l) + '</span></div>';
+      return '<div class="row lrow ' + (done ? 'done' : act ? 'act' : 'wait') + '" data-st="' + (done ? 'done' : act ? 'act' : 'wait') + '">' + (done ? '<span class="okc s">' + ic('check', 16, 'currentColor', 3) + '</span>' : '<span class="st open">' + (act ? '<span class="spin dk"></span>' : '') + '</span>') + '<span class="t-body">' + esc(l) + '</span></div>';
     }).join('');
     var C = 2 * Math.PI * 92, off = C * (1 - p / 100);
+    var sheet = S.sheet ? sheetHTML() : '';
+    return scrLoader(li, C, off, p, sheet);
+  };
+  function sheetHTML() {
     var sheet = '';
     if (S.sheet) {
       var qs = { a: 'Do you get nervous before important conversations?', b: 'Would you practice more if it felt like a real conversation?' };
       sheet = '<div class="scrim"></div><div class="sheet rise" role="dialog" aria-label="Quick question"><span class="grab"></span><div class="row" style="gap:8px">' + orb('idle', 's28') + '<span class="t-native-s">Quick question · ' + (S.sheet === 'a' ? '1' : '2') + ' of 2</span></div><p class="t-h2">' + qs[S.sheet] + '</p><div class="row" style="gap:10px"><button class="btn sec" data-a="sheet">No</button><button class="btn" data-a="sheet">Yes</button></div></div>';
     }
+    return sheet;
+  }
+  function scrLoader(li, C, off, p, sheet) {
     return scr('<div class="body" style="align-items:center;justify-content:center;gap:26px;padding-top:40px"><h1 class="t-title" style="text-align:center">Building your personal plan…</h1>' +
-      '<div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="gR" x1="0" x2="1"><stop offset="0" stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><circle cx="100" cy="100" r="92" fill="none" stroke="#EEF0F4" stroke-width="8"/><circle cx="100" cy="100" r="92" fill="none" stroke="url(#gR)" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '" transform="rotate(-90 100 100)"/></svg>' + orb('think', 's120') + '<span class="pct">' + p + '%</span></div>' +
+      '<div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="gR" x1="0" x2="1"><stop offset="0" stop-color="#3B82F6"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><circle cx="100" cy="100" r="92" fill="none" stroke="#EEF0F4" stroke-width="8"/><circle class="pg" cx="100" cy="100" r="92" fill="none" stroke="url(#gR)" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '" transform="rotate(-90 100 100)"/></svg>' + orb('think', 's120') + '<span class="pct">' + p + '%</span></div>' +
       '<div class="stack" style="gap:14px;align-self:stretch">' + li + '</div></div>' + sheet, 'noscroll');
-  };
+  }
   function vphrase(v) { return esc(v.phrase).replace('{name}', S.name ? esc(S.name) : '<span class="nm">[your name]</span>'); }
   function chips(list) { return '<div class="row wrap" style="gap:6px">' + list.map(function (c) { return '<span class="chip sm"><span class="muted">' + c[0] + ':</span>&nbsp;' + esc(c[1]) + '</span>'; }).join('') + '</div>'; }
   R.ready = function () {
@@ -3306,6 +3334,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       '<button class="po' + (!y ? ' sel' : '') + '" data-a="pm" aria-pressed="' + !y + '"><span class="radio"></span><span class="stack" style="gap:2px;flex:1"><span class="pn2">Monthly</span><span class="t-native-s">Billed every month</span></span><span class="pp2">$22.99<small>/month</small></span></button>' +
       '</section>' +
       '<div class="pwcta">' + btn('Try it free', 'trial') + '<p class="t-native-s" style="text-align:center" data-then>' + thenLine() + '</p></div>' +
+      reviewCard() +
       '<div class="risk2">' + [['wallet', 'No charge today'], ['tap', 'Cancel in 1 tap'], ['bell', 'Reminder before you pay']].map(function (r) { return '<span>' + ic(r[0], 18, '#4A4F63') + r[1] + '</span>'; }).join('') + '</div>' +
       '<p class="t-legal" style="text-align:center;padding-bottom:8px"><a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Restore</a></p></div>', 'pwscr');
   };
@@ -3344,10 +3373,10 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     var k = cur();
     app.innerHTML = R[k]();
     app.setAttribute('data-screen', k);
-    if (S._lastK !== k) { S._lastK = k; var sc = app.querySelector('.scroll'); if (sc) sc.scrollTop = 0; var sr = app.querySelector('.scr'); if (sr) sr.scrollTop = 0; }
+    if (S._lastK !== k) { var sr0 = app.querySelector('.scr'); if (sr0 && S._lastK) sr0.classList.add(S._dir < 0 ? 'enter-back' : 'enter'); S._lastK = k; var sc = app.querySelector('.scroll'); if (sc) sc.scrollTop = 0; var sr = app.querySelector('.scr'); if (sr) sr.scrollTop = 0; }
   }
   function go(i) {
-    clear(); S.i = Math.max(0, Math.min(FLOW.length - 1, i)); var k = cur();
+    S._dir = i < S.i ? -1 : 1; clear(); S.i = Math.max(0, Math.min(FLOW.length - 1, i)); var k = cur();
     var qi = STEPS.indexOf(k); if (qi >= 0) log('quiz_step_view', { n: qi + 1, step: k });
     if (k === 'landing') log('landing_view');
     if (k === 'voice') { S.tries = 0; S.heard = S.voiceOk ? S.heard : ''; S.voice = S.voiceOk ? 'success' : 'idle'; if (!S.voiceOk) { S.speaking = true; later(function () { S.speaking = false; render(); }, 2400); } }
@@ -3358,18 +3387,37 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     render();
   }
   function next() { go(S.i + 1); }
+  function lineState(p, i) { return p >= (i + 1) * 33 ? 'done' : p >= i * 33 ? 'act' : 'wait'; }
+  function paintLoader() {
+    var p = S.load, C = 2 * Math.PI * 92, ring = app.querySelector('.ring circle.pg'), pct = app.querySelector('.pct');
+    if (ring) ring.setAttribute('stroke-dashoffset', (C * (1 - p / 100)).toFixed(1));
+    if (pct) pct.textContent = Math.round(p) + '%';
+    app.querySelectorAll('.lrow').forEach(function (row, i) {
+      var st = lineState(p, i); if (row.getAttribute('data-st') === st) return;
+      row.setAttribute('data-st', st); row.className = 'row lrow ' + st;
+      row.firstChild.outerHTML = st === 'done' ? '<span class="okc s pop">' + ic('check', 16, 'currentColor', 3) + '</span>' : '<span class="st open">' + (st === 'act' ? '<span class="spin dk"></span>' : '') + '</span>';
+    });
+  }
   function startLoader() {
     S.load = 0; S.sheet = null; S.sheetDone = {};
-    function tick() {
-      if (S.sheet) return;
-      S.load = Math.min(100, S.load + 2);
-      if (S.load === 30 && !S.sheetDone.a) { S.sheet = 'a'; render(); return; }
-      if (S.load === 70 && !S.sheetDone.b) { S.sheet = 'b'; render(); return; }
-      render();
+    var last = 0, DUR = 6500; // ms for 0→100 % (pauses for the two questions not counted)
+    function frame(t) {
+      if (cur() !== 'loader') return;
+      if (S.sheet) { last = t; S._raf = requestAnimationFrame(frame); return; }
+      if (last) S.load = Math.min(100, S.load + (t - last) / DUR * 100); last = t;
+      if (S.load >= 30 && !S.sheetDone.a) { S.load = 30; return openSheet('a', frame); }
+      if (S.load >= 70 && !S.sheetDone.b) { S.load = 70; return openSheet('b', frame); }
+      paintLoader();
       if (S.load >= 100) { later(function () { go(FLOW.indexOf('ready')); }, 500); return; }
-      later(tick, 120);
+      S._raf = requestAnimationFrame(frame);
     }
-    S._tick = tick; later(tick, 300);
+    S._frame = frame; later(function () { S._raf = requestAnimationFrame(frame); }, 250);
+  }
+  function openSheet(k, frame) {
+    paintLoader(); S.sheet = k;
+    var d = document.createElement('div'); d.innerHTML = sheetHTML(); var sc = app.querySelector('.scr');
+    while (d.firstChild) sc.appendChild(d.firstChild);
+    S._raf = requestAnimationFrame(frame);
   }
   function judge(txt, mode) {
     var v = C.voice(P()), sc = C.score(txt, v.phrase, v.keywords), pass = sc >= VD.voice_trial.rules.pass_ratio;
@@ -3412,7 +3460,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     if (a === 'vcheck') { var vt = (S.vtext || '').trim(); if (!vt) return; return judge(vt, 'text'); }
     if (a === 'vskip') { return next(); }
     if (a === 'email') { log('email_submit'); return next(); }
-    if (a === 'sheet') { S.sheetDone[S.sheet] = true; log('loader_question', { q: S.sheet, answer: b.textContent }); S.sheet = null; render(); later(S._tick, 300); return; }
+    if (a === 'sheet') { S.sheetDone[S.sheet] = true; log('loader_question', { q: S.sheet, answer: b.textContent }); S.sheet = null; app.querySelectorAll('.scrim,.sheet').forEach(function (n) { n.classList.add('out'); setTimeout(function () { n.remove(); }, 220); }); return; }
     if (a === 'wk') { var wi = +b.getAttribute('data-i'); S.open = Object.assign({}, S.open || {}); S.open[wi] = !S.open[wi]; log('plan_week_toggle', { week: wi + 1 }); var sc0 = app.querySelector('.scroll'), y0 = sc0 ? sc0.scrollTop : 0, r0 = app.querySelector('.scr').scrollTop; render(); var sc1 = app.querySelector('.scroll'); if (sc1) sc1.scrollTop = y0; app.querySelector('.scr').scrollTop = r0; return; }
     if (a === 'py' || a === 'pm') { S.plan = a === 'py' ? 'yearly' : 'monthly'; log('plan_select', { plan: S.plan }); return render(); }
     if (a === 'rem5' || a === 'rem6') { S.remind = a === 'rem5' ? 5 : 6; log('reminder_day_select', { day: S.remind }); return render(); }
