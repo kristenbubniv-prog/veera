@@ -183,7 +183,7 @@ textarea.inp{height:96px;padding:14px 16px;resize:none;line-height:1.4}
 html,body{height:100%}
 body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;font-family:var(--ft)}
 #app{position:relative;width:100%;max-width:430px;height:100dvh;max-height:932px;background:#fff;overflow:hidden}
-@media (min-width:600px){#app{height:844px;max-width:390px;border-radius:36px;box-shadow:0 30px 80px rgba(17,19,34,.18)}}
+@media (min-width:600px){#app{height:min(860px,calc(100dvh - 32px));max-width:390px;border-radius:36px;box-shadow:0 30px 80px rgba(17,19,34,.18)}}
 .scr{position:absolute;inset:0}
 .body{min-height:0}
 .body.scroll{overflow-y:auto;padding-bottom:16px}
@@ -334,21 +334,24 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .pl:first-child{border-top:0}
 .pli{width:28px;height:28px;border-radius:9px;background:var(--accent-tint);display:flex;align-items:center;justify-content:center;flex:none}
 .plt{font-size:16px;line-height:1.3;font-weight:500}
-.pl.st .plt{font-weight:700}
+.pl.pls .plt{font-weight:700}
 .bc{font-size:13px;color:var(--ink-2)}
 .pl .badge{height:24px;font-size:13px;flex:none}
 .badge.goal{background:#F0FDF6;color:#0B6B3A}
 .goalchip{background:#F0FDF6!important;border-color:#C9F2DB!important;color:#0B6B3A;font-weight:600}
 .tcount{font-size:14px;color:var(--ink-2)}.tcount b{color:var(--ink);font-family:var(--fd)}
-.tchart{display:grid;grid-template-columns:44px repeat(4,minmax(0,1fr));gap:6px;align-items:end;margin-top:6px}
+.tchart{display:grid;grid-template-columns:44px repeat(4,minmax(0,1fr));gap:6px;align-items:start;margin-top:6px}
 .tcol{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
 .tnum{font-family:var(--fd);font-weight:800;font-size:15px}
 .tbar{width:100%;max-width:44px;height:110px;border-radius:10px;background:#F5F6F9;display:flex;align-items:flex-end;overflow:hidden}
 .tbar i{display:block;width:100%;border-radius:10px;background:linear-gradient(180deg,#8B5CF6,#3B82F6);transform-origin:bottom;animation:growy 700ms ease-out both}
 @keyframes growy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 .tw{font-size:12px;font-weight:700;color:var(--ink)}
-.tt{font-size:11px;line-height:1.25;color:var(--ink-2);text-align:center;min-height:42px;overflow-wrap:anywhere}
+.tt{font-size:12px;line-height:1.25;color:var(--ink-2);text-align:center;min-height:42px;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){.tbar i{animation:none}}
+.heard{margin:0;font-size:15px;color:var(--ink-2);text-align:center;max-width:300px}
+.heard.live{font-size:18px;color:var(--ink);font-weight:500}
+.win .heard{text-align:left;max-width:none}
 </style>
 </head>
 <body>
@@ -2952,7 +2955,30 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       worked: L.feedback.worked.map(f), better: { said: f(L.feedback.better.said), try: f(L.feedback.better.try), why: f(L.feedback.better.why_ua) }, designer: L.designer };
   }
   function slang(term, p) { var s = D.slang[p.sector] || {}, c = D.slang.common; term = (term || '').toLowerCase(); return s[term] || c[term] || null; }
-  window.VeeraCore = { D: D, prof: prof, fill: fill, buildPlan: buildPlan, nowIn4: nowIn4, voice: voice, inter: inter, lesson: lesson, slang: slang, label: label, subs: subs, persona: function (k) { return D.personas[k]; } };
+  // ---- real speech recognition (Web Speech API, en-GB). Works on https in Chrome, Edge, Safari. ----
+  function srSupported() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); }
+  // o: {onText(text, final), onEnd(text), onError(code)}; returns {stop}
+  function listen(o) {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition, txt = '', ended = false;
+    if (!SR) { setTimeout(function () { o.onError && o.onError('unsupported'); }, 0); return { stop: function () {} }; }
+    var r = new SR(); r.lang = 'en-GB'; r.interimResults = true; r.continuous = false; r.maxAlternatives = 1;
+    r.onresult = function (e) { var t = ''; for (var i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; txt = t.trim(); o.onText && o.onText(txt, e.results[e.results.length - 1].isFinal); };
+    r.onerror = function (e) { if (ended) return; if (e.error === 'no-speech' || e.error === 'aborted') return; ended = true; o.onError && o.onError(e.error); };
+    r.onend = function () { if (ended) return; ended = true; o.onEnd && o.onEnd(txt); };
+    try { r.start(); } catch (e) { ended = true; setTimeout(function () { o.onError && o.onError('start'); }, 0); }
+    return { stop: function () { try { r.stop(); } catch (e) {} } };
+  }
+  function words(t) { return String(t || '').toLowerCase().replace(/[’']/g, "'").replace(/[^a-z0-9' ]+/g, ' ').split(/\s+/).filter(Boolean); }
+  // share of key words heard (order-free); keywords default to content words of the target
+  var STOP = ['a', 'an', 'the', 'to', 'i', 'you', 'it', 'is', 'and', 'or', 'of', 'on', 'in', 'my', 'me', 'do', 'that', 'this', 'for', 'at', "it's", "i'm", 'hi'];
+  function score(said, target, keys) {
+    var w = words(said); if (!w.length) return 0;
+    var k = (keys && keys.length ? keys : words(target).filter(function (x) { return STOP.indexOf(x) < 0 && x.charAt(0) !== '{'; }));
+    if (!k.length) return 1;
+    var hit = k.filter(function (x) { return w.some(function (y) { return y === x || (x.length > 4 && y.indexOf(x.slice(0, -1)) === 0); }); }).length;
+    return hit / k.length;
+  }
+  window.VeeraCore = { listen: listen, srSupported: srSupported, score: score, D: D, prof: prof, fill: fill, buildPlan: buildPlan, nowIn4: nowIn4, voice: voice, inter: inter, lesson: lesson, slang: slang, label: label, subs: subs, persona: function (k) { return D.personas[k]; } };
 })();
 </script>
 <script>/* Veera — quiz + paywall funnel v2 (H1 Halo) */
@@ -3124,7 +3150,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     }).join('<div class="howline" aria-hidden="true"></div>');
     return scr(top(STEPS.indexOf('how') + 1) + '<div class="body scroll" style="gap:16px"><div class="row" style="gap:12px">' + orb('speak', 's56') + '<h1 class="t-title">How Veera helps</h1></div>' + natLine('How Veera helps', 'Як Veera допомагає') +
       '<div class="stack" style="gap:0">' + cards + '</div>' +
-      reviewCard() + '</div>' +
+      '</div>' +
       '<div class="dock">' + btn('Continue', 'next') + '</div>');
   };
   R.voice = function () {
@@ -3135,15 +3161,21 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       '<div class="card"><span class="qm" aria-hidden="true">“</span><p class="t-phrase">' + ph + '</p>' + (nat(v.phrase, v.ua) ? '<p class="t-native">' + esc(nat(v.phrase, v.ua).replace('{name}', S.name || '[ім\'я]')) + '</p>' : '') +
       '<div class="row" style="margin-top:8px"><button class="chip" data-a="listen">' + ic('play', 18, '#2E6BF0') + 'Listen</button><button class="chip" data-a="slower">' + ic('slow', 20) + 'Slower</button></div></div>';
     if (st === 'success') {
-      return scr(head + '<div class="win rise" role="status"><div class="row" style="gap:14px"><div class="okc pop">' + ic('check', 28, 'currentColor', 3) + '</div><div class="stack" style="gap:4px"><span class="t-display">Understood ✓</span><span class="t-body">Your ' + esc(C.subs(P()).boss) + ' would get this.</span></div></div>' +
+      return scr(head + '<div class="win rise" role="status"><div class="row" style="gap:14px"><div class="okc pop">' + ic('check', 28, 'currentColor', 3) + '</div><div class="stack" style="gap:4px"><span class="t-display">Understood ✓</span><span class="t-body">Your ' + esc(C.subs(P()).boss) + ' would get this.</span></div></div>' + (S.heard ? '<p class="heard">We heard: “' + esc(S.heard) + '”</p>' : '') +
         '<div class="note white">' + ic('bulb', 20, '#2E6BF0') + '<span>' + esc(v.tip_ua) + '</span></div></div></div><div class="dock">' + btn('Continue', 'next') + '</div>');
     }
+    if (st === 'almost' || st === 'goodtry') {
+      var gt = st === 'goodtry';
+      return scr(head + '<div class="note ' + (gt ? 'white' : 'info') + ' rise" role="status" style="flex-direction:column;align-items:flex-start;gap:6px"><span class="t-strong">' + (gt ? 'Good try — you\'ll practise this in your first talk.' : (S.heard ? 'Almost! Try once more, a bit slower.' : 'We didn\'t hear anything. Try again, a bit louder.')) + '</span>' + (S.heard ? '<span class="t-native-s">We heard: “' + esc(S.heard) + '”</span>' : '') + '</div>' +
+        (gt ? '</div><div class="dock">' + btn('Continue', 'next') + '</div>' : '<div class="miczone"><button class="mic" data-a="mic" aria-label="Try again">' + ic('mic', 34) + '</button><span class="mlabel">Tap and try again</span><button class="lnk" data-a="vtype">Type it instead</button></div></div>'));
+    }
     if (st === 'text') {
-      return scr(head + '<div class="note info">' + ic('micoff', 20, '#4A4F63') + '<span class="t-strong">No problem — type it here.</span></div><div class="field"><label for="vt">Your answer</label><textarea id="vt" class="inp" data-in="vtext" placeholder="Type the phrase…"></textarea></div></div><div class="dock">' + btn('Check', 'vcheck') + '</div>');
+      return scr(head + '<div class="note info">' + ic('micoff', 20, '#4A4F63') + '<span class="t-strong">' + (S.noMic ? 'Microphone is blocked — type it here instead.' : S.noSR ? 'This browser can\'t hear you — type it here, or open in Chrome or Safari.' : 'No problem — type it here.') + '</span></div><div class="field"><label for="vt">Your answer</label><textarea id="vt" class="inp" data-in="vtext" placeholder="Type the phrase…"></textarea></div></div><div class="dock">' + btn('Check', 'vcheck') + '</div>');
     }
     var lab = { idle: 'Tap and say it', listening: 'Listening… tap to stop', checking: 'Checking…' }[st];
     var inner = st === 'listening' ? '<span class="bars"><i></i><i></i><i></i><i></i></span>' : st === 'checking' ? '<span class="spin"></span>' : ic('mic', 34);
-    return scr(head + '<div class="miczone">' + (st === 'idle' ? '<p class="t-native-s" style="text-align:center;max-width:290px">We only listen while you speak.</p>' : '') +
+    var live = st === 'listening' && S.live ? '<p class="heard live">“' + esc(S.live) + '”</p>' : '';
+    return scr(head + '<div class="miczone">' + live + (st === 'idle' ? '<p class="t-native-s" style="text-align:center;max-width:290px">We only listen while you speak.</p>' : '') +
       '<button class="mic" data-a="mic" aria-label="' + lab + '">' + inner + '</button><span class="mlabel" role="status">' + lab + '</span>' +
       (st === 'idle' ? '<button class="lnk" data-a="vtype">Can\'t speak now? Type it instead</button><button class="lnk mute" data-a="vskip">Skip</button>' : '') + '</div></div>');
   };
@@ -3200,7 +3232,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     var items = pl.weeks.map(function (w, i) {
       var o = !!op[i], last = i === pl.weeks.length - 1;
       var ls = o ? '<div class="pex rise">' + w.lessons.map(function (l) {
-        return '<div class="pl' + (l.starts ? ' st' : '') + '"><span class="pli">' + ic(l.goal ? 'flag' : 'chat', 16, l.goal ? '#12B76A' : '#8B5CF6') + '</span><span class="stack" style="gap:2px;flex:1"><span class="plt">' + esc(l.title) + '</span>' +
+        return '<div class="pl' + (l.starts ? ' pls' : '') + '"><span class="pli">' + ic(l.goal ? 'flag' : 'chat', 16, l.goal ? '#12B76A' : '#8B5CF6') + '</span><span class="stack" style="gap:2px;flex:1"><span class="plt">' + esc(l.title) + '</span>' +
           (l.because ? '<span class="bc">Because you chose: ' + esc(l.because) + '</span>' : '') + '</span>' +
           (l.starts ? '<span class="badge">Starts here</span>' : l.goal ? '<span class="badge goal">Goal</span>' : '') + '</div>'; }).join('') + '</div>' : '';
       return '<div class="pstep' + (i === 0 ? ' first' : '') + (last ? ' last' : '') + '"><span class="pnode">' + (last ? ic('flag', 16, '#fff') : (i + 1)) + '</span>' +
@@ -3235,8 +3267,6 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       '</section>' +
       '<div class="pwcta">' + btn('Try it free', 'trial') + '<p class="t-native-s" style="text-align:center" data-then>' + thenLine() + '</p></div>' +
       '<div class="risk2">' + [['wallet', 'No charge today'], ['tap', 'Cancel in 1 tap'], ['bell', 'Reminder before you pay']].map(function (r) { return '<span>' + ic(r[0], 18, '#4A4F63') + r[1] + '</span>'; }).join('') + '</div>' +
-      reviewCard() +
-      '<p class="t-native-s" style="text-align:center">Built for the 73% who don\'t feel fluent at work<br><span class="src" style="justify-content:center">Pearson, 2024</span></p>' +
       '<p class="t-legal" style="text-align:center;padding-bottom:8px"><a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Restore</a></p></div>', 'pwscr');
   };
   R.checkout = function () {
@@ -3280,7 +3310,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     clear(); S.i = Math.max(0, Math.min(FLOW.length - 1, i)); var k = cur();
     var qi = STEPS.indexOf(k); if (qi >= 0) log('quiz_step_view', { n: qi + 1, step: k });
     if (k === 'landing') log('landing_view');
-    if (k === 'voice') { S.voice = S.voiceOk ? 'success' : 'idle'; if (!S.voiceOk) { S.speaking = true; later(function () { S.speaking = false; render(); }, 2400); } }
+    if (k === 'voice') { S.tries = 0; S.heard = S.voiceOk ? S.heard : ''; S.voice = S.voiceOk ? 'success' : 'idle'; if (!S.voiceOk) { S.speaking = true; later(function () { S.speaking = false; render(); }, 2400); } }
     if (k === 'loader') startLoader();
     if (k === 'ready') log('plan_view');
     if (k === 'paywall') log('paywall_view', { plan: S.plan });
@@ -3301,16 +3331,29 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     }
     S._tick = tick; later(tick, 300);
   }
+  function judge(txt, mode) {
+    var v = C.voice(P()), sc = C.score(txt, v.phrase, v.keywords), pass = sc >= VD.voice_trial.rules.pass_ratio;
+    S.tries = (S.tries || 0) + 1; S.heard = txt;
+    log('voice_trial_complete', { mode: mode, understood: pass, score: Math.round(sc * 100) / 100, attempt: S.tries, text: txt });
+    S.voice = 'checking'; render();
+    later(function () {
+      if (pass) { S.voice = 'success'; S.voiceOk = true; }
+      else S.voice = S.tries >= VD.voice_trial.rules.max_attempts ? 'goodtry' : 'almost';
+      render();
+    }, 700);
+  }
   function voiceListen() {
-    S.voice = 'listening'; S.speaking = false; render(); log('voice_trial_start', { mode: 'voice' });
-    var done = false;
-    function finish() { if (done) return; done = true; S.voice = 'checking'; render(); later(function () { S.voice = 'success'; S.voiceOk = true; render(); log('voice_trial_complete', { understood: true }); }, 1100); }
-    S._finish = finish;
-    try {
-      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SR) { var r = new SR(); r.lang = 'en-GB'; r.onresult = finish; r.onerror = function () {}; r.start(); S._rec = r; }
-    } catch (e) {}
-    later(finish, 3200);
+    S.voice = 'listening'; S.speaking = false; S.live = ''; try { speechSynthesis.cancel(); } catch (e) {} render(); log('voice_trial_start', { mode: 'voice' });
+    if (!C.srSupported()) { // browser without speech recognition (e.g. Firefox): offer typing
+      log('speech_fallback', { reason: 'unsupported' }); S.voice = 'text'; S.noSR = true; return render();
+    }
+    S._rec = C.listen({
+      onText: function (t) { if (cur() !== 'voice') return; S.live = t; render(); },
+      onEnd: function (t) { S._rec = null; if (cur() !== 'voice') return; S.live = ''; judge(t, 'voice'); },
+      onError: function (code) { S._rec = null; log('speech_error', { code: code }); if (cur() !== 'voice') return;
+        if (code === 'not-allowed' || code === 'service-not-allowed' || code === 'audio-capture') { S.voice = 'text'; S.noMic = true; return render(); }
+        S.heard = ''; S.voice = 'almost'; render(); }
+    });
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-a]'); if (!b || b.disabled) return;
@@ -3324,9 +3367,9 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       S.ans[key] = val; log('quiz_answer', { n: STEPS.indexOf(key) + 1, value: val }); render(); later(next, 300); return;
     }
     if (a === 'listen' || a === 'slower') { var v = C.voice(P()); say(v.phrase.replace('{name}', S.name || 'me'), a === 'slower' ? 0.65 : 0.9); S.speaking = true; render(); later(function () { S.speaking = false; render(); }, 2400); return; }
-    if (a === 'mic') { if (S.voice === 'idle') return voiceListen(); if (S.voice === 'listening' && S._finish) { try { S._rec && S._rec.stop(); } catch (e2) {} return S._finish(); } return; }
+    if (a === 'mic') { if (S.voice === 'idle' || S.voice === 'almost') return voiceListen(); if (S.voice === 'listening' && S._rec) { S._rec.stop(); } return; }
     if (a === 'vtype') { S.voice = 'text'; log('voice_trial_start', { mode: 'text' }); return render(); }
-    if (a === 'vcheck') { S.voice = 'checking'; render(); later(function () { S.voice = 'success'; S.voiceOk = true; render(); log('voice_trial_complete', { understood: true, mode: 'text' }); }, 900); return; }
+    if (a === 'vcheck') { var vt = (S.vtext || '').trim(); if (!vt) return; return judge(vt, 'text'); }
     if (a === 'vskip') { return next(); }
     if (a === 'email') { log('email_submit'); return next(); }
     if (a === 'sheet') { S.sheetDone[S.sheet] = true; log('loader_question', { q: S.sheet, answer: b.textContent }); S.sheet = null; render(); later(S._tick, 300); return; }
@@ -3340,6 +3383,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   document.addEventListener('input', function (e) {
     var k = e.target.getAttribute('data-in'); if (!k) return;
     if (k === 'name') S.name = e.target.value;
+    if (k === 'vtext') S.vtext = e.target.value;
     if (k === 'email') { S.email = e.target.value; var bt = app.querySelector('[data-a="email"]'); if (bt) bt.disabled = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(S.email); }
   });
   function loadPersona(k) {

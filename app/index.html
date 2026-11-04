@@ -183,7 +183,7 @@ textarea.inp{height:96px;padding:14px 16px;resize:none;line-height:1.4}
 html,body{height:100%}
 body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;font-family:var(--ft)}
 #app{position:relative;width:100%;max-width:430px;height:100dvh;max-height:932px;background:#fff;overflow:hidden}
-@media (min-width:600px){#app{height:844px;max-width:390px;border-radius:36px;box-shadow:0 30px 80px rgba(17,19,34,.18)}}
+@media (min-width:600px){#app{height:min(860px,calc(100dvh - 32px));max-width:390px;border-radius:36px;box-shadow:0 30px 80px rgba(17,19,34,.18)}}
 .scr{position:absolute;inset:0}
 .a2{--pri:#3F46A8;--pri-2:#4338CA;--ink-3:#6B7083;--soft:#F6F7FA;font-size:16px;color:var(--ink)}
 .a2 .body{min-height:0;padding:4px 20px 0 20px}
@@ -315,6 +315,8 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .sd.goal{border-color:#9DE5BD!important}
 .bar-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 @media (prefers-reduced-motion:reduce){.hb.pulse{animation:none}}
+.me2.live{opacity:.7}
+.me2.live p::after{content:'…'}
 </style>
 </head>
 <body>
@@ -2918,7 +2920,30 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       worked: L.feedback.worked.map(f), better: { said: f(L.feedback.better.said), try: f(L.feedback.better.try), why: f(L.feedback.better.why_ua) }, designer: L.designer };
   }
   function slang(term, p) { var s = D.slang[p.sector] || {}, c = D.slang.common; term = (term || '').toLowerCase(); return s[term] || c[term] || null; }
-  window.VeeraCore = { D: D, prof: prof, fill: fill, buildPlan: buildPlan, nowIn4: nowIn4, voice: voice, inter: inter, lesson: lesson, slang: slang, label: label, subs: subs, persona: function (k) { return D.personas[k]; } };
+  // ---- real speech recognition (Web Speech API, en-GB). Works on https in Chrome, Edge, Safari. ----
+  function srSupported() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); }
+  // o: {onText(text, final), onEnd(text), onError(code)}; returns {stop}
+  function listen(o) {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition, txt = '', ended = false;
+    if (!SR) { setTimeout(function () { o.onError && o.onError('unsupported'); }, 0); return { stop: function () {} }; }
+    var r = new SR(); r.lang = 'en-GB'; r.interimResults = true; r.continuous = false; r.maxAlternatives = 1;
+    r.onresult = function (e) { var t = ''; for (var i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; txt = t.trim(); o.onText && o.onText(txt, e.results[e.results.length - 1].isFinal); };
+    r.onerror = function (e) { if (ended) return; if (e.error === 'no-speech' || e.error === 'aborted') return; ended = true; o.onError && o.onError(e.error); };
+    r.onend = function () { if (ended) return; ended = true; o.onEnd && o.onEnd(txt); };
+    try { r.start(); } catch (e) { ended = true; setTimeout(function () { o.onError && o.onError('start'); }, 0); }
+    return { stop: function () { try { r.stop(); } catch (e) {} } };
+  }
+  function words(t) { return String(t || '').toLowerCase().replace(/[’']/g, "'").replace(/[^a-z0-9' ]+/g, ' ').split(/\s+/).filter(Boolean); }
+  // share of key words heard (order-free); keywords default to content words of the target
+  var STOP = ['a', 'an', 'the', 'to', 'i', 'you', 'it', 'is', 'and', 'or', 'of', 'on', 'in', 'my', 'me', 'do', 'that', 'this', 'for', 'at', "it's", "i'm", 'hi'];
+  function score(said, target, keys) {
+    var w = words(said); if (!w.length) return 0;
+    var k = (keys && keys.length ? keys : words(target).filter(function (x) { return STOP.indexOf(x) < 0 && x.charAt(0) !== '{'; }));
+    if (!k.length) return 1;
+    var hit = k.filter(function (x) { return w.some(function (y) { return y === x || (x.length > 4 && y.indexOf(x.slice(0, -1)) === 0); }); }).length;
+    return hit / k.length;
+  }
+  window.VeeraCore = { listen: listen, srSupported: srSupported, score: score, D: D, prof: prof, fill: fill, buildPlan: buildPlan, nowIn4: nowIn4, voice: voice, inter: inter, lesson: lesson, slang: slang, label: label, subs: subs, persona: function (k) { return D.personas[k]; } };
 })();
 </script>
 <script>/* Veera app — first session flow (calm UI) */
@@ -2945,9 +2970,12 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     log('lesson_load', { persona: persona, lesson: LES.id, sector: PER.sector });
   }
   function gloss(a) { return a.slang.map(function (w) { var g = C.slang(w, PER); return g ? w + ' = ' + g : ''; }).filter(Boolean).join(' · '); }
-  function nextLesson() { var all = []; PL.weeks.forEach(function (w) { all = all.concat(w.lessons); }); return all[1]; }
-  var S = { persona: 'persona-a', v: 'brief', briefHint: true, playing: -1, saved: {}, t: null, toast: false, save: { 0: true, 1: true, 2: true, 3: true }, remind: '', said: {} };
-  function newTalk() { return { step: 0, phase: 'idle', rev: {}, tr: {}, used: false, status: {}, text: false, mic: true, typed: '' }; }
+  function allLessons() { var all = []; PL.weeks.forEach(function (w) { all = all.concat(w.lessons); }); return all; }
+  function nextLesson() { var a = allLessons(); return a[Math.min(S.done, a.length - 1)]; }
+  var S = { done: 0, persona: 'persona-a', v: 'brief', briefHint: true, playing: -1, saved: {}, t: null, toast: false, save: { 0: true, 1: true, 2: true, 3: true }, remind: '', said: {} };
+  function newTalk() { return { step: 0, phase: 'idle', rev: {}, tr: {}, used: false, status: {}, text: false, mic: true, typed: '', said: {}, live: '', miss: false }; }
+  function mine(k) { return S.t.said[k] || ME[k]; }
+  function okLabel(k) { var sd = S.t.said[k]; return !sd || C.score(sd, ME[k]) >= 0.3; }
   S.t = newTalk();
 
   function orb(state, size) { return '<span class="orb ' + (size || '') + ' ' + (state || 'idle') + '" aria-hidden="true"><span class="lh"></span><span class="sw"><span class="glow"></span><span class="core"></span><span class="lsw"></span><span class="core mint"></span><span class="gloss"></span></span></span>'; }
@@ -2971,7 +2999,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     return scr('<header class="bar"><button class="iconbtn" data-a="tab" data-t="today" aria-label="Close">' + ic('x', 22) + '</button><span class="bar-t">' + esc(LES.title) + '</span>' + seg(false) + '</header>' +
       '<div class="body scroll" style="gap:20px">' +
       '<div class="ctx">' + orb(S.playing >= 0 ? 'speak' : 'idle', 's40') + '<div class="stack" style="gap:6px"><p class="cl2"><span class="lbl">Who</span>' + esc(LES.who) + '</p><p class="cl2"><span class="lbl">Goal</span>' + esc(LES.goal) + '</p></div></div>' +
-      '<section class="stack" style="gap:10px"><div class="sechead"><h2 class="h2">3 phrases you\'ll need</h2>' + (S.briefHint ? '<span class="hint">' + ic('play', 12, '#4A4F63') + 'Tap ▶ to hear</span>' : '') + '</div><div class="plist">' + rows + '</div></section>' +
+      '<section class="stack" style="gap:10px"><div class="sechead"><h2 class="h2">3 phrases you\'ll need</h2>' + (S.briefHint ? '<span class="hint">' + ic('play', 12, '#4A4F63') + 'Tap to hear</span>' : '') + '</div><div class="plist">' + rows + '</div></section>' +
       '<section class="ask"><span class="lbl">If you don\'t understand</span><div class="prow" style="padding:0;border:0"><button class="pplay" data-a="play" data-i="3" aria-label="Listen">' + ic('play', 16, '#3F46A8') + '</button><div class="ptext"><p class="phr">' + esc(ASK[0]) + '</p><p class="nat">' + esc(ASK[1]) + '</p></div></div></section>' +
       '</div><div class="dock2"><button class="btn2" data-a="start">I\'m ready — start the talk</button><p class="meta">About 3 min</p></div>');
   };
@@ -2979,7 +3007,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   function feed() {
     var t = S.t, out = '';
     for (var k = 0; k <= t.step; k++) {
-      if (k > 0) { out += '<div class="me2"><p>' + esc(ME[k - 1]) + '</p></div>' + (k === 1 ? '<p class="ok2">' + ic('check', 14, '#0B6B44', 3) + esc(WHO.split(',')[0]) + ' understood you</p>' : ''); }
+      if (k > 0) { out += '<div class="me2"><p>' + esc(mine(k - 1)) + '</p></div>' + (k === 1 && okLabel(0) ? '<p class="ok2">' + ic('check', 14, '#0B6B44', 3) + esc(WHO.split(',')[0]) + ' understood you</p>' : ''); }
       var A = AI[k]; if (!A) continue;
       var rev = t.rev[k] || t.tr[k], latest = k === t.step && t.phase !== 'done';
       out += '<div class="ai2' + (A.fast ? ' fast' : '') + '">' + (A.fast ? '<span class="fastb">' + ic('bolt', 12, '#8A5A00') + 'Fast</span>' : '') + (rev ? '<p>' + esc(A.en) + '</p>' : '<button class="reveal2" data-a="rev" data-i="' + k + '"><p class="blur">' + esc(A.en) + '</p><span>' + ic('eye', 14, '#3F46A8') + 'Tap to see the words</span></button>') +
@@ -2991,7 +3019,9 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
           '<button class="hb' + (t.tr[k] ? ' on' : '') + '" data-a="tr" data-i="' + k + '">' + ic('translate', 16) + 'Translate</button></div>';
       }
     }
-    if (t.phase === 'typing' || t.phase === 'sent') { out += '<div class="me2"><p>' + esc(t.text && t.typed ? t.typed : ME[t.step]) + '</p></div>' + (t.step === 0 ? '<p class="ok2">' + ic('check', 14, '#0B6B44', 3) + esc(WHO.split(',')[0]) + ' understood you</p>' : '') + (AI[t.step + 1] ? '<div class="ai2 typing" aria-label="Typing"><span class="dots"><i></i><i></i><i></i></span></div>' : ''); }
+    if (t.phase === 'listening' && t.live) out += '<div class="me2 live"><p>' + esc(t.live) + '</p></div>';
+    if (t.miss && t.phase === 'idle') out += '<p class="sys2">' + ic('micoff', 14, '#6B7083') + 'Didn\'t catch that. Tap Veera and try again, or type it.</p>';
+    if (t.phase === 'typing' || t.phase === 'sent') { out += '<div class="me2"><p>' + esc(mine(t.step)) + '</p></div>' + (t.step === 0 && okLabel(0) ? '<p class="ok2">' + ic('check', 14, '#0B6B44', 3) + esc(WHO.split(',')[0]) + ' understood you</p>' : '') + (AI[t.step + 1] ? '<div class="ai2 typing" aria-label="Typing"><span class="dots"><i></i><i></i><i></i></span></div>' : ''); }
     if (t.phase === 'done') out += '<div class="done2" role="status">' + orb('happy', 's28') + 'Talk complete</div>';
     return out;
   }
@@ -3020,7 +3050,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     return scr('<header class="bar"><span style="width:44px"></span><span class="bar-t"></span><button class="iconbtn" data-a="finish" aria-label="Close">' + ic('x', 22) + '</button></header>' +
       '<div class="body scroll" style="gap:18px;padding-top:4px">' +
       '<div class="row" style="gap:14px">' + orb('happy', 's56') + '<div class="stack" style="gap:2px"><h1 class="h1">You did it ✓</h1><p class="sub">' + esc(WHO.split(',')[0]) + ' understood you.</p></div></div>' +
-      '<section class="fb good"><span class="lbl">What worked</span><p class="phr">' + esc(LES.worked[0]) + '</p><p class="nat">' + esc(LES.worked[1]) + '</p></section>' +
+      '<section class="fb good"><span class="lbl">What worked</span><p class="phr">' + esc(S.t.said[0] ? '“' + S.t.said[0] + '”' : LES.worked[0]) + '</p><p class="nat">' + esc(LES.worked[1]) + '</p></section>' +
       '<section class="fb"><span class="lbl">Say it better</span><p class="was">You said: “' + esc(LES.better.said) + '”</p><div class="row" style="gap:10px;justify-content:space-between"><p class="phr">Try: “' + esc(LES.better.try) + '”</p><button class="pplay" data-a="playtxt" aria-label="Listen">' + ic('play', 16, '#3F46A8') + '</button></div><p class="nat">' + esc(LES.better.why) + '</p></section>' +
       '<section class="fb"><span class="lbl">Save your phrases</span>' + rows + '</section>' +
       '<section class="fb tint"><span class="lbl">Use it tomorrow at work</span><p class="phr">Before your shift, remember: “' + esc(LES.phrases[0][0]) + '”</p></section>' +
@@ -3030,20 +3060,25 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   };
   // A2 Today
   R.today = function () {
+    var first = S.done === 0, nx = nextLesson();
     var ph = SAVED.slice(0, 3).map(function (p, i) { return '<div class="prow"><button class="pplay" data-a="play2" data-i="' + i + '" aria-label="Listen">' + ic('play', 14, '#3F46A8') + '</button><div class="ptext"><p class="phr s">' + esc(p[0]) + '</p><p class="nat">' + esc(p[1]) + '</p></div></div>'; }).join('');
-    var days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(function (d, i) { return '<span class="d2' + (i === 2 ? ' done' : '') + (i === 2 ? ' today' : '') + '"><b>' + (i === 2 ? ic('check', 12, '#fff', 3) : '') + '</b>' + d + '</span>'; }).join('');
-    return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">Wednesday</span><h1 class="h1">Today</h1></div><div class="row" style="gap:8px"><span class="tag2">Demo</span><button class="iconbtn" data-a="settings" aria-label="Settings">' + ic('sliders', 20) + '</button></div></header>' +
+    var days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(function (d, i) { var dn = i === 2 && !first; return '<span class="d2' + (dn ? ' done' : '') + (i === 2 ? ' today' : '') + '"><b>' + (dn ? ic('check', 12, '#fff', 3) : '') + '</b>' + d + '</span>'; }).join('');
+    var upMeta = nx.starts ? 'Starts here · 3 min' : 'Week 1 · 3 min';
+    var shift = first
+      ? '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">' + ic('sunrise', 14, '#4A4F63') + ' Before your shift</span></div><p class="meta" style="text-align:left;margin:0">After your first talk, the phrases you save will be here — ready to repeat before work.</p></section>'
+      : '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">' + ic('sunrise', 14, '#4A4F63') + ' Before your shift</span><span class="meta">1 min</span></div><div class="plist flat">' + ph + '</div><button class="btn3" style="width:100%" data-a="practise">Practise 3 phrases</button></section>';
+    return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">Hi, ' + esc(PER.name || 'there') + '</span><h1 class="h1">Today</h1></div><div class="row" style="gap:8px"><span class="tag2">Demo</span><button class="iconbtn" data-a="settings" aria-label="Settings">' + ic('sliders', 20) + '</button></div></header>' +
       '<div class="body scroll" style="gap:14px">' +
-      '<section class="cardx next"><div class="row" style="justify-content:space-between"><span class="lbl">Up next</span><span class="meta">Week 1 · 4 min</span></div><div class="row" style="justify-content:space-between;gap:12px"><h2 class="h2" style="font-size:19px">' + esc(nextLesson().title) + '</h2><button class="startb" data-a="startnext">Start ' + ic('arrow', 16, '#fff') + '</button></div></section>' +
-      '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">' + ic('sunrise', 14, '#4A4F63') + ' Before your shift</span><span class="meta">1 min</span></div><div class="plist flat">' + ph + '</div><button class="btn3" style="width:100%" data-a="practise">Practise 3 phrases</button></section>' +
-      '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">This week</span><span class="meta">1 of 3 days</span></div><div class="days2">' + days + '</div></section>' +
+      '<section class="cardx next"><div class="row" style="justify-content:space-between"><span class="lbl">' + (first ? 'Your first talk' : 'Up next') + '</span><span class="meta">' + upMeta + '</span></div><div class="row" style="justify-content:space-between;gap:12px"><div class="stack" style="gap:2px;min-width:0"><h2 class="h2" style="font-size:19px">' + esc(nx.title) + '</h2>' + (first && nx.because ? '<span class="bc">Because you chose: ' + esc(nx.because) + '</span>' : '') + '</div><button class="startb" data-a="startnext">Start ' + ic('arrow', 16, '#fff') + '</button></div></section>' +
+      shift +
+      '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">This week</span><span class="meta">' + (first ? '0' : '1') + ' of 3 days</span></div><div class="days2">' + days + '</div></section>' +
       '</div>' + (S.toast ? '<div class="toast2" role="status">' + ic('check', 18, '#A6F0C8', 3) + 'Phrases saved to My phrases</div>' : '') + tabs('today'), 'tabsc');
   };
   R.plan = function () {
     var n = 0;
     var secs = PL.weeks.map(function (w, i) {
       return '<section class="cardx" style="gap:2px"><span class="lbl" style="margin-bottom:6px">Week ' + (i + 1) + ' · ' + esc(w.title) + '</span>' + w.lessons.map(function (l) {
-        var st = n === 0 ? 'done' : n === 1 ? 'next' : l.goal ? 'goal' : 'open'; n++;
+        var st = n < S.done ? 'done' : n === S.done ? 'next' : l.goal ? 'goal' : 'open'; n++;
         var icn = st === 'done' ? '<span class="sd done">' + ic('check', 12, '#fff', 3) + '</span>' : st === 'next' ? '<span class="sd next"></span>' : st === 'goal' ? '<span class="sd goal">' + ic('flag', 12, '#12B76A') + '</span>' : '<span class="sd"></span>';
         var meta = st === 'done' ? 'Done' : st === 'next' ? 'Up next' : st === 'goal' ? 'Goal' : '3 min';
         return '<button class="srow" data-a="opensit" data-l="' + l.id + '">' + icn + '<span class="stack" style="gap:1px;flex:1;min-width:0;text-align:left"><span class="t">' + esc(l.title) + '</span>' +
@@ -3054,6 +3089,8 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       '<div class="body scroll" style="gap:12px"><p class="goalline">' + ic('flag', 16, '#12B76A') + esc(PL.goal.chip) + '</p><p class="meta" style="text-align:left">Need one for tomorrow? Open any talk.</p>' + secs + '</div>' + tabs('plan'), 'tabsc');
   };
   R.phrases = function () {
+    if (!S.done) return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">0 saved</span><h1 class="h1">My phrases</h1></div></header>' +
+      '<div class="body scroll" style="gap:14px;align-items:center;justify-content:center;text-align:center">' + orb('idle', 's56') + '<h2 class="h2">No phrases yet</h2><p class="meta" style="max-width:260px">Finish your first talk and save the phrases you\'ll use at work.</p><button class="btn3" data-a="startnext">Start your first talk</button></div>' + tabs('phrases'), 'tabsc');
     var rows = SAVED.map(function (p, i) {
       var said = S.said[i];
       return '<div class="frow"><p class="phr s">' + esc(p[0]) + '</p><p class="nat">' + esc(p[1]) + '</p><div class="row" style="gap:6px;margin-top:6px"><button class="hb" data-a="play2" data-i="' + i + '">' + ic('play', 14) + 'Listen</button><button class="hb" data-a="play2" data-i="' + i + '">' + ic('slow', 16) + 'Slow</button>' +
@@ -3079,6 +3116,20 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   }
   function go(v) { clearT(); S.v = v; S.toast = v === 'today' && S.toastNext; S.toastNext = false; log('screen_view', { screen: v }); render(); if (S.toast) later(function () { S.toast = false; render(true); }, 2600); }
   function tset(p) { Object.assign(S.t, p); render(); }
+  function startListen() {
+    tset({ phase: 'listening', used: true, live: '', miss: false });
+    if (!C.srSupported()) { log('speech_fallback', { reason: 'unsupported' }); var said = Object.assign({}, S.t.said); later(finishTurn, 2800); return; }
+    var step = S.t.step;
+    S.rec = C.listen({
+      onText: function (txt) { if (S.v !== 'talk' || S.t.step !== step) return; S.t.live = txt; render(); },
+      onEnd: function (txt) { S.rec = null; if (S.v !== 'talk' || S.t.step !== step) return; log('speech_result', { step: step, text: txt, score: C.score(txt, ME[step]) });
+        if (!txt) return tset({ phase: 'idle', live: '', miss: true });
+        var sd = Object.assign({}, S.t.said); sd[step] = txt; tset({ said: sd, live: '', phase: 'sent' }); finishTurn(); },
+      onError: function (code) { S.rec = null; log('speech_error', { code: code });
+        if (code === 'not-allowed' || code === 'service-not-allowed' || code === 'audio-capture') return tset({ phase: 'idle', mic: false, text: true, live: '' });
+        tset({ phase: 'idle', live: '', miss: true }); }
+    });
+  }
   function finishTurn() {
     var t = S.t; if (t.phase !== 'listening' && t.phase !== 'sent') return;
     tset({ phase: 'typing' });
@@ -3103,34 +3154,34 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     }
     if (a === 'speak') {
       var t = S.t;
-      if (t.phase === 'idle') { try { speechSynthesis.cancel(); } catch (e2) {} tset({ phase: 'listening', used: true }); later(finishTurn, 2800); return; }
-      if (t.phase === 'listening') { return finishTurn(); }
+      if (t.phase === 'idle') { try { speechSynthesis.cancel(); } catch (e2) {} return startListen(); }
+      if (t.phase === 'listening') { if (S.rec) { S.rec.stop(); return; } return finishTurn(); }
       return;
     }
     if (a === 'qc') { tset({ typed: (S.t.typed ? S.t.typed + ' ' : '') + b.getAttribute('data-v') }); return; }
-    if (a === 'send') { if (S.t.phase !== 'idle') return; tset({ phase: 'sent' }); finishTurn(); return; }
+    if (a === 'send') { if (S.t.phase !== 'idle') return; var ty = (S.t.typed || '').trim(); if (!ty) return; var sd2 = Object.assign({}, S.t.said); sd2[S.t.step] = ty; tset({ said: sd2, phase: 'sent' }); finishTurn(); return; }
     if (a === 'micon') { return tset({ mic: true, text: false }); }
-    if (a === 'end') { return go(S.t.step >= 1 ? 'feedback' : 'today'); }
+    if (a === 'end') { if (S.rec) { S.rec.stop(); S.rec = null; } return go(S.t.step >= 1 ? 'feedback' : 'today'); }
     if (a === 'phrases') { return; }
     if (a === 'chk') { S.save[i] = !S.save[i]; return render(true); }
     if (a === 'cal') { S.remind = b.getAttribute('data-c'); log('reminder_set', { calendar: S.remind }); return render(true); }
     if (a === 'playtxt') { say(LES.better.try); return; }
-    if (a === 'finish') { log('phrase_saved'); S.toastNext = true; return go('today'); }
+    if (a === 'finish') { log('phrase_saved'); if (LES.id === allLessons()[S.done].id) S.done++; S.toastNext = true; return go('today'); }
     if (a === 'again') { S.t = newTalk(); return go('brief'); }
     if (a === 'tab') { return go(b.getAttribute('data-t') === 'today' ? 'today' : b.getAttribute('data-t')); }
     if (a === 'settings') { return go('settings'); }
-    if (a === 'startnext' || a === 'opensit') { load(S.persona, a === 'startnext' ? nextLesson().id : b.getAttribute('data-l')); S.t = newTalk(); S.saved = {}; return go('brief'); }
-    if (a === 'persona') { S.persona = b.getAttribute('data-p'); load(S.persona); S.t = newTalk(); return go('settings'); }
+    if (a === 'startnext' || a === 'opensit') { load(S.persona, a === 'startnext' ? nextLesson().id : b.getAttribute('data-l')); S.briefHint = true; S.t = newTalk(); S.saved = {}; return go('brief'); }
+    if (a === 'persona') { S.persona = b.getAttribute('data-p'); S.done = 0; load(S.persona); S.t = newTalk(); return go('settings'); }
     if (a === 'play2') { say(SAVED[i][0].replace(/^You'll hear: /, ''), 0.85); return; }
     if (a === 'sayit') { S.said[i] = true; return render(true); }
     if (a === 'practise') { return go('phrases'); }
   });
   document.addEventListener('input', function (e) { if (e.target.getAttribute('data-in') === 'typed') S.t.typed = e.target.value; });
-  window.__app = { S: S, go: go, render: render, newTalk: newTalk, load: function (p, l) { S.persona = p; load(p, l); } };
+  window.__app = { expected: function () { return ME[S.t.step]; }, S: S, go: go, render: render, newTalk: newTalk, load: function (p, l) { S.persona = p; load(p, l); } };
   app = document.getElementById('app');
   var h = (location.hash || '').slice(1), m = h.match(/^(persona-[ab])(?:-(\w+))?$/);
-  if (m) { S.persona = m[1]; h = m[2] || 'brief'; }
-  load(S.persona); go(R[h] ? h : 'brief');
+  if (m) { S.persona = m[1]; h = m[2] || 'today'; }
+  load(S.persona); if (['feedback', 'phrases'].indexOf(h) >= 0 || (h === 'today' && /done/.test(location.hash))) S.done = 1; go(R[h] ? h : 'today');
 })();
 </script>
 </body>
