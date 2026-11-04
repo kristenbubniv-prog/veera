@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veera AI — English at Work · PoC</title>
+<meta name="description" content="Proof of concept: web quiz funnel and first app session for Veera, an AI speaking coach for people in non-office jobs in the UK.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#111322;--ink-2:#4A4F63;--line:#E6E8EF;--fill:#F5F6F9;--pri:#3F46A8}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:#fff;line-height:1.5}
+.halo{position:fixed;inset:-20% -10% auto;height:70vh;background:radial-gradient(closest-side,rgba(139,92,246,.16),rgba(59,130,246,.10) 55%,transparent);pointer-events:none;animation:breathe 8s ease-in-out infinite;z-index:-1}
+@keyframes breathe{50%{transform:scale(1.06);opacity:.8}}
+@media (prefers-reduced-motion:reduce){.halo{animation:none}}
+main{max-width:880px;margin:0 auto;padding:56px 20px 64px}
+.brand{display:flex;align-items:center;gap:10px;font-family:Manrope,sans-serif;font-weight:800;font-size:18px}
+.orb{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 200deg,#3B82F6,#8B5CF6,#22D3EE,#3B82F6);filter:saturate(.9);box-shadow:0 0 18px rgba(139,92,246,.35)}
+h1{font-family:Manrope,sans-serif;font-weight:800;font-size:clamp(30px,5vw,44px);line-height:1.1;letter-spacing:-.03em;margin:28px 0 12px;text-wrap:balance}
+.lead{font-size:18px;color:var(--ink-2);max-width:640px;margin:0 0 36px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{border:1px solid var(--line);border-radius:24px;padding:22px;background:#fff;display:flex;flex-direction:column;gap:12px}
+.card h2{font-family:Manrope,sans-serif;font-size:21px;margin:0}
+.card p{margin:0;color:var(--ink-2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border-radius:14px;background:linear-gradient(180deg,#4F56C0,#3F46A8);color:#fff;font-weight:600;text-decoration:none;align-self:flex-start}
+.btn:focus-visible,.chip:focus-visible{outline:3px solid #8B5CF6;outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;min-height:40px;padding:0 12px;border-radius:12px;background:var(--fill);color:var(--ink);text-decoration:none;font-size:15px;font-weight:500}
+.chip:hover{background:#ECEEF6}
+.lbl{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+section{margin-top:40px}
+section h2{font-family:Manrope,sans-serif;font-size:22px;margin:0 0 12px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:10px 8px;border-top:1px solid var(--line);vertical-align:top}
+th{color:var(--ink-2);font-weight:600}
+.note{font-size:14px;color:var(--ink-2)}
+footer{margin-top:48px;font-size:14px;color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="halo" aria-hidden="true"></div>
+<main>
+  <div class="brand"><span class="orb" aria-hidden="true"></span>Veera <span style="font-family:Inter;font-weight:500;font-size:15px;color:var(--ink-2)">AI · English at Work</span></div>
+  <h1>Proof of concept: quiz funnel and first app session</h1>
+  <p class="lead">Veera is an AI speaking coach for people who understand English but freeze when they have to speak at work — in warehouses, care homes, hotels and on building sites. Best viewed on a phone, or a narrow browser window.</p>
+
+  <div class="grid">
+    <div class="card">
+      <span class="lbl">1 · Web funnel</span>
+      <h2>Quiz → voice trial → plan → paywall</h2>
+      <p>18-step quiz with a voice trial at step 8. The plan, stats and first talk change with the answers.</p>
+      <a class="btn" href="funnel/">Open the funnel</a>
+      <div class="chips">
+        <a class="chip" href="funnel/#persona-a">Olena · warehouse</a>
+        <a class="chip" href="funnel/#persona-b">Ana · hotel</a>
+      </div>
+    </div>
+    <div class="card">
+      <span class="lbl">2 · App</span>
+      <h2>First session: briefing → talk → feedback</h2>
+      <p>A real work situation with Slower, Repeat and Translate, then phrases saved for tomorrow's shift.</p>
+      <a class="btn" href="app/#persona-a">Open the app</a>
+      <div class="chips">
+        <a class="chip" href="app/#persona-a">Olena · warehouse</a>
+        <a class="chip" href="app/#persona-b">Ana · hotel</a>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Same product, two people</h2>
+    <table>
+      <thead><tr><th></th><th>Olena · warehouse</th><th>Ana · hotel</th></tr></thead>
+      <tbody>
+        <tr><th>Hardest talks</th><td>Asking to repeat, phone calls</td><td>Talking to my manager</td></tr>
+        <tr><th>Voice trial</th><td>“Sorry, could you say that again more slowly?”</td><td>“Could I talk to you for a minute, please?”</td></tr>
+        <tr><th>Plan goal</th><td>Ask for more hours</td><td>Speak up at work</td></tr>
+        <tr><th>First talk</th><td>Team leader on line 3</td><td>Duty manager at the bar</td></tr>
+        <tr><th>Jump to</th><td><a href="funnel/#persona-a-voice">Voice trial</a> · <a href="funnel/#persona-a-compare">Now → 4 weeks</a> · <a href="funnel/#persona-a-plan">Plan</a></td><td><a href="funnel/#persona-b-voice">Voice trial</a> · <a href="funnel/#persona-b-compare">Now → 4 weeks</a> · <a href="funnel/#persona-b-plan">Plan</a></td></tr>
+      </tbody>
+    </table>
+    <p class="note">All texts come from one data file: <a href="veera-data.json">veera-data.json</a>.</p>
+  </section>
+
+  <section>
+    <h2>About this demo</h2>
+    <p class="note">The microphone is simulated; phrases are spoken with the browser's British English voice. Payment is a demo — no card is charged. Statistics show their source and year on screen. Analytics events are logged to the browser console.</p>
+  </section>
+
+  <footer>Khrystyna Bubniv · Growth Manager test case · November 2026</footer>
+</main>
+</body>
+</html>

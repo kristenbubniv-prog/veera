@@ -1,0 +1,2499 @@
+{
+ "version": "2026-11-04",
+ "locale": "en-GB",
+ "native_demo": "uk",
+ "vars": {
+  "lang": {
+   "step": 1,
+   "default": "en"
+  },
+  "goal": {
+   "step": 2,
+   "values": {
+    "Feel confident at my current job": "confident_job",
+    "Get a better job": "better_job",
+    "Handle daily life with ease": "daily_life",
+    "Pass a job interview": "interview"
+   },
+   "default": "confident_job"
+  },
+  "sector": {
+   "step": 3,
+   "values": {
+    "Factory or warehouse": "factory_warehouse",
+    "Care or healthcare": "care",
+    "Hotel, restaurant or retail": "hospitality_retail",
+    "Construction or trades": "construction",
+    "Office": "office",
+    "Other": "other",
+    "I'm not working right now": "not_working"
+   },
+   "default": "other"
+  },
+  "hardest": {
+   "step": 7,
+   "max": 2,
+   "values": {
+    "Asking to repeat or explain": "repeat",
+    "Talking to my manager": "manager",
+    "Meetings or briefings": "meetings",
+    "Phone calls": "phone",
+    "Small talk with coworkers": "smalltalk",
+    "Doctor, bank, school": "services"
+   },
+   "priority": [
+    "repeat",
+    "manager",
+    "meetings",
+    "phone",
+    "smalltalk",
+    "services"
+   ],
+   "default": [
+    "repeat"
+   ]
+  },
+  "cost": {
+   "step": 11,
+   "values": {
+    "A promotion or better job": "promotion",
+    "Money or extra shifts": "money",
+    "A mistake at work": "mistake",
+    "Feeling embarrassed": "embarrassed",
+    "Not really": "none"
+   },
+   "default": "none"
+  },
+  "trial_ok": {
+   "step": 8,
+   "values": [
+    true,
+    false,
+    "skipped"
+   ],
+   "default": "skipped"
+  }
+ },
+ "voice_trial": {
+  "repeat": {
+   "title": "Asking again feels hard? Let's try it.",
+   "phrase": "Sorry, could you say that again more slowly?",
+   "ua": "Вибачте, можете повторити повільніше?",
+   "tip_ua": "Ця фраза працює з будь-яким акцентом і будь-яким начальником.",
+   "starts_here": "C2",
+   "keywords": [
+    "sorry",
+    "say",
+    "again",
+    "slowly"
+   ],
+   "title_ua": "Важко перепитати? Спробуймо.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "manager": {
+   "title": "Talking to your manager? Start with one line.",
+   "phrase": "Could I talk to you for a minute, please?",
+   "ua": "Можна вас на хвилинку?",
+   "tip_ua": "«Please» в кінці робить прохання ввічливим, але не слабким.",
+   "starts_here": "C8",
+   "keywords": [
+    "talk",
+    "minute",
+    "please"
+   ],
+   "title_ua": "Розмова з менеджером? Почни з однієї фрази.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "phone": {
+   "title": "Phone calls are the hardest — no faces, no gestures.",
+   "phrase": "Hi, it's {name}. I'm calling to say I'll be late today.",
+   "ua": "Привіт, це {name}. Дзвоню сказати, що сьогодні запізнюся.",
+   "tip_ua": "Спершу ім'я, потім причина дзвінка — це все, що чекають у перші 5 секунд.",
+   "starts_here": "C4",
+   "keywords": [
+    "calling",
+    "late",
+    "today"
+   ],
+   "title_ua": "Дзвінки — найважче: ні облич, ні жестів.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "smalltalk": {
+   "title": "Small talk on a break? Here's an easy start.",
+   "phrase": "How was your weekend? Mine was quiet.",
+   "ua": "Як минули вихідні? У мене спокійно.",
+   "tip_ua": "Додай про себе одне речення — і розмова піде сама.",
+   "starts_here": "C9",
+   "keywords": [
+    "weekend",
+    "quiet"
+   ],
+   "title_ua": "Small talk на перерві? Ось легкий початок.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "meetings": {
+   "title": "Missed something in the briefing? Ask like this.",
+   "phrase": "Sorry, what do I need to do first?",
+   "ua": "Вибачте, що мені треба зробити спочатку?",
+   "tip_ua": "Питати про перший крок — це нормально, це звучить відповідально.",
+   "starts_here": "C1",
+   "keywords": [
+    "need",
+    "do",
+    "first"
+   ],
+   "title_ua": "Пропустила щось на брифінгу? Перепитай так.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "services": {
+   "title": "Doctor, bank or school? Start with this.",
+   "phrase": "Hello, I'd like to make an appointment, please.",
+   "ua": "Добрий день, я хочу записатися на прийом.",
+   "tip_ua": "«I'd like…» — універсальний початок для будь-якого запиту.",
+   "starts_here": "D1",
+   "keywords": [
+    "like",
+    "appointment"
+   ],
+   "title_ua": "Лікар, банк чи школа? Почни з цього.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "none": {
+   "title": "Let's try it. Say this out loud:",
+   "phrase": "Sorry, could you say that again more slowly?",
+   "ua": "Вибачте, можете повторити повільніше?",
+   "tip_ua": "Ця фраза працює з будь-яким акцентом і будь-яким начальником.",
+   "starts_here": "C2",
+   "keywords": [
+    "sorry",
+    "say",
+    "again",
+    "slowly"
+   ],
+   "title_ua": "Спробуймо. Скажи це вголос:",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "rules": {
+   "pass_ratio": 0.7,
+   "max_attempts": 2,
+   "name_not_checked": true
+  }
+ },
+ "interstitial": {
+  "money": {
+   "number": "25–40%",
+   "label": "Earn more",
+   "title": "People with limited English earn 25–40% less.",
+   "sub": "Asking for more hours is a skill you can train.",
+   "source": "Brookings, 2014",
+   "region": "US study",
+   "url": "https://www.brookings.edu/research/investing-in-english-skills-the-limited-english-proficient-workfo",
+   "reliability": "high",
+   "title_ua": "Люди з обмеженою англійською заробляють на 25–40% менше.",
+   "sub_ua": "Просити більше годин — це навичка, яку можна натренувати.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ]
+  },
+  "promotion": {
+   "number": "2×",
+   "label": "Get noticed",
+   "title": "Skilled people without confident English are twice as likely to work in jobs below their skills.",
+   "sub": "Speaking up is how people get noticed. You can train it.",
+   "source": "Brookings, 2014",
+   "region": "US study",
+   "url": "https://www.brookings.edu/wp-content/uploads/2014/09/metro_20140924_investing_in_english_skils_report.pdf",
+   "reliability": "high",
+   "title_ua": "Кваліфіковані люди без впевненої англійської вдвічі частіше працюють нижче своєї кваліфікації.",
+   "sub_ua": "Говорити вголос — так тебе помічають. Це можна натренувати.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ]
+  },
+  "mistake": {
+   "number": "1 in 4",
+   "label": "Stay safe",
+   "title": "Employers say 1 in 4 workplace accidents could have been avoided without a language barrier.",
+   "sub": "Knowing how to ask and report keeps you safe.",
+   "source": "IOSH pilot study, 2008",
+   "region": "UK",
+   "url": "https://www.personneltoday.com/?p=31111",
+   "reliability": "medium",
+   "todo": "TODO: потрібен рісерч — оригінальний звіт IOSH або HSE RR502",
+   "title_ua": "Роботодавці кажуть: 1 з 4 нещасних випадків можна було б уникнути без мовного бар'єру.",
+   "sub_ua": "Уміння спитати й повідомити береже тебе.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ]
+  },
+  "embarrassed": {
+   "number": "1 in 3",
+   "label": "Speak up",
+   "title": "1 in 3 people have nodded along without understanding. You're not alone.",
+   "sub": "Asking again is normal. We'll practise exactly how.",
+   "source": "Promova survey, June 2026",
+   "region": "US study",
+   "url": "https://www.have-clothes-will-travel.com/nearly-half-of-americans-have-talked-louder-to-someone-who-doesnt-speak-english-a-new-survey-explains-why/",
+   "reliability": "low",
+   "decision": "Запасний варіант: KFF/LA Times 2023 — 53%, «More than half of people in your shoes have felt this.»",
+   "title_ua": "1 з 3 людей кивали, не розуміючи. Ти не одна.",
+   "sub_ua": "Перепитати — нормально. Ми потренуємо, як саме.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ]
+  },
+  "none": {
+   "number": null,
+   "label": null,
+   "title": "Good — let's keep it that way.",
+   "sub": "5 minutes on your break, before the talk that matters.",
+   "source": null,
+   "how_lesson_works": [
+    "Briefing — who you'll talk to and why",
+    "Talk — a real conversation with Veera",
+    "Phrases — save the lines you'll use tomorrow"
+   ],
+   "title_ua": "Добре — хай так і буде.",
+   "sub_ua": "5 хвилин на перерві — перед розмовою, яка важлива.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ],
+   "how_ua": [
+    "Брифінг — з ким говориш і навіщо",
+    "Розмова — справжній діалог з Veera",
+    "Фрази — збережи те, що скажеш завтра"
+   ]
+  }
+ },
+ "now_in4": {
+  "hardest": {
+   "repeat": [
+    "You nod and pretend you understood",
+    "You ask again — calmly, in English"
+   ],
+   "manager": [
+    "You avoid asking your manager for things",
+    "Talking to your manager — you handle it yourself"
+   ],
+   "phone": [
+    "You text, or ask someone to call for you",
+    "You make the call yourself"
+   ],
+   "smalltalk": [
+    "You stay quiet on breaks",
+    "You chat on breaks without planning every word"
+   ],
+   "meetings": [
+    "You miss part of the morning briefing",
+    "You know what to do after the briefing"
+   ],
+   "services": [
+    "You bring someone to translate at the doctor's",
+    "You book and explain things yourself"
+   ]
+  },
+  "cost": {
+   "promotion": [
+    "Someone else gets the better role",
+    "You ask for more responsibility"
+   ],
+   "money": [
+    "You don't ask for extra shifts",
+    "You ask for more hours with the right words"
+   ],
+   "mistake": [
+    "You guess instead of asking",
+    "You report a problem clearly"
+   ],
+   "embarrassed": [
+    "You stay silent a few times a week",
+    "You speak up, even when it's hard"
+   ]
+  },
+  "rule": "Now = hardest_1 + cost (cost=none → hardest_2). In 4 weeks = hardest_1 + cost goal.",
+  "chart": {
+   "title": "Work talks you've practised",
+   "format": "{done} of {n}"
+  }
+ },
+ "plan_rules": {
+  "tracks": {
+   "interview": {
+    "when": "sector=not_working OR goal=interview",
+    "lessons": [
+     "I1",
+     "I2",
+     "I3",
+     "C1",
+     "C2",
+     "C9"
+    ]
+   },
+   "daily": {
+    "when": "goal=daily_life",
+    "lessons": [
+     "D1",
+     "D2",
+     "D3",
+     "C2",
+     "C4",
+     "C9"
+    ]
+   },
+   "work": {
+    "when": "otherwise",
+    "lessons": [
+     "C1",
+     "C2",
+     "C3",
+     "C4",
+     "C5",
+     "C6",
+     "C7",
+     "C8",
+     "C9",
+     "C10",
+     "C11",
+     "C12"
+    ]
+   }
+  },
+  "week1": {
+   "title": "Understand and ask again",
+   "lessons": [
+    "C1",
+    "C2",
+    "C3"
+   ]
+  },
+  "starts_here_by_hardest": {
+   "repeat": "C2",
+   "manager": "C8",
+   "phone": "C4",
+   "smalltalk": "C9",
+   "meetings": "C1",
+   "services": "D1"
+  },
+  "blocks": {
+   "wrong": {
+    "title": "When something goes wrong",
+    "lessons": [
+     "C4",
+     "C5",
+     "C12"
+    ],
+    "chosen_by": [
+     "phone",
+     "meetings"
+    ]
+   },
+   "ask": {
+    "title": "Ask for what you need",
+    "lessons": [
+     "C6",
+     "C7"
+    ],
+    "chosen_by": [
+     "manager"
+    ],
+    "sector_lesson": true
+   },
+   "belong": {
+    "title": "Speak up and belong",
+    "lessons": [
+     "C9",
+     "C11",
+     "C10"
+    ],
+    "chosen_by": [
+     "smalltalk"
+    ]
+   }
+  },
+  "block_default_order": [
+   "wrong",
+   "ask",
+   "belong"
+  ],
+  "meetings_rule": "meetings → C5 first in its block",
+  "goal_by_cost": {
+   "promotion": {
+    "chip": "Goal: Ask for more responsibility",
+    "lesson": "C8",
+    "variant": "promotion"
+   },
+   "money": {
+    "chip": "Goal: Ask for more hours",
+    "lesson": "C8"
+   },
+   "mistake": {
+    "chip": "Goal: Report a problem clearly",
+    "lesson": "C12",
+    "also": "C5"
+   },
+   "embarrassed": {
+    "chip": "Goal: Speak up at work",
+    "lesson": "C10"
+   },
+   "none+better_job": {
+    "chip": "Goal: Pass a job interview",
+    "lesson": "I3"
+   },
+   "none+interview": {
+    "chip": "Goal: Pass a job interview",
+    "lesson": "I3"
+   },
+   "none+confident_job": {
+    "chip": "Goal: Talk to your manager",
+    "lesson": "C8"
+   },
+   "none+daily_life": {
+    "chip": "Goal: Handle daily life",
+    "lesson": "D1",
+    "todo": "TODO: у документі немає рядка для none + daily_life"
+   }
+  },
+  "sector_lesson_week3": {
+   "factory_warehouse": "F1",
+   "care": "K1",
+   "hospitality_retail": "H1",
+   "construction": "B1"
+  }
+ },
+ "substitutions": {
+  "factory_warehouse": {
+   "boss": "team leader",
+   "area_1": "line 3",
+   "area_2": "packing",
+   "task_1": "picking the Tesco order",
+   "task_hard": "the handheld scanner",
+   "problem_1": "The scanner keeps freezing",
+   "hazard_1": "A pallet is leaking oil on the floor",
+   "item": "the labels",
+   "slang_1": "crack on",
+   "next_role": "team leader",
+   "payroll": "the agency",
+   "colleague": "Dave",
+   "task_2": "the Asda order",
+   "task_1_plain": "go to line 3",
+   "quick_fix": "scan the barcode twice",
+   "thing": "the scanner",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to run the line",
+   "site": "Goods in",
+   "shift": "the morning shift",
+   "sector_job": "a warehouse"
+  },
+  "care": {
+   "boss": "senior carer",
+   "area_1": "Room 4",
+   "area_2": "the dining room",
+   "task_1": "morning personal care for Mrs Brown",
+   "task_hard": "the hoist",
+   "problem_1": "The call bell in Room 4 isn't working",
+   "hazard_1": "A resident has fallen in the bathroom",
+   "item": "the care notes",
+   "slang_1": "handover",
+   "next_role": "senior carer",
+   "payroll": "the office",
+   "colleague": "Grace",
+   "task_2": "the medication round",
+   "task_1_plain": "help Mrs Brown first",
+   "quick_fix": "lock the wheels first",
+   "thing": "the call bell",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to do the handover",
+   "site": "Oak House",
+   "shift": "the early shift",
+   "sector_job": "care"
+  },
+  "hospitality_retail": {
+   "boss": "duty manager",
+   "area_1": "the bar",
+   "area_2": "the stockroom",
+   "task_1": "setting up tables for lunch",
+   "task_hard": "the till refund",
+   "problem_1": "A guest says their room wasn't cleaned",
+   "hazard_1": "There's broken glass behind the bar",
+   "item": "the table settings",
+   "slang_1": "86'd",
+   "next_role": "supervisor",
+   "payroll": "the GM",
+   "colleague": "Ana",
+   "task_2": "the lunch covers",
+   "task_1_plain": "set up the tables",
+   "quick_fix": "press refund, then manager code",
+   "thing": "the till",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to close the till",
+   "site": "the front desk",
+   "shift": "the lunch shift",
+   "sector_job": "a hotel"
+  },
+  "construction": {
+   "boss": "site manager",
+   "area_1": "level 2",
+   "area_2": "the loading area",
+   "task_1": "putting up plasterboard",
+   "task_hard": "the mixer",
+   "problem_1": "The delivery is missing half the blocks",
+   "hazard_1": "A scaffold board is loose",
+   "item": "the measurements",
+   "slang_1": "snagging",
+   "next_role": "chargehand",
+   "payroll": "the office",
+   "colleague": "Mick",
+   "task_2": "the second fix",
+   "task_1_plain": "go to level 2",
+   "quick_fix": "add the water slowly",
+   "thing": "the mixer",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to read the drawings",
+   "site": "the site office",
+   "shift": "the day shift",
+   "sector_job": "construction"
+  },
+  "other": {
+   "boss": "manager",
+   "area_1": "the front desk",
+   "area_2": "the stockroom",
+   "task_1": "checking deliveries",
+   "task_hard": "the printer",
+   "problem_1": "The system is down",
+   "hazard_1": "A cable is across the walkway",
+   "item": "the report",
+   "slang_1": "ASAP",
+   "next_role": "team lead",
+   "payroll": "HR",
+   "colleague": "Sam",
+   "task_2": "the emails",
+   "task_1_plain": "check the deliveries",
+   "quick_fix": "restart it",
+   "thing": "the system",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to plan the week",
+   "site": "the office",
+   "shift": "the morning shift",
+   "sector_job": "an office"
+  },
+  "office": {
+   "boss": "manager",
+   "area_1": "the front desk",
+   "area_2": "the stockroom",
+   "task_1": "checking deliveries",
+   "task_hard": "the printer",
+   "problem_1": "The system is down",
+   "hazard_1": "A cable is across the walkway",
+   "item": "the report",
+   "slang_1": "ASAP",
+   "next_role": "team lead",
+   "payroll": "HR",
+   "colleague": "Sam",
+   "task_2": "the emails",
+   "task_1_plain": "check the deliveries",
+   "quick_fix": "restart it",
+   "thing": "the system",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to plan the week",
+   "site": "the office",
+   "shift": "the morning shift",
+   "sector_job": "an office"
+  },
+  "not_working": {
+   "boss": "manager",
+   "area_1": "the front desk",
+   "area_2": "the stockroom",
+   "task_1": "checking deliveries",
+   "task_hard": "the printer",
+   "problem_1": "The system is down",
+   "hazard_1": "A cable is across the walkway",
+   "item": "the report",
+   "slang_1": "ASAP",
+   "next_role": "team lead",
+   "payroll": "HR",
+   "colleague": "Sam",
+   "task_2": "the emails",
+   "task_1_plain": "check the deliveries",
+   "quick_fix": "restart it",
+   "thing": "the system",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to plan the week",
+   "site": "the office",
+   "shift": "the morning shift",
+   "sector_job": "an office"
+  }
+ },
+ "substitutions_designer_keys": [
+  "colleague",
+  "task_2",
+  "task_1_plain",
+  "quick_fix",
+  "thing",
+  "slang_hours",
+  "next_role_task",
+  "site",
+  "shift",
+  "sector_job"
+ ],
+ "substitutions_note": "Ключі colleague, task_2, task_1_plain, quick_fix, thing, slang_hours, next_role_task, site, shift, sector_job — дописано дизайнером (їх немає в таблиці 6.1).",
+ "slang": {
+  "factory_warehouse": {
+   "crack on": "продовжуй",
+   "pick rate": "норма відбору",
+   "goods in": "прийомка",
+   "on the line": "на лінії",
+   "give us a hand": "допоможи"
+  },
+  "care": {
+   "handover": "передача зміни",
+   "obs": "огляд показників",
+   "PRN": "за потреби",
+   "on the floor": "у відділенні",
+   "double up": "удвох"
+  },
+  "hospitality_retail": {
+   "86'd": "закінчилось",
+   "covers": "гості за столами",
+   "behind!": "обережно, позаду",
+   "on the floor": "у залі",
+   "cashing up": "закриття каси"
+  },
+  "construction": {
+   "snagging": "дрібні доробки",
+   "chippy": "тесляр",
+   "toolbox talk": "інструктаж",
+   "gaffer": "бос",
+   "RAMS": "оцінка ризиків"
+  },
+  "common": {
+   "sharpish": "швидко",
+   "innit": "так же?",
+   "at the mo": "зараз",
+   "leave it with me": "я цим займуся",
+   "sort cover": "знайти заміну",
+   "pay run": "виплата зарплати",
+   "all over the shop": "безлад",
+   "short-staffed": "бракує людей",
+   "get it logged": "записати",
+   "cone it off": "огородити",
+   "absolute shambles": "повний безлад",
+   "we got battered": "нас розгромили",
+   "footy": "футбол",
+   "nip up": "швиденько піднятися",
+   "ticketed": "має допуск",
+   "earlies and lates": "ранні й пізні зміни",
+   "all being well": "якщо все буде добре",
+   "poorly": "хворенька",
+   "callback": "передзвонять",
+   "duty doctor": "черговий лікар",
+   "mains": "основні страви"
+  }
+ },
+ "lessons": {
+  "C1": {
+   "id": "C1",
+   "title": "Supervisor's instructions",
+   "track": "work",
+   "briefing": {
+    "who": "{boss} gives you today's tasks at the start of the shift.",
+    "goal": "Understand the first task and check one detail."
+   },
+   "phrases": [
+    [
+     "So first I need to go to {area_1}, right?",
+     "Тобто спочатку мені треба на {area_1}, так?"
+    ],
+    [
+     "Where do I need to go?",
+     "Куди мені йти?"
+    ],
+    [
+     "Sorry, could you say that again more slowly?",
+     "Повторіть повільніше, будь ласка"
+    ],
+    [
+     "Who do I ask if I have a question?",
+     "До кого звернутися з питанням?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Morning! You're on {area_1} today.",
+     "ua": "Доброго ранку! Сьогодні ти на {area_1}.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Crack on with {task_1}, then give us a hand on {area_2} after break, yeah?",
+     "ua": "Починай з {task_1}, а після перерви допоможи на {area_2}, добре?",
+     "fast": true,
+     "slang": [
+      "crack on",
+      "give us a hand"
+     ]
+    },
+    {
+     "en": "Any questions?",
+     "ua": "Є питання?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Spot on. Shout if you need me.",
+     "ua": "Саме так. Клич, якщо що.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Morning! So I'm on {area_1}?",
+    "Sorry, could you say that again more slowly?",
+    "So first I need to go to {area_1}, right?"
+   ],
+   "feedback": {
+    "worked": [
+     "«So first I need to go to {area_1}, right?»",
+     "You checked the task — that's what good workers do."
+    ],
+    "better": {
+     "said": "First I go to {area_1}.",
+     "try": "So first I need to go to {area_1}, right?",
+     "why_ua": "«…, right?» в кінці перетворює фразу на перевірку — так звучить впевнено."
+    }
+   },
+   "designer": [
+    "phrases[0] filled with {area_1}",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C2": {
+   "id": "C2",
+   "title": "Ask to repeat or slow down",
+   "track": "work",
+   "briefing": {
+    "who": "{boss} speaks fast and you miss a word.",
+    "goal": "Ask again without apologising too much."
+   },
+   "phrases": [
+    [
+     "Sorry, could you say that again more slowly?",
+     "Повторіть повільніше, будь ласка"
+    ],
+    [
+     "What does ‘{slang_1}’ mean?",
+     "Що означає ‘{slang_1}’?"
+    ],
+    [
+     "So you mean I start on {area_1}?",
+     "Тобто ви маєте на увазі, що я починаю на {area_1}?"
+    ],
+    [
+     "Could you show me?",
+     "Можете показати?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Right, {slang_1} — {area_1}, sharpish, then {task_2}.",
+     "ua": "Так, {slang_1} — {area_1}, швиденько, потім {task_2}.",
+     "fast": true,
+     "slang": [
+      "{slang_1}",
+      "sharpish"
+     ]
+    },
+    {
+     "en": "Sure. First, {task_1_plain}. Then {task_2}.",
+     "ua": "Звісно. Спочатку — {task_1_plain}. Потім — {task_2}.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Got it?",
+     "ua": "Зрозуміло?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Spot on. Off you go.",
+     "ua": "Саме так. Вперед.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Sorry, could you say that again more slowly?",
+    "What does ‘{slang_1}’ mean?",
+    "So you mean I start on {area_1}?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, could you say that again more slowly?»",
+     "You asked instead of guessing."
+    ],
+    "better": {
+     "said": "Sorry, sorry, I don't understand.",
+     "try": "Sorry, could you say that again?",
+     "why_ua": "Одного «sorry» досить — так звучить спокійно, а не винувато."
+    }
+   },
+   "designer": [
+    "AI line 1: «on» → «—», щоб «crack on on» не дублювалось",
+    "AI line 4",
+    "phrases[2] filled",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C3": {
+   "id": "C3",
+   "title": "Ask a colleague for help",
+   "track": "work",
+   "briefing": {
+    "who": "You're stuck with {task_hard}. {colleague} is nearby.",
+    "goal": "Ask for help and say thank you."
+   },
+   "phrases": [
+    [
+     "Hey, have you got a minute?",
+     "Маєш хвилинку?"
+    ],
+    [
+     "How do I use {task_hard}?",
+     "Як мені користуватися {task_hard}?"
+    ],
+    [
+     "Sorry, could you show me again?",
+     "Покажеш ще раз?"
+    ],
+    [
+     "Cheers, that really helps.",
+     "Дякую, це дуже допомагає."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Yeah, what's up?",
+     "ua": "Так, що таке?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Oh, that? Easy — you just {quick_fix}, innit.",
+     "ua": "А, це? Легко — просто {quick_fix}, так же?",
+     "fast": true,
+     "slang": [
+      "innit"
+     ]
+    },
+    {
+     "en": "Try it now. Better?",
+     "ua": "Спробуй тепер. Краще?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "No worries, mate.",
+     "ua": "Нема за що.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Hey, have you got a minute? How do I use {task_hard}?",
+    "Sorry, could you show me again?",
+    "Cheers, that really helps."
+   ],
+   "feedback": {
+    "worked": [
+     "«Hey, have you got a minute?»",
+     "You started politely, so people want to help."
+    ],
+    "better": {
+     "said": "Help me.",
+     "try": "Could you help me with this?",
+     "why_ua": "«Could you…» звучить як прохання, а не як наказ."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C4": {
+   "id": "C4",
+   "title": "Call in sick or late",
+   "track": "work",
+   "briefing": {
+    "who": "You're ill or your bus is late. You call {boss} before the shift.",
+    "goal": "Say who you are, what happened, and when you'll come."
+   },
+   "phrases": [
+    [
+     "Hi, it's {name} from {shift}.",
+     "Привіт, це {name} з {shift}"
+    ],
+    [
+     "I'm sorry, I'm not well today and can't come in.",
+     "Вибачте, я хворію і не прийду"
+    ],
+    [
+     "Sorry, the line is bad — could you repeat that?",
+     "Погано чути, повторіть?"
+    ],
+    [
+     "I'll be about 20 minutes late.",
+     "Я запізнюся хвилин на 20."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Hello, {site}.",
+     "ua": "Алло, {site}.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Right, are you off sick, then? Have you filled in the absence thing on the app?",
+     "ua": "Так, ти на лікарняному? Ти заповнила форму відсутності в застосунку?",
+     "fast": true,
+     "slang": [
+      "off sick"
+     ]
+    },
+    {
+     "en": "When d'you reckon you'll be back?",
+     "ua": "Як думаєш, коли повернешся?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "OK, get well soon.",
+     "ua": "Добре, одужуй.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Hi, it's {name} from {shift}. I'm sorry, I'm not well today and can't come in.",
+    "Sorry, the line is bad — could you repeat that?",
+    "I think I'll be back on Monday."
+   ],
+   "feedback": {
+    "worked": [
+     "«Hi, it's {name} from {shift}.»",
+     "You said who you are in the first second — your manager doesn't have to guess."
+    ],
+    "better": {
+     "said": "I am sick, no work.",
+     "try": "I'm not well today, so I can't come in.",
+     "why_ua": "«Can't come in» — стандартна фраза, коли не виходиш на зміну."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C5": {
+   "id": "C5",
+   "title": "Report a problem",
+   "track": "work",
+   "briefing": {
+    "who": "{problem_1}.",
+    "goal": "Tell {boss} what's wrong and where."
+   },
+   "phrases": [
+    [
+     "There's a problem with {thing}.",
+     "Є проблема з {thing}."
+    ],
+    [
+     "It's not working.",
+     "Воно не працює."
+    ],
+    [
+     "Sorry, what should I do now?",
+     "Що мені зараз робити?"
+    ],
+    [
+     "It happened about ten minutes ago.",
+     "Це сталося хвилин 10 тому."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "What's up?",
+     "ua": "Що сталося?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Where exactly?",
+     "ua": "Де саме?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Right, leave it, I'll get maintenance to have a look. Crack on with {task_2} for now.",
+     "ua": "Добре, залиш, я покличу техніків. Поки займайся {task_2}.",
+     "fast": true,
+     "slang": [
+      "crack on"
+     ]
+    }
+   ],
+   "me": [
+    "There's a problem with {thing}. It's not working.",
+    "On {area_1}. It happened about ten minutes ago.",
+    "OK. Sorry, what should I do now?"
+   ],
+   "feedback": {
+    "worked": [
+     "«There's a problem with {thing}.»",
+     "You said what and where — that's all your manager needs."
+    ],
+    "better": {
+     "said": "Machine bad.",
+     "try": "There's a problem with the machine on {area_1}.",
+     "why_ua": "Що + де в одному реченні — і тобі відразу допоможуть."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C6": {
+   "id": "C6",
+   "title": "Swap a shift or ask for a day off",
+   "track": "work",
+   "briefing": {
+    "who": "You need Friday off.",
+    "goal": "Ask {boss} and offer a swap."
+   },
+   "phrases": [
+    [
+     "Could I have Friday off, please?",
+     "Можна мені вихідний у п'ятницю?"
+    ],
+    [
+     "I can swap with {colleague} — they're OK with it.",
+     "Я можу помінятися з {colleague}, вони не проти"
+    ],
+    [
+     "Sorry, do I need to put it on the rota?",
+     "Мені треба вписати це в графік?"
+    ],
+    [
+     "I can work Saturday instead.",
+     "Зате можу вийти в суботу."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Friday? Bit short notice.",
+     "ua": "П'ятниця? Трохи пізно попереджаєш.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "You'll need to stick a holiday request in, and sort cover.",
+     "ua": "Тобі треба подати заяву на відпустку і знайти заміну.",
+     "fast": true,
+     "slang": [
+      "sort cover"
+     ]
+    },
+    {
+     "en": "Alright, if {colleague}'s happy, I'm happy.",
+     "ua": "Гаразд, якщо {colleague} не проти, то і я не проти.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Could I have Friday off, please?",
+    "I can swap with {colleague} — they're OK with it.",
+    "Sorry, do I need to put it on the rota?"
+   ],
+   "feedback": {
+    "worked": [
+     "«I can swap with {colleague}.»",
+     "You offered a solution — managers say yes more often."
+    ],
+    "better": {
+     "said": "I want Friday free.",
+     "try": "Could I have Friday off, please?",
+     "why_ua": "«Could I have…, please?» — ввічливе прохання, а не вимога."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C7": {
+   "id": "C7",
+   "title": "Pay, overtime, payslip mistake",
+   "track": "work",
+   "briefing": {
+    "who": "Your payslip is missing 6 hours of overtime.",
+    "goal": "Explain the problem and agree what happens next."
+   },
+   "phrases": [
+    [
+     "I think there's a mistake on my payslip.",
+     "Здається, у моєму розрахунковому помилка"
+    ],
+    [
+     "My overtime from last week isn't there.",
+     "Немає моїх понаднормових за минулий тиждень"
+    ],
+    [
+     "Sorry, who do I need to talk to?",
+     "З ким мені треба поговорити?"
+    ],
+    [
+     "When will it be fixed?",
+     "Коли це виправлять?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "What seems to be the problem?",
+     "ua": "У чому проблема?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Which week was it?",
+     "ua": "Який це був тиждень?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Right, I'll flag it with {payroll} — should be sorted in the next pay run.",
+     "ua": "Добре, я передам це в {payroll} — має виправитися в наступну виплату.",
+     "fast": true,
+     "slang": [
+      "pay run"
+     ]
+    }
+   ],
+   "me": [
+    "I think there's a mistake on my payslip. My overtime isn't there.",
+    "It was last week — six hours.",
+    "Thank you. When will it be fixed?"
+   ],
+   "feedback": {
+    "worked": [
+     "«I think there's a mistake on my payslip.»",
+     "You named the problem calmly — that's how it gets fixed fast."
+    ],
+    "better": {
+     "said": "Money is wrong.",
+     "try": "I think there's a mistake on my payslip.",
+     "why_ua": "«Payslip» — так у UK називають розрахунковий лист."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C8": {
+   "id": "C8",
+   "title": "Ask for more hours",
+   "track": "work",
+   "briefing": {
+    "who": "You want more shifts or a better shift.",
+    "goal": "Ask clearly and give one reason."
+   },
+   "phrases": [
+    [
+     "Could I talk to you for a minute, please?",
+     "Можна вас на хвилинку?"
+    ],
+    [
+     "I'd like to pick up more hours, if there are any.",
+     "Я хотіла б більше годин, якщо є"
+    ],
+    [
+     "Sorry, what do you mean by ‘{slang_hours}’?",
+     "Що ви маєте на увазі?"
+    ],
+    [
+     "I'm reliable and I know {area_1} well.",
+     "На мене можна покластися, і я добре знаю {area_1}"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Sure, what's on your mind?",
+     "ua": "Звісно, що таке?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Things are a bit tight at the mo, but there might be some overtime going on nights.",
+     "ua": "Зараз трохи туго, але можуть бути понаднормові на нічних.",
+     "fast": true,
+     "slang": [
+      "at the mo"
+     ]
+    },
+    {
+     "en": "Would you be up for that?",
+     "ua": "Тобі це підходить?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Leave it with me.",
+     "ua": "Я цим займуся.",
+     "fast": false,
+     "slang": [
+      "leave it with me"
+     ]
+    }
+   ],
+   "me": [
+    "Could I talk to you for a minute, please? I'd like to pick up more hours.",
+    "I'm reliable and I know {area_1} well.",
+    "Yes, nights are fine for me."
+   ],
+   "feedback": {
+    "worked": [
+     "«I'm reliable and I know {area_1} well.»",
+     "You gave a reason — that makes it easy to say yes."
+    ],
+    "better": {
+     "said": "I want more money.",
+     "try": "I'd like to pick up more hours, if there are any.",
+     "why_ua": "Проси години, а не гроші, — так звучить як пропозиція допомогти."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ],
+   "variants": {
+    "promotion": {
+     "title": "Ask for more responsibility",
+     "goal": "Ask to learn more and train for {next_role}.",
+     "phrase": [
+      "I'd like to learn {next_role_task}. Is there a chance to train for {next_role}?",
+      "Я хотіла б навчитися {next_role_task}. Чи є можливість навчитися на {next_role}?"
+     ]
+    }
+   }
+  },
+  "C9": {
+   "id": "C9",
+   "title": "Small talk on a break",
+   "track": "work",
+   "briefing": {
+    "who": "It's break time. {colleague} sits next to you.",
+    "goal": "Keep the chat going for 3 turns."
+   },
+   "phrases": [
+    [
+     "How was your weekend?",
+     "Як вихідні?"
+    ],
+    [
+     "Mine was quiet — I just rested.",
+     "У мене спокійно, відпочивала"
+    ],
+    [
+     "Sorry, I didn't catch that.",
+     "Вибач, не розчула"
+    ],
+    [
+     "Really? What happened?",
+     "Справді? І що сталося?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Alright? Busy one today.",
+     "ua": "Привіт. Сьогодні завал.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Went to watch the footy Saturday, absolute shambles, we got battered.",
+     "ua": "У суботу ходив на футбол — повний провал, нас розгромили.",
+     "fast": true,
+     "slang": [
+      "footy",
+      "absolute shambles",
+      "we got battered"
+     ]
+    },
+    {
+     "en": "You do anything nice?",
+     "ua": "А ти робила щось цікаве?",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Yeah, busy. How was your weekend?",
+    "Sorry, I didn't catch that. Really? What happened?",
+    "Mine was quiet — I just rested."
+   ],
+   "feedback": {
+    "worked": [
+     "«Really? What happened?»",
+     "You asked a question back — that's what keeps a chat going."
+    ],
+    "better": {
+     "said": "Weekend good.",
+     "try": "Mine was quiet — I just rested.",
+     "why_ua": "Коротке речення про себе — і розмова йде далі."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C10": {
+   "id": "C10",
+   "title": "Say no politely",
+   "track": "work",
+   "briefing": {
+    "who": "{boss} asks you to stay 2 extra hours today.",
+    "goal": "Say no calmly and offer another day."
+   },
+   "phrases": [
+    [
+     "Sorry, I can't stay late today.",
+     "Вибачте, сьогодні не можу залишитися"
+    ],
+    [
+     "I can do another day.",
+     "Можу в інший день"
+    ],
+    [
+     "Sorry, can I explain what happened?",
+     "Можна я поясню, що сталося?"
+    ],
+    [
+     "That wasn't me — I was on {area_2} then.",
+     "Це була не я, я тоді була на {area_2}"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Can you stay on till eight tonight?",
+     "ua": "Можеш залишитися до восьмої сьогодні?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Come on, we're short-staffed, it's only a couple of hours.",
+     "ua": "Ну давай, людей бракує, це лише пару годин.",
+     "fast": true,
+     "slang": [
+      "short-staffed"
+     ]
+    },
+    {
+     "en": "Fair enough. What about Thursday?",
+     "ua": "Гаразд. А в четвер?",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Sorry, I can't stay late today.",
+    "I'm sorry, I really can't today. I can do another day.",
+    "Yes, Thursday is fine."
+   ],
+   "feedback": {
+    "worked": [
+     "«I can do another day.»",
+     "You said no and offered something — that's fair and clear."
+    ],
+    "better": {
+     "said": "Sorry, sorry, maybe no…",
+     "try": "Sorry, I can't today. I can do Thursday.",
+     "why_ua": "Одне «sorry» і чітке «can't» — так тебе почують."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C11": {
+   "id": "C11",
+   "title": "Take feedback",
+   "track": "work",
+   "briefing": {
+    "who": "{boss} says you made a mistake with {task_1}.",
+    "goal": "Understand what was wrong and say what you'll do."
+   },
+   "phrases": [
+    [
+     "OK, I understand.",
+     "Зрозуміла"
+    ],
+    [
+     "So next time I should check {item} first?",
+     "Тобто наступного разу мені треба спершу перевірити {item}?"
+    ],
+    [
+     "Sorry, could you show me the right way?",
+     "Покажете, як правильно?"
+    ],
+    [
+     "Thanks for telling me.",
+     "Дякую, що сказали."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Got a sec? About yesterday.",
+     "ua": "Є хвилинка? Про вчорашнє.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "{item} on {area_1} were all over the shop — that can't happen again.",
+     "ua": "{item} на {area_1} були в повному безладі — так не можна.",
+     "fast": true,
+     "slang": [
+      "all over the shop"
+     ]
+    },
+    {
+     "en": "So what will you do differently?",
+     "ua": "То що ти робитимеш інакше?",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Yes, of course.",
+    "OK, I understand. Sorry, could you show me the right way?",
+    "So next time I should check {item} first. Thanks for telling me."
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, could you show me the right way?»",
+     "You stayed calm and asked how to fix it."
+    ],
+    "better": {
+     "said": "Not my fault.",
+     "try": "OK, I understand. Could you show me the right way?",
+     "why_ua": "Спершу «зрозуміла», потім питання — так розмова не стає сваркою."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C12": {
+   "id": "C12",
+   "title": "Report an injury or hazard",
+   "track": "work",
+   "briefing": {
+    "who": "{hazard_1}.",
+    "goal": "Warn {boss} quickly and clearly."
+   },
+   "phrases": [
+    [
+     "Excuse me, there's something dangerous here.",
+     "Вибачте, тут небезпечно"
+    ],
+    [
+     "I've hurt my hand.",
+     "Я травмувала руку"
+    ],
+    [
+     "Sorry, where is the first aid kit?",
+     "Де аптечка?"
+    ],
+    [
+     "Do I need to fill in the accident book?",
+     "Мені треба записати це в журнал нещасних випадків?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "What's happened?",
+     "ua": "Що сталося?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Are you OK? Where is it?",
+     "ua": "Ти в порядку? Де це?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Right, don't touch it. I'll cone it off and get it logged.",
+     "ua": "Так, не чіпай. Я огороджу і запишу.",
+     "fast": true,
+     "slang": [
+      "cone it off",
+      "get it logged"
+     ]
+    }
+   ],
+   "me": [
+    "Excuse me, there's something dangerous here. {hazard_1}.",
+    "I'm OK. It's on {area_1}.",
+    "Do I need to fill in the accident book?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Excuse me, there's something dangerous here.»",
+     "You said what and where first — that's exactly right in an emergency."
+    ],
+    "better": {
+     "said": "Problem! Problem!",
+     "try": "Excuse me, there's something dangerous on {area_1}.",
+     "why_ua": "Що + де — і тобі допоможуть за секунди."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "F1": {
+   "id": "F1",
+   "title": "Behind on your pick rate",
+   "track": "sector",
+   "briefing": {
+    "who": "Your team leader says you're slow today.",
+    "goal": "Explain why and ask for help."
+   },
+   "phrases": [
+    [
+     "Sorry, the scanner kept freezing.",
+     "Вибачте, сканер постійно зависав."
+    ],
+    [
+     "What rate do I need to hit?",
+     "Яку норму мені треба виконати?"
+    ],
+    [
+     "Sorry, could you say the number again?",
+     "Вибачте, можете повторити число?"
+    ],
+    [
+     "Could someone show me a faster way?",
+     "Чи може хтось показати швидший спосіб?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "You're on 80 an hour, you need to be hitting 110, yeah?",
+     "ua": "У тебе 80 на годину, а треба 110, ясно?",
+     "fast": true,
+     "slang": [
+      "pick rate"
+     ]
+    },
+    {
+     "en": "What's slowing you down?",
+     "ua": "Що тебе гальмує?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "OK, I'll get Dave to show you.",
+     "ua": "Добре, попрошу Дейва тобі показати.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Sorry, could you say the number again?",
+    "Sorry, the scanner kept freezing.",
+    "Could someone show me a faster way?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, the scanner kept freezing.»",
+     "You gave the real reason — now they can help, not blame."
+    ],
+    "better": {
+     "said": "I am slow, sorry, sorry.",
+     "try": "Sorry, the scanner kept freezing.",
+     "why_ua": "Назви причину — це не виправдання, а факт."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "F2": {
+   "id": "F2",
+   "title": "Not trained on this machine",
+   "track": "sector",
+   "briefing": {
+    "who": "You're asked to use equipment you haven't been trained on.",
+    "goal": "Say no safely."
+   },
+   "phrases": [
+    [
+     "Sorry, I'm not trained on the forklift.",
+     "Вибачте, я не навчена працювати на навантажувачі."
+    ],
+    [
+     "Can someone else do it?",
+     "Може хтось інший це зробити?"
+    ],
+    [
+     "Sorry, what did you say I should use?",
+     "Вибачте, що ви сказали мені використати?"
+    ],
+    [
+     "Can I get the training?",
+     "Можна мені пройти навчання?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Just jump on the reach truck and shift those pallets.",
+     "ua": "Просто сідай на штабелер і перевези ті палети.",
+     "fast": true,
+     "slang": [
+      "jump on"
+     ]
+    },
+    {
+     "en": "Ah, you're not ticketed? Fair enough.",
+     "ua": "А, у тебе немає допуску? Гаразд.",
+     "fast": false,
+     "slang": [
+      "ticketed"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, what did you say I should use?",
+    "Sorry, I'm not trained on it. Can I get the training?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, I'm not trained on the forklift.»",
+     "You said no to something unsafe — that protects you and everyone."
+    ],
+    "better": {
+     "said": "I can't, no.",
+     "try": "Sorry, I'm not trained on it. Can someone else do it?",
+     "why_ua": "Поясни чому — і «ні» звучить професійно."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "K1": {
+   "id": "K1",
+   "title": "Shift handover",
+   "track": "sector",
+   "briefing": {
+    "who": "The night carer tells you about residents.",
+    "goal": "Understand and check one detail."
+   },
+   "phrases": [
+    [
+     "How was Mrs Brown last night?",
+     "Як Місіс Браун провела ніч?"
+    ],
+    [
+     "Does she need anything this morning?",
+     "Їй щось потрібно зранку?"
+    ],
+    [
+     "Sorry, could you repeat the time?",
+     "Вибачте, можете повторити час?"
+    ],
+    [
+     "Is it in the care notes?",
+     "Це є в записах догляду?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Room 4 was unsettled, had PRN at two, obs are fine, she's on a fluid chart.",
+     "ua": "Кімната 4 була неспокійна, о другій дали ліки за потреби, показники в нормі, ведемо облік рідини.",
+     "fast": true,
+     "slang": [
+      "PRN",
+      "obs"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, could you repeat the time?",
+    "Is it in the care notes?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, could you repeat the time?»",
+     "You checked the detail that matters — that keeps residents safe."
+    ],
+    "better": {
+     "said": "What time? What?",
+     "try": "Sorry, could you repeat the time?",
+     "why_ua": "Перепитай саме деталь — так швидше і впевненіше."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "K2": {
+   "id": "K2",
+   "title": "Talking to a resident's family",
+   "track": "sector",
+   "briefing": {
+    "who": "A daughter asks how her mum is.",
+    "goal": "Answer kindly and send her to the nurse for medical questions."
+   },
+   "phrases": [
+    [
+     "She ate well today.",
+     "Вона сьогодні добре поїла."
+    ],
+    [
+     "I'll ask the nurse to talk to you.",
+     "Я попрошу медсестру з вами поговорити."
+    ],
+    [
+     "Sorry, could you say that again?",
+     "Вибачте, можете повторити?"
+    ],
+    [
+     "Is there anything else I can do?",
+     "Чи можу я ще чимось допомогти?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Is she eating? She looked thin on Sunday.",
+     "ua": "Вона їсть? У неділю здавалася худою.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "And has the GP been round about her meds?",
+     "ua": "А лікар приходив щодо її ліків?",
+     "fast": true,
+     "slang": [
+      "GP",
+      "meds"
+     ]
+    }
+   ],
+   "me": [
+    "She ate well today.",
+    "I'll ask the nurse to talk to you."
+   ],
+   "feedback": {
+    "worked": [
+     "«I'll ask the nurse to talk to you.»",
+     "You were kind and stayed in your role — that's exactly right."
+    ],
+    "better": {
+     "said": "I don't know medicine.",
+     "try": "I'll ask the nurse to talk to you.",
+     "why_ua": "Не «не знаю», а «попрошу того, хто знає»."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "H1": {
+   "id": "H1",
+   "title": "A guest or customer complains",
+   "track": "sector",
+   "briefing": {
+    "who": "A guest says the food is late.",
+    "goal": "Apologise, offer help, and call the manager if needed."
+   },
+   "phrases": [
+    [
+     "I'm sorry about that.",
+     "Мені шкода."
+    ],
+    [
+     "Let me get that sorted for you.",
+     "Дозвольте, я це владнаю."
+    ],
+    [
+     "Sorry, could you say the table number again?",
+     "Вибачте, можете повторити номер столика?"
+    ],
+    [
+     "I'll ask my manager now.",
+     "Я зараз покличу менеджера."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "This is ridiculous, we've been waiting forty minutes for our mains.",
+     "ua": "Це смішно, ми чекаємо основні страви сорок хвилин.",
+     "fast": true,
+     "slang": [
+      "mains"
+     ]
+    }
+   ],
+   "me": [
+    "I'm sorry about that. Let me get that sorted for you.",
+    "I'll ask my manager now."
+   ],
+   "feedback": {
+    "worked": [
+     "«Let me get that sorted for you.»",
+     "You apologised once and moved to a solution."
+    ],
+    "better": {
+     "said": "Not my fault, kitchen slow.",
+     "try": "I'm sorry about that. Let me get that sorted for you.",
+     "why_ua": "Гостю потрібне рішення, а не винуватий."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "H2": {
+   "id": "H2",
+   "title": "Help a customer find something",
+   "track": "sector",
+   "briefing": {
+    "who": "A customer asks where an item is.",
+    "goal": "Help them find it or say when it's back."
+   },
+   "phrases": [
+    [
+     "It's in aisle 5, next to the bread.",
+     "Це в 5-му ряду, біля хліба."
+    ],
+    [
+     "Let me show you.",
+     "Давайте я покажу."
+    ],
+    [
+     "Sorry, which one do you mean?",
+     "Вибачте, яке саме?"
+    ],
+    [
+     "We've run out, sorry. It's back on Friday.",
+     "Закінчилося, вибачте. Буде в п'ятницю."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Hiya, d'you have any of them gluten-free wraps, the big ones?",
+     "ua": "Привіт, у вас є безглютенові лаваші, великі?",
+     "fast": true,
+     "slang": [
+      "hiya"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, which one do you mean?",
+    "Let me show you."
+   ],
+   "feedback": {
+    "worked": [
+     "«Let me show you.»",
+     "You walked them there — that's great service."
+    ],
+    "better": {
+     "said": "There.",
+     "try": "It's in aisle 5, next to the bread. Let me show you.",
+     "why_ua": "Місце + орієнтир — і людина знайде сама."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "B1": {
+   "id": "B1",
+   "title": "Toolbox talk",
+   "track": "sector",
+   "briefing": {
+    "who": "Morning safety briefing on site.",
+    "goal": "Understand the main risk today and ask one question."
+   },
+   "phrases": [
+    [
+     "So the main risk today is the crane?",
+     "Тобто головний ризик сьогодні — кран?"
+    ],
+    [
+     "Where's the exclusion zone?",
+     "Де небезпечна зона?"
+    ],
+    [
+     "Sorry, could you say that slower?",
+     "Вибачте, можете повільніше?"
+    ],
+    [
+     "Do I need to sign the RAMS?",
+     "Мені треба підписати RAMS?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Crane's lifting on the east side from ten, so nobody under the load, harnesses on above two metres.",
+     "ua": "З десятої кран піднімає на східній стороні, тож ніхто під вантажем, вище двох метрів — у страховці.",
+     "fast": true,
+     "slang": [
+      "harness"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, could you say that slower?",
+    "Where's the exclusion zone?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Where's the exclusion zone?»",
+     "You asked about the one thing that keeps you safe today."
+    ],
+    "better": {
+     "said": "OK OK.",
+     "try": "So the main risk today is the crane, right?",
+     "why_ua": "Повтори ризик своїми словами — так видно, що ти зрозуміла."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "B2": {
+   "id": "B2",
+   "title": "Refuse unsafe work",
+   "track": "sector",
+   "briefing": {
+    "who": "You're asked to work at height without a harness.",
+    "goal": "Say no and ask for the right kit."
+   },
+   "phrases": [
+    [
+     "Sorry, I'm not going up without a harness.",
+     "Вибачте, я не полізу без страховки."
+    ],
+    [
+     "Can we get the right kit first?",
+     "Можна спершу отримати правильне спорядження?"
+    ],
+    [
+     "Sorry, what did you say?",
+     "Вибачте, що ви сказали?"
+    ],
+    [
+     "I'm happy to do it once it's safe.",
+     "Я охоче зроблю, коли буде безпечно."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "It's two minutes' work, just nip up and do it.",
+     "ua": "Там роботи на дві хвилини, просто швиденько залізь і зроби.",
+     "fast": true,
+     "slang": [
+      "nip up"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, I'm not going up without a harness.",
+    "I'm happy to do it once it's safe."
+   ],
+   "feedback": {
+    "worked": [
+     "«I'm happy to do it once it's safe.»",
+     "You said no and showed you're willing — that's professional."
+    ],
+    "better": {
+     "said": "No, dangerous.",
+     "try": "Sorry, I'm not going up without a harness.",
+     "why_ua": "Назви, чого бракує, — так «ні» стає конкретним."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "I1": {
+   "id": "I1",
+   "title": "Tell me about yourself",
+   "track": "interview",
+   "briefing": {
+    "who": "A recruiter starts the interview.",
+    "goal": "Introduce yourself in 2–3 sentences."
+   },
+   "phrases": [
+    [
+     "I've worked in {sector_job} for two years.",
+     "Я два роки працюю в {sector_job}."
+    ],
+    [
+     "I'm reliable and I learn fast.",
+     "На мене можна покластися, і я швидко вчуся."
+    ],
+    [
+     "Sorry, could you repeat the question?",
+     "Вибачте, можете повторити питання?"
+    ],
+    [
+     "I'm looking for full-time work.",
+     "Я шукаю роботу на повний день."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "So, tell me a bit about yourself.",
+     "ua": "Розкажіть трохи про себе.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "And what made you leave your last place?",
+     "ua": "А чому ви пішли з попередньої роботи?",
+     "fast": true,
+     "slang": [
+      "last place"
+     ]
+    }
+   ],
+   "me": [
+    "I've worked in {sector_job} for two years. I'm reliable and I learn fast.",
+    "Sorry, could you repeat the question?"
+   ],
+   "feedback": {
+    "worked": [
+     "«I'm reliable and I learn fast.»",
+     "Short and clear — recruiters remember that."
+    ],
+    "better": {
+     "said": "I am worker, good worker.",
+     "try": "I'm reliable and I learn fast.",
+     "why_ua": "Два прикметники про себе — краще, ніж «good worker»."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "I2": {
+   "id": "I2",
+   "title": "Availability and shifts",
+   "track": "interview",
+   "briefing": {
+    "who": "The recruiter asks when you can work.",
+    "goal": "Say your availability and check the contract."
+   },
+   "phrases": [
+    [
+     "I can work nights and weekends.",
+     "Я можу працювати ночами і на вихідних."
+    ],
+    [
+     "I can start on Monday.",
+     "Можу почати в понеділок."
+    ],
+    [
+     "Sorry, is that a zero-hours contract?",
+     "Вибачте, це контракт без гарантованих годин?"
+    ],
+    [
+     "How many hours a week is it?",
+     "Скільки годин на тиждень?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "It's four on, four off, earlies and lates, are you flexible?",
+     "ua": "Чотири дні через чотири, ранні й пізні зміни — ви гнучкі?",
+     "fast": true,
+     "slang": [
+      "earlies and lates",
+      "four on, four off"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, is that a zero-hours contract?",
+    "I can work nights and weekends. I can start on Monday."
+   ],
+   "feedback": {
+    "worked": [
+     "«How many hours a week is it?»",
+     "You asked about the contract — that's smart, not rude."
+    ],
+    "better": {
+     "said": "Any time OK.",
+     "try": "I can work nights and weekends.",
+     "why_ua": "Конкретні дні звучать надійніше, ніж «будь-коли»."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "I3": {
+   "id": "I3",
+   "title": "Your questions at the end",
+   "track": "interview",
+   "briefing": {
+    "who": "The interview is ending.",
+    "goal": "Ask about pay and next steps, and thank them."
+   },
+   "phrases": [
+    [
+     "What's the hourly rate?",
+     "Яка погодинна ставка?"
+    ],
+    [
+     "Is there training?",
+     "Чи є навчання?"
+    ],
+    [
+     "Sorry, when will I hear back?",
+     "Вибачте, коли я дізнаюся результат?"
+    ],
+    [
+     "Thank you for your time.",
+     "Дякую за ваш час."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Any questions for us?",
+     "ua": "У вас є питання до нас?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "We'll be in touch end of the week, all being well.",
+     "ua": "Ми зв'яжемося наприкінці тижня, якщо все буде добре.",
+     "fast": true,
+     "slang": [
+      "all being well"
+     ]
+    }
+   ],
+   "me": [
+    "What's the hourly rate? Is there training?",
+    "Thank you for your time."
+   ],
+   "feedback": {
+    "worked": [
+     "«Thank you for your time.»",
+     "You ended politely — that's the last thing they remember."
+    ],
+    "better": {
+     "said": "No questions.",
+     "try": "Is there training?",
+     "why_ua": "Одне питання показує, що тобі не байдуже."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "D1": {
+   "id": "D1",
+   "title": "GP appointment",
+   "track": "daily",
+   "briefing": {
+    "who": "You call the GP surgery.",
+    "goal": "Book an appointment and explain the problem."
+   },
+   "phrases": [
+    [
+     "Hello, I'd like to make an appointment, please.",
+     "Добрий день, я хочу записатися на прийом."
+    ],
+    [
+     "I've had a bad back for a week.",
+     "У мене вже тиждень болить спина."
+    ],
+    [
+     "Sorry, could you spell that?",
+     "Вибачте, можете продиктувати по літерах?"
+    ],
+    [
+     "Is there anything earlier?",
+     "Чи є щось раніше?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Have you tried the online form? Otherwise it's a callback from the duty doctor.",
+     "ua": "Ви пробували онлайн-форму? Інакше вам передзвонить черговий лікар.",
+     "fast": true,
+     "slang": [
+      "callback",
+      "duty doctor"
+     ]
+    }
+   ],
+   "me": [
+    "Hello, I'd like to make an appointment, please. I've had a bad back for a week.",
+    "Is there anything earlier?"
+   ],
+   "feedback": {
+    "worked": [
+     "«I've had a bad back for a week.»",
+     "You said what and how long — that's what the receptionist needs."
+    ],
+    "better": {
+     "said": "Back pain, doctor.",
+     "try": "I've had a bad back for a week.",
+     "why_ua": "«For a week» показує, що це серйозно."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "D2": {
+   "id": "D2",
+   "title": "At the bank",
+   "track": "daily",
+   "briefing": {
+    "who": "You want to open an account.",
+    "goal": "Ask what documents you need."
+   },
+   "phrases": [
+    [
+     "I'd like to open an account.",
+     "Я хочу відкрити рахунок."
+    ],
+    [
+     "What documents do I need?",
+     "Які документи мені потрібні?"
+    ],
+    [
+     "Sorry, could you say that slower?",
+     "Вибачте, можете повільніше?"
+    ],
+    [
+     "Can I do it online?",
+     "Можна зробити це онлайн?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "We'll need proof of address, so a utility bill or a council tax letter.",
+     "ua": "Нам потрібне підтвердження адреси: рахунок за комуналку або лист про муніципальний податок.",
+     "fast": true,
+     "slang": [
+      "proof of address",
+      "council tax"
+     ]
+    }
+   ],
+   "me": [
+    "What documents do I need?",
+    "Sorry, could you say that slower? Can I do it online?"
+   ],
+   "feedback": {
+    "worked": [
+     "«What documents do I need?»",
+     "One clear question saves a second trip."
+    ],
+    "better": {
+     "said": "Account, please, what need?",
+     "try": "I'd like to open an account. What documents do I need?",
+     "why_ua": "«I'd like…» + питання — ввічливо і зрозуміло."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "D3": {
+   "id": "D3",
+   "title": "Call from your child's school",
+   "track": "daily",
+   "briefing": {
+    "who": "The school calls you.",
+    "goal": "Find out what happened and agree when you'll come."
+   },
+   "phrases": [
+    [
+     "Hello, this is Anna's mum.",
+     "Добрий день, це мама Анни."
+    ],
+    [
+     "Is everything OK?",
+     "Усе гаразд?"
+    ],
+    [
+     "Sorry, I didn't understand — what happened?",
+     "Вибачте, я не зрозуміла — що сталося?"
+    ],
+    [
+     "I can come at four.",
+     "Я можу прийти о четвертій."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Nothing to worry about, she's just a bit poorly, could someone collect her?",
+     "ua": "Нічого страшного, вона трохи нездужає — чи може хтось її забрати?",
+     "fast": true,
+     "slang": [
+      "poorly",
+      "collect"
+     ]
+    }
+   ],
+   "me": [
+    "Hello, this is Anna's mum. Is everything OK?",
+    "Sorry, I didn't understand — what happened? I can come at four."
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, I didn't understand — what happened?»",
+     "You asked again instead of guessing — exactly right with school."
+    ],
+    "better": {
+     "said": "What? Anna what?",
+     "try": "Sorry, I didn't understand — what happened?",
+     "why_ua": "Перепитати — краще, ніж хвилюватися здогадками."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  }
+ },
+ "designer_note": "Поле designer перелічує, що дописано дизайнером: переклади реплік AI (ua), репліки користувачки для демо (me), пояснення why_ua, фідбек для уроків сфер і треків, а також What worked/Say it better, де в документі був лише один з них.",
+ "personas": {
+  "persona-a": {
+   "label": "Olena · factory",
+   "name": "Olena",
+   "lang": "uk",
+   "goal": "confident_job",
+   "sector": "factory_warehouse",
+   "hardest": [
+    "repeat",
+    "phone"
+   ],
+   "cost": "money",
+   "trial_ok": true
+  },
+  "persona-b": {
+   "label": "Ana · hotel",
+   "name": "Ana",
+   "lang": "uk",
+   "goal": "confident_job",
+   "sector": "hospitality_retail",
+   "hardest": [
+    "manager"
+   ],
+   "cost": "embarrassed",
+   "trial_ok": true
+  }
+ }
+}

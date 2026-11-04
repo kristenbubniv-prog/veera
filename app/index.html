@@ -1,0 +1,3137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veera AI — app, first session</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#FFFFFF;--surface:#FFFFFF;--fill:#F5F6F9;--line:#E6E8EF;--line-soft:#ECEEF3;
+--ink:#111322;--ink-2:#4A4F63;--ink-dis:#6B7083;
+--accent:#3B82F6;--accent-2:#8B5CF6;--accent-icon:#2E6BF0;--accent-tint:#EEF4FF;--accent-tint-2:#F3EFFF;
+--success:#12B76A;--success-bg:#F0FDF6;--success-line:#A6F0C8;
+--holo:conic-gradient(from 0deg,#3B82F6,#8B5CF6,#F0ABFC,#67E8F9,#A5B4FC,#3B82F6);
+--fd:Manrope,Inter,'Noto Sans',sans-serif;--ft:Inter,'Noto Sans',system-ui,sans-serif;
+--r-sm:12px;--r-md:16px;--r-btn:18px;--r-lg:24px;
+--s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-8:32px;
+--shadow:0 8px 28px rgba(17,19,34,.06);
+}
+body{margin:0}
+a{color:var(--ink)}a:hover{color:var(--accent-icon)}
+button{font-family:inherit;cursor:pointer}
+*{box-sizing:border-box}
+.scr{position:relative;background:var(--bg);color:var(--ink);font-family:var(--ft);display:flex;flex-direction:column;overflow:hidden}
+.halo{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.halo i{position:absolute;width:460px;height:460px;left:-170px;top:-150px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.16) 0%,rgba(59,130,246,.10) 35%,rgba(59,130,246,0) 70%);animation:hB 8s cubic-bezier(.45,.05,.55,.95) infinite alternate}
+.halo i.c{left:-35px;top:-120px}
+@keyframes hB{from{opacity:.75;transform:scale(.95)}to{opacity:1;transform:scale(1.05)}}
+.top{position:relative;display:flex;align-items:center;gap:12px;padding:12px 16px 8px 8px;min-height:68px}
+.icb{width:48px;height:48px;border:1px solid var(--line);background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--ink);flex:none}
+.icb.ghost{border-color:transparent;background:transparent}
+.prog{flex:1;height:6px;background:#EEF0F4;border-radius:3px;overflow:hidden}
+.prog b{display:block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.count{font-size:17px;font-weight:500;color:var(--ink-2);min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
+.body{position:relative;flex:1;display:flex;flex-direction:column;gap:18px;padding:8px 20px 0 20px;min-height:0}
+.t-display{margin:0;font-family:var(--fd);font-size:32px;line-height:1.05;font-weight:800;letter-spacing:-.03em}
+.t-title{margin:0;font-family:var(--fd);font-size:22px;line-height:1.25;font-weight:800;letter-spacing:-.02em}
+.t-h2{margin:0;font-family:var(--fd);font-size:19px;line-height:1.3;font-weight:800;letter-spacing:-.01em}
+.t-phrase{margin:0;font-size:24px;line-height:1.4;font-weight:500;letter-spacing:-.01em}
+.t-phrase-s{margin:0;font-size:20px;line-height:1.4;font-weight:500}
+.t-body{margin:0;font-size:17px;line-height:1.45}
+.t-strong{font-weight:600}
+.t-native{margin:0;font-size:16px;line-height:1.4;color:var(--ink-2)}
+.t-native-s{margin:0;font-size:15px;line-height:1.4;color:var(--ink-2)}
+.t-legal{margin:0;font-size:13px;line-height:1.4;color:var(--ink-2)}
+.stack{display:flex;flex-direction:column;gap:6px}
+.row{display:flex;align-items:center;gap:8px}
+.wrap{flex-wrap:wrap}
+.dock{position:relative;padding:12px 20px 28px 20px;display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.dock.sticky{background:linear-gradient(rgba(255,255,255,0),#fff 22%)}
+.btn{width:100%;height:56px;border-radius:var(--r-btn);border:0;background:var(--ink);color:#fff;font-family:var(--fd);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none}
+.btn[disabled]{background:#E6E8EF;color:var(--ink-dis);cursor:default}
+.btn.sec{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.lnk{min-height:48px;display:flex;align-items:center;justify-content:center;background:none;border:0;color:var(--ink);font-size:17px;font-weight:500;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--accent)}
+.lnk.mute{font-size:15px;color:var(--ink-2);text-decoration:none}
+.chip{height:48px;padding:0 16px;border-radius:16px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:17px;font-weight:600;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.chip svg{color:var(--accent-icon)}
+.chip.on{border:2px solid var(--ink);background:var(--accent-tint)}
+.chip.sm{height:40px;padding:0 12px;font-size:15px;font-weight:500;border-radius:12px;background:var(--fill);border-color:var(--fill)}
+.card{position:relative;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border:1px solid var(--line-soft);box-shadow:var(--shadow);border-radius:var(--r-lg);padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.card.flat{box-shadow:none}
+.card.tint{background:var(--accent-tint-2);border-color:#E4DCFF}
+.qm{font-family:var(--fd);font-size:44px;line-height:.6;height:22px;font-weight:800;color:var(--accent-2)}
+.opt{width:100%;min-height:64px;display:flex;align-items:center;gap:14px;padding:10px 14px 10px 12px;border:1.5px solid var(--line);border-radius:var(--r-md);background:#fff;text-align:left;color:var(--ink)}
+.opt .oi{width:40px;height:40px;border-radius:12px;background:var(--fill);display:flex;align-items:center;justify-content:center;flex:none;color:var(--ink)}
+.opt .ot{display:flex;flex-direction:column;gap:2px;flex:1}
+.opt .en{font-size:17px;font-weight:600;line-height:1.3}
+.opt .na{font-size:15px;color:var(--ink-2);line-height:1.3}
+.opt .ck{width:28px;height:28px;border-radius:14px;border:1.5px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;color:transparent;background:#fff}
+.opt.multi .ck{border-radius:8px}
+.opt.sel{border:2px solid var(--ink);background:var(--accent-tint)}
+.opt.sel .ck{background:var(--ink);border-color:var(--ink);color:#fff}
+.opt.sel .oi{background:#fff}
+.note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--r-md);font-size:16px;line-height:1.4;color:var(--ink)}
+.note svg{flex:none;margin-top:1px}
+.note.tip{background:var(--accent-tint)}
+.note.info{background:var(--fill)}
+.note.ok{background:var(--success-bg)}
+.note.white{background:#fff}
+.win{position:relative;overflow:hidden;border-radius:var(--r-lg);border:1.5px solid transparent;background:linear-gradient(var(--success-bg),var(--success-bg)) padding-box,linear-gradient(135deg,var(--success-line),#BFD7FF) border-box;box-shadow:0 12px 30px rgba(18,183,106,.10);padding:20px;display:flex;flex-direction:column;gap:14px}
+.okc{width:52px;height:52px;border-radius:26px;background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.okc.s{width:28px;height:28px;border-radius:14px}
+.okc.m{width:36px;height:36px;border-radius:18px}
+.pill{display:inline-flex;align-items:center;gap:8px;border-radius:20px;padding:5px 14px 5px 5px;font-size:17px;font-weight:600;background:var(--success-bg);border:1.5px solid var(--success-line)}
+.bub{max-width:88%;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.bub.ai{align-self:flex-start;background:#fff;border:1px solid var(--line-soft);box-shadow:var(--shadow);border-radius:6px 22px 22px 22px}
+.bub.me{align-self:flex-end;background:var(--ink);color:#fff;border-radius:22px 6px 22px 22px}
+.btxt{margin:0;font-size:20px;line-height:1.4;font-weight:500}
+.blur{filter:blur(6px);user-select:none}
+.reveal{border:0;background:transparent;padding:0;text-align:left;display:flex;flex-direction:column;gap:6px;min-height:48px;color:var(--ink)}
+.rv{font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.tr{border-top:1px solid var(--line-soft);padding-top:8px;display:flex;flex-direction:column;gap:4px}
+.tipline{align-self:flex-end;display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 12px;border-radius:14px;background:var(--accent-tint);border:0;color:var(--ink);font-size:16px}
+.dots{display:inline-flex;gap:5px;padding:16px 18px}
+.dots i{width:8px;height:8px;border-radius:4px;background:var(--ink-2);animation:dt 900ms cubic-bezier(.45,.05,.55,.95) infinite alternate}
+.dots i:nth-child(2){animation-delay:150ms}.dots i:nth-child(3){animation-delay:300ms}
+@keyframes dt{from{opacity:.25;transform:translateY(0)}to{opacity:1;transform:translateY(-3px)}}
+.mic{width:80px;height:80px;border-radius:40px;border:0;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 8px var(--accent-tint),0 10px 30px rgba(59,130,246,.28);flex:none}
+.mic.sm{width:72px;height:72px;border-radius:36px;box-shadow:0 0 0 6px var(--accent-tint),0 10px 24px rgba(59,130,246,.24)}
+.mic.off{background:#E6E8EF;color:var(--ink-dis);box-shadow:none}
+.bars{display:flex;align-items:center;gap:4px;height:30px}
+.bars i{width:5px;height:26px;border-radius:3px;background:#fff;animation:br 320ms ease-in-out infinite alternate;transform-origin:center}
+.bars i:nth-child(2){animation-delay:110ms}.bars i:nth-child(3){animation-delay:50ms}.bars i:nth-child(4){animation-delay:190ms}
+@keyframes br{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin 900ms linear infinite}
+.mlabel{font-family:var(--fd);font-size:18px;font-weight:700}
+.seg{display:flex;background:var(--fill);border-radius:14px;padding:3px}
+.seg button{height:42px;padding:0 12px;border:0;border-radius:11px;background:transparent;color:var(--ink-2);font-size:15px;font-weight:600}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(17,19,34,.08)}
+.appbar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;min-height:68px}
+.appbar .ttl{font-size:17px;font-weight:700}
+.tag{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:14px;background:var(--fill);font-size:15px;font-weight:600;color:var(--ink-2)}
+.tag i{width:8px;height:8px;border-radius:4px;background:var(--accent-2)}
+.tabs{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);background:rgba(255,255,255,.96);padding:6px 8px 20px}
+.tab{min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:none;color:var(--ink-2);font-size:17px;font-weight:500}
+.tab .ti{width:56px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center}
+.tab.on{color:var(--ink);font-weight:700}
+.tab.on .ti{background:var(--accent-tint)}
+.toast{position:absolute;left:16px;right:16px;bottom:104px;background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:10px;align-items:center;font-size:17px;font-weight:600;box-shadow:0 12px 30px rgba(17,19,34,.25);animation:rise 380ms cubic-bezier(.2,.9,.3,1) both}
+.sk{background:linear-gradient(90deg,#EFF1F5 25%,#F8F9FB 50%,#EFF1F5 75%);background-size:200% 100%;animation:sk 1.4s linear infinite;border-radius:10px}
+@keyframes sk{from{background-position:200% 0}to{background-position:-200% 0}}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label{font-size:17px;font-weight:600}
+.inp{height:56px;border:1.5px solid var(--line);border-radius:var(--r-md);padding:0 16px;font-family:var(--ft);font-size:18px;color:var(--ink);background:#fff;width:100%}
+.inp.focus{border:2px solid var(--ink);box-shadow:0 0 0 4px var(--accent-tint)}
+textarea.inp{height:96px;padding:14px 16px;resize:none;line-height:1.4}
+.plan-row{display:flex;align-items:center;gap:12px;min-height:56px;padding:6px 4px;border:0;background:none;width:100%;text-align:left;color:var(--ink);border-top:1px solid var(--line-soft)}
+.plan-row:first-child{border-top:0}
+.st{width:28px;height:28px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+.st.done{background:var(--success);color:#fff}
+.st.next{background:var(--ink);color:#fff}
+.st.open{border:1.5px solid var(--line);color:var(--ink-2)}
+.week{background:#fff;border:1px solid var(--line-soft);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow)}
+.badge{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:14px;font-size:15px;font-weight:600;background:var(--accent-tint);color:var(--ink)}
+.badge.goal{background:var(--accent-tint-2)}
+.cb{width:28px;height:28px;border-radius:8px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.cb.off{background:#fff;border:1.5px solid var(--line);color:transparent}
+.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.day{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:15px;color:var(--ink-2)}
+.day b{width:32px;height:32px;border-radius:16px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;color:transparent}
+.day.d b{background:var(--success);border-color:var(--success);color:#fff}
+.day.t b{border:2px solid var(--ink)}
+.plan-opt{width:100%;border:1.5px solid var(--line);border-radius:20px;background:#fff;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;text-align:left;color:var(--ink)}
+.plan-opt.sel{border:2px solid var(--ink);background:var(--accent-tint)}
+.radio{width:24px;height:24px;border-radius:12px;border:2px solid var(--line);flex:none;margin-top:2px;display:flex;align-items:center;justify-content:center}
+.plan-opt.sel .radio{border-color:var(--ink)}
+.plan-opt.sel .radio::after{content:'';width:12px;height:12px;border-radius:6px;background:var(--ink)}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:8px 0;border-top:1px solid var(--line-soft)}
+.pend{opacity:.35}
+.rise{animation:rise 380ms cubic-bezier(.2,.9,.3,1) both}
+.pop{animation:pop 340ms cubic-bezier(.3,1.6,.6,1) 120ms both}
+@keyframes rise{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pop{from{transform:scale(.4) rotate(-20deg)}to{transform:scale(1) rotate(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinR{to{transform:rotate(-360deg)}}
+/* Veera orb */
+@keyframes bA{from{border-radius:48% 52% 53% 47%/49% 47% 53% 51%}to{border-radius:53% 47% 47% 53%/52% 53% 47% 48%}}
+@keyframes bB{from{border-radius:52% 48% 47% 53%/48% 52% 48% 52%}to{border-radius:47% 53% 53% 47%/52% 48% 52% 48%}}
+@keyframes bGlow{from{transform:scale(.97);opacity:.22}to{transform:scale(1.05);opacity:.36}}
+@keyframes lMorph{0%{border-radius:50%;transform:rotate(0) scale(1)}25%{border-radius:56% 44% 52% 48%/46% 55% 45% 54%;transform:rotate(90deg) scale(1.04)}50%{border-radius:46% 54% 44% 56%/54% 46% 56% 44%;transform:rotate(180deg) scale(.97)}75%{border-radius:53% 47% 56% 44%/48% 53% 47% 52%;transform:rotate(270deg) scale(1.03)}100%{border-radius:50%;transform:rotate(360deg) scale(1)}}
+@keyframes lSway{0%{transform:translate(0,0)}25%{transform:translate(1.5px,-1.5px)}50%{transform:translate(0,1.5px)}75%{transform:translate(-1.5px,-1px)}100%{transform:translate(0,0)}}
+@keyframes lPulse{from{opacity:.35;transform:scale(1)}to{opacity:.6;transform:scale(1.08)}}
+.orb{--o:76px;position:relative;width:var(--o);height:var(--o);flex:none;transition:transform 700ms cubic-bezier(.4,0,.2,1)}
+.orb.s28{--o:28px}.orb.s40{--o:40px}.orb.s56{--o:56px}.orb.s120{--o:120px}
+.orb .sw{position:absolute;inset:0;animation:lSway 4s cubic-bezier(.45,.05,.55,.95) infinite}
+.orb .glow{position:absolute;inset:calc(var(--o) * -0.09);border-radius:50%;background:conic-gradient(from 0deg,#3B82F6,#8B5CF6,#67E8F9,#F0ABFC,#A5B4FC,#3B82F6);filter:blur(calc(var(--o) * 0.18));animation:bB 9s cubic-bezier(.45,.05,.55,.95) infinite alternate,spinR 18s linear infinite,bGlow 6s cubic-bezier(.45,.05,.55,.95) infinite alternate}
+.orb .core{position:absolute;inset:0;border-radius:50%;background:var(--holo);filter:blur(calc(var(--o) * 0.09));animation:bA 6s cubic-bezier(.45,.05,.55,.95) infinite alternate,spin 12s linear infinite}
+.orb .lsw{position:absolute;inset:2px;border-radius:50%;background:conic-gradient(from 90deg,#67E8F9,#3B82F6,#F0ABFC,#8B5CF6,#67E8F9);filter:blur(calc(var(--o) * 0.08));mix-blend-mode:screen;opacity:0;transition:opacity 700ms ease;animation:lMorph 3.2s linear infinite}
+.orb .mint{background:conic-gradient(from 0deg,#12B76A,#67E8F9,#A6F0C8,#3B82F6,#12B76A);opacity:0;transition:opacity 700ms ease}
+.orb .gloss{position:absolute;inset:0;border-radius:50%;filter:blur(2px);background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.8),rgba(255,255,255,0) 44%);box-shadow:inset 0 0 calc(var(--o) * 0.24) rgba(255,255,255,.5);animation:bA 6s cubic-bezier(.45,.05,.55,.95) infinite alternate}
+.orb .lh{position:absolute;inset:calc(var(--o) * -0.1);border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.28),rgba(139,92,246,.12) 45%,rgba(139,92,246,0) 70%);opacity:0;transition:opacity 700ms ease;animation:lPulse 1.6s cubic-bezier(.45,.05,.55,.95) infinite alternate}
+.orb.speak{transform:scale(1.07)}
+.orb.speak .glow{filter:blur(calc(var(--o) * 0.22))}
+.orb.listen{transform:scale(.97)}
+.orb.listen .lsw{opacity:.85}
+.orb.listen .lh{opacity:1}
+.orb.think .lh{opacity:.5}
+.orb.happy{transform:scale(1.05)}
+.orb.happy .mint{opacity:.9}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
+
+html,body{height:100%}
+body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;font-family:var(--ft)}
+#app{position:relative;width:100%;max-width:430px;height:100dvh;max-height:932px;background:#fff;overflow:hidden}
+@media (min-width:600px){#app{height:844px;max-width:390px;border-radius:36px;box-shadow:0 30px 80px rgba(17,19,34,.18)}}
+.scr{position:absolute;inset:0}
+.a2{--pri:#3F46A8;--pri-2:#4338CA;--ink-3:#6B7083;--soft:#F6F7FA;font-size:16px;color:var(--ink)}
+.a2 .body{min-height:0;padding:4px 20px 0 20px}
+.a2 .body.scroll{overflow-y:auto;padding-bottom:20px}
+.orb.s72{--o:72px}
+.bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px 8px 12px;min-height:60px}
+.bar.home{padding:14px 20px 8px 20px;align-items:flex-end}
+.bar-t{font-size:16px;font-weight:600}
+.iconbtn{width:44px;height:44px;border:0;background:transparent;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;color:var(--ink);flex:none}
+.iconbtn.on{background:var(--accent-tint)}
+.endb{height:40px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:15px;font-weight:500;color:var(--ink)}
+.seg2{display:flex;background:var(--soft);border:1px solid var(--line-soft);border-radius:12px;padding:3px}
+.seg2 button{height:34px;padding:0 12px;border:0;border-radius:9px;background:transparent;color:var(--ink-3);font-size:14px;font-weight:500}
+.seg2 button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(17,19,34,.08)}
+.h1{margin:0;font-family:var(--fd);font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.02em}
+.h2{margin:0;font-family:var(--fd);font-size:17px;line-height:1.3;font-weight:700}
+.sub{margin:0;font-size:15px;color:var(--ink-2)}
+.lbl{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.meta{font-size:14px;color:var(--ink-3);text-align:center;margin:0}
+.phr{margin:0;font-size:17px;line-height:1.4;font-weight:500;color:var(--ink)}
+.phr.s{font-size:16px}
+.nat{margin:2px 0 0;font-size:14px;line-height:1.35;color:var(--ink-3)}
+.cl2{margin:0;font-size:15px;line-height:1.4;color:var(--ink-2);display:flex;gap:8px;align-items:baseline}
+.cl2 .lbl{min-width:38px}
+.ctx{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:18px;background:var(--soft)}
+.sechead{display:flex;align-items:center;justify-content:space-between}
+.hint{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--ink-3)}
+.plist{display:flex;flex-direction:column;border:1px solid var(--line-soft);border-radius:18px;padding:0 14px;background:#fff}
+.plist.flat{border:0;padding:0}
+.prow{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line-soft)}
+.prow:first-child{border-top:0}
+.prow.playing .phr{color:var(--pri)}
+.pplay{width:40px;height:40px;border-radius:20px;border:0;background:var(--accent-tint);display:flex;align-items:center;justify-content:center;flex:none}
+.ptext{flex:1;min-width:0}
+.pacts{display:flex;gap:0;margin-right:-8px}
+.pacts .iconbtn{width:40px;height:40px}
+.eq{display:flex;gap:3px;align-items:center;height:16px}
+.eq i{width:3px;height:14px;border-radius:2px;background:var(--pri);animation:br 300ms ease-in-out infinite alternate}
+.eq i:nth-child(2){animation-delay:100ms}.eq i:nth-child(3){animation-delay:200ms}
+.ask{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:18px;background:var(--accent-tint-2)}
+.dock2{position:relative;padding:10px 20px 24px;display:flex;flex-direction:column;gap:6px;background:linear-gradient(rgba(255,255,255,0),#fff 20%)}
+.btn2{width:100%;height:52px;border-radius:16px;border:0;background:linear-gradient(135deg,var(--pri),var(--pri-2));color:#fff;font-family:var(--ft);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 16px rgba(67,56,202,.18)}
+.btn3{height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:14px;font-weight:500}
+.lnk2{min-height:44px;border:0;background:none;color:var(--ink-2);font-size:15px;font-weight:500}
+/* talk */
+.talk{background:#FBFBFD}
+.who{position:relative;display:flex;align-items:center;gap:10px;padding:0 20px 8px;font-size:14px;color:var(--ink-3)}
+.who b{color:var(--ink);font-weight:600}
+.av{width:30px;height:30px;border-radius:15px;background:#E9ECF5;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--ink-2)}
+.feed{position:relative;flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:8px 16px 12px}
+.ai2{align-self:flex-start;max-width:86%;background:#fff;border:1px solid var(--line-soft);border-radius:6px 18px 18px 18px;padding:10px 14px;box-shadow:0 2px 8px rgba(17,19,34,.04)}
+.ai2 p{margin:0;font-size:17px;line-height:1.45}
+.ai2.typing{padding:0}
+.me2{align-self:flex-end;max-width:84%;background:var(--accent-tint);border:1px solid #DCE6FF;border-radius:18px 6px 18px 18px;padding:10px 14px}
+.me2 p{margin:0;font-size:17px;line-height:1.45;color:var(--ink)}
+.reveal2{border:0;background:none;padding:0;text-align:left;display:flex;flex-direction:column;gap:4px;color:var(--ink);min-height:44px}
+.reveal2 span{display:inline-flex;gap:6px;align-items:center;font-size:13px;font-weight:500;color:var(--pri)}
+.tr2{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:2px}
+.tr2 p{font-size:14px !important;line-height:1.35 !important;color:var(--ink-3)}
+.ok2{align-self:flex-end;display:inline-flex;align-items:center;gap:5px;margin:-4px 2px 0;font-size:13px;font-weight:500;color:#0B6B44}
+.sys2{align-self:center;display:inline-flex;align-items:center;gap:6px;margin:0;font-size:12px;color:var(--ink-3);background:#F1F2F6;border-radius:10px;padding:4px 10px}
+.tipc{align-self:flex-start;margin:0;font-size:13px;color:var(--ink-3)}
+.helpers{display:flex;gap:6px;flex-wrap:wrap;align-self:flex-start}
+.hb{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:18px;border:1px solid var(--line);background:#fff;color:var(--ink-2);font-size:14px;font-weight:500;position:relative}
+.hb::after{content:'';position:absolute;inset:-4px}
+.hb.on{border-color:var(--pri);color:var(--pri);background:var(--accent-tint)}
+.done2{align-self:center;display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:20px;background:var(--success-bg);border:1px solid var(--success-line);font-size:14px;font-weight:600;color:#0B6B44}
+.banner{position:relative;margin:0 12px 6px;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#FFF8E6;border:1px solid #F2DDA6;color:#5C3D00;font-size:14px;line-height:1.3}
+.banner b{font-weight:600}
+.bnb{height:36px;padding:0 12px;border-radius:10px;border:1px solid #E6C77E;background:#fff;color:#5C3D00;font-size:13px;font-weight:600}
+.dock3{position:relative;display:grid;grid-template-columns:72px 1fr 72px;align-items:center;padding:10px 16px 22px;border-top:1px solid var(--line-soft);background:rgba(255,255,255,.96)}
+.dock3.text{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.side{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--ink-2);font-size:12px;min-height:48px;justify-content:center}
+.speak{display:flex;flex-direction:column;align-items:center;gap:6px}
+.orbbtn{position:relative;width:84px;height:84px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.orbbtn::before{content:'';position:absolute;inset:4px;border-radius:50%;box-shadow:0 0 0 1px rgba(139,92,246,.15)}
+.micg{position:absolute;right:6px;bottom:6px;width:28px;height:28px;border-radius:14px;background:rgba(17,19,34,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center}
+.qcs{display:flex;gap:6px;overflow-x:auto}
+.qc{flex:none;height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:#fff;font-size:13px;color:var(--ink-2)}
+.inp2{flex:1;height:48px;border:1px solid var(--line);border-radius:14px;padding:0 14px;font-size:16px;font-family:var(--ft)}
+.send{width:48px;height:48px;border-radius:14px;border:0;background:var(--pri);display:flex;align-items:center;justify-content:center}
+/* feedback */
+.fb{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:18px;border:1px solid var(--line-soft);background:#fff}
+.fb.good{background:var(--success-bg);border-color:#CDF3DD}
+.fb.tint{background:var(--accent-tint-2);border-color:#ECE6FF}
+.was{margin:0;font-size:14px;color:var(--ink-3);text-decoration:line-through;text-decoration-color:#C9CCD8}
+.chk{display:flex;gap:12px;align-items:flex-start;border:0;background:none;padding:6px 0;color:var(--ink);min-height:44px}
+.cbx{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;color:transparent}
+.cbx.on{background:var(--pri);border-color:var(--pri)}
+.cbx:not(.on) svg{opacity:0}
+/* today */
+.tag2{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:12px;background:var(--soft);font-size:12px;font-weight:600;color:var(--ink-3)}
+.cardx{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:18px;border:1px solid var(--line-soft);background:#fff;box-shadow:0 2px 10px rgba(17,19,34,.03)}
+.cardx.next{background:linear-gradient(135deg,#F3F5FF,#F6F2FF);border-color:#E6E8FA}
+.startb{height:40px;padding:0 14px;border-radius:12px;border:0;background:var(--pri);color:#fff;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:6px;flex:none}
+.days2{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.d2{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--ink-3)}
+.d2 b{width:28px;height:28px;border-radius:14px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center}
+.d2.done b{background:var(--success);border-color:var(--success)}
+.d2.today{color:var(--ink);font-weight:600}
+.tabs2{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line-soft);background:rgba(255,255,255,.97);padding:6px 8px 18px}
+.tab2{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--ink-3);font-size:12px;font-weight:500;min-height:52px;justify-content:center}
+.tab2.on{color:var(--pri);font-weight:600}
+.toast2{position:absolute;left:16px;right:16px;bottom:92px;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:#2B2F4A;color:#fff;font-size:14px;font-weight:500;box-shadow:0 10px 24px rgba(17,19,34,.2);animation:rise 380ms cubic-bezier(.2,.9,.3,1) both}
+.goalline{margin:0;display:flex;gap:8px;align-items:center;padding:10px 14px;border-radius:14px;background:var(--accent-tint-2);font-size:15px;font-weight:500}
+.srow{display:flex;align-items:center;gap:12px;min-height:48px;border:0;background:none;padding:0;color:var(--ink);border-top:1px solid var(--line-soft);width:100%;text-align:left}
+.srow:first-of-type{border-top:0}
+.srow .t{flex:1;font-size:15px}
+.sd{width:20px;height:20px;border-radius:10px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;flex:none}
+.sd.done{background:var(--success);border-color:var(--success)}
+.sd.next{border:6px solid var(--pri)}
+.sd.goal{border-color:#C9B8FF}
+.frow{padding:12px 0;border-top:1px solid var(--line-soft)}
+.frow:first-child{border-top:0}
+.setr{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;border-top:1px solid var(--line-soft);font-size:15px}
+.setr:first-child{border-top:0}
+.val{display:inline-flex;align-items:center;gap:4px;font-size:14px;color:var(--ink-3)}
+.blur{filter:blur(5px)}
+.dots{padding:12px 14px}
+.ai2.fast{border-color:#F3D27A}
+.fastb{display:inline-flex;align-items:center;gap:4px;align-self:flex-start;font-size:12px;font-weight:700;color:#8A5A00;background:#FFF6DB;border-radius:8px;padding:2px 8px;margin-bottom:4px}
+.tipc.fast{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-2);margin:-2px 0 0 4px}
+.hb.pulse{animation:hbp 1.8s ease-out 3}
+@keyframes hbp{0%{box-shadow:0 0 0 0 rgba(63,70,168,.35)}100%{box-shadow:0 0 0 10px rgba(63,70,168,0)}}
+.tr2 .gl{font-size:13px;color:#6B4500;background:#FFF9E8;border-radius:8px;padding:4px 8px;margin-top:4px}
+.bc{font-size:12.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srow .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.goalline{background:#F0FDF6!important;color:#0B6B3A;font-weight:600!important}
+.sd.goal{border-color:#9DE5BD!important}
+.bar-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+@media (prefers-reduced-motion:reduce){.hb.pulse{animation:none}}
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+<script>window.__ICONS=(function(){var D={"heart": "<path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"></path>", "bell": "<path d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9\"></path><path d=\"M10.3 21a1.94 1.94 0 0 0 3.4 0\"></path>", "helmet": "<path d=\"M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v2z\"></path><path d=\"M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5\"></path><path d=\"M4 15v-3a6 6 0 0 1 6-6\"></path><path d=\"M14 6a6 6 0 0 1 6 6v3\"></path>", "brief": "<rect width=\"20\" height=\"14\" x=\"2\" y=\"7\" rx=\"2\"></rect><path d=\"M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\"></path>", "pause": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><line x1=\"10\" x2=\"10\" y1=\"15\" y2=\"9\"></line><line x1=\"14\" x2=\"14\" y1=\"15\" y2=\"9\"></line>", "sprout": "<path d=\"M7 20h10\"></path><path d=\"M10 20c5.5-2.5.8-6.4 3-10\"></path><path d=\"M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z\"></path><path d=\"M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z\"></path>", "bank": "<line x1=\"3\" x2=\"21\" y1=\"22\" y2=\"22\"></line><line x1=\"6\" x2=\"6\" y1=\"18\" y2=\"11\"></line><line x1=\"10\" x2=\"10\" y1=\"18\" y2=\"11\"></line><line x1=\"14\" x2=\"14\" y1=\"18\" y2=\"11\"></line><line x1=\"18\" x2=\"18\" y1=\"18\" y2=\"11\"></line><polygon points=\"12 2 20 7 4 7\"></polygon>", "trend": "<polyline points=\"22 7 13.5 15.5 8.5 10.5 2 17\"/><polyline points=\"16 7 22 7 22 13\"/>", "face": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M16 16s-1.5-2-4-2-4 2-4 2\"></path><line x1=\"9\" x2=\"9.01\" y1=\"9\" y2=\"9\"></line><line x1=\"15\" x2=\"15.01\" y1=\"9\" y2=\"9\"></line>", "map": "<path d=\"M14.1 4.4 9.9 2.6a2 2 0 0 0-1.8 0L3.6 4.8A1 1 0 0 0 3 5.7v14.7a1 1 0 0 0 1.4.9l4.5-2.2a2 2 0 0 1 1.8 0l4.2 1.9a2 2 0 0 0 1.8 0l4.5-2.2a1 1 0 0 0 .6-.9V3.2a1 1 0 0 0-1.4-.9l-4.5 2.2a2 2 0 0 1-1.8 0z\"></path><path d=\"M15 5.8v15\"></path><path d=\"M9 2.8v15\"></path>", "unlock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\"></rect><path d=\"M7 11V7a5 5 0 0 1 9.9-1\"></path>", "wallet": "<path d=\"M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1\"></path><path d=\"M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4\"></path>", "tap": "<path d=\"M18 11V6a2 2 0 0 0-4 0v1\"></path><path d=\"M14 10V4a2 2 0 0 0-4 0v2\"></path><path d=\"M10 10.5V6a2 2 0 0 0-4 0v8\"></path><path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"></path>", "back": "<path d=\"m15 18-6-6 6-6\"></path>", "x": "<path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path>", "play": "FILL<polygon points=\"6 3 20 12 6 21 6 3\"></polygon>", "slow": "<path d=\"M2 13a6 6 0 1 0 12 0 4 4 0 1 0-8 0 2 2 0 0 0 4 0\"></path><circle cx=\"10\" cy=\"13\" r=\"8\"></circle><path d=\"M2 21h12c4.4 0 8-3.6 8-8V7a2 2 0 1 0-4 0v6\"></path>", "repeat": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"></path><path d=\"M3 3v5h5\"></path>", "translate": "<path d=\"m5 8 6 6\"></path><path d=\"m4 14 6-6 2-3\"></path><path d=\"M2 5h12\"></path><path d=\"M7 2h1\"></path><path d=\"m22 22-5-10-5 10\"></path><path d=\"M14 18h6\"></path>", "mic": "<path d=\"M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z\"></path><path d=\"M19 10v2a7 7 0 0 1-14 0v-2\"></path><line x1=\"12\" x2=\"12\" y1=\"19\" y2=\"22\"></line>", "micoff": "<line x1=\"2\" x2=\"22\" y1=\"2\" y2=\"22\"></line><path d=\"M18.89 13.23A7.12 7.12 0 0 0 19 12v-2\"></path><path d=\"M5 10v2a7 7 0 0 0 12 5\"></path><path d=\"M15 9.34V5a3 3 0 0 0-5.68-1.33\"></path><path d=\"M9 9v3a3 3 0 0 0 5.12 2.12\"></path><line x1=\"12\" x2=\"12\" y1=\"19\" y2=\"22\"></line>", "check": "<path d=\"M20 6 9 17l-5-5\"></path>", "star": "<polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"></polygon>", "starf": "FILL<polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"></polygon>", "book": "<path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"></path><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"></path>", "home": "<path d=\"M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"></path>", "list": "<path d=\"m3 17 2 2 4-4\"></path><path d=\"m3 7 2 2 4-4\"></path><path d=\"M13 6h8\"></path><path d=\"M13 12h8\"></path><path d=\"M13 18h8\"></path>", "sliders": "<path d=\"M21 4h-7\"></path><path d=\"M10 4H3\"></path><path d=\"M21 12h-9\"></path><path d=\"M8 12H3\"></path><path d=\"M21 20h-5\"></path><path d=\"M12 20H3\"></path><path d=\"M14 2v4\"></path><path d=\"M8 10v4\"></path><path d=\"M16 18v4\"></path>", "bulb": "<path d=\"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5\"></path><path d=\"M9 18h6\"></path><path d=\"M10 22h4\"></path>", "info": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 16v-4\"></path><path d=\"M12 8h.01\"></path>", "mail": "<rect width=\"20\" height=\"16\" x=\"2\" y=\"4\" rx=\"2\"></rect><path d=\"m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7\"></path>", "cal": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"></rect><path d=\"M16 2v4\"></path><path d=\"M8 2v4\"></path><path d=\"M3 10h18\"></path>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 6v6l4 2\"></path>", "bolt": "<path d=\"M13 2 4 14h7l-1 8 9-12h-7l1-8z\"></path>", "flag": "<path d=\"M4 22V4a1 1 0 0 1 1-1h13l-2.5 4L18 11H5\"></path>", "send": "<path d=\"m22 2-7 20-4-9-9-4Z\"></path><path d=\"M22 2 11 13\"></path>", "more": "FILL<circle cx=\"5\" cy=\"12\" r=\"2\"></circle><circle cx=\"12\" cy=\"12\" r=\"2\"></circle><circle cx=\"19\" cy=\"12\" r=\"2\"></circle>", "box": "<path d=\"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\"></path><path d=\"M3.3 7 12 12l8.7-5\"></path><path d=\"M12 22V12\"></path>", "factory": "<path d=\"M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z\"></path>", "truck": "<path d=\"M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2\"></path><path d=\"M15 18H9\"></path><path d=\"M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14\"></path><circle cx=\"17\" cy=\"18\" r=\"2\"></circle><circle cx=\"7\" cy=\"18\" r=\"2\"></circle>", "dots": "<circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle>", "globe": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"></path><path d=\"M2 12h20\"></path>", "ear": "<path d=\"M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0\"></path><path d=\"M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4\"></path>", "thermo": "<path d=\"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z\"></path>", "swap": "<path d=\"M8 3 4 7l4 4\"></path><path d=\"M4 7h16\"></path><path d=\"m16 21 4-4-4-4\"></path><path d=\"M20 17H4\"></path>", "alert": "<path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"></path><path d=\"M12 9v4\"></path><path d=\"M12 17h.01\"></path>", "coffee": "<path d=\"M10 2v2\"></path><path d=\"M14 2v2\"></path><path d=\"M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1\"></path><path d=\"M6 2v2\"></path>", "quiet": "<path d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"></path><path d=\"M8 12h8\"></path>", "nod": "<circle cx=\"12\" cy=\"8\" r=\"5\"></circle><path d=\"M20 21a8 8 0 0 0-16 0\"></path>", "users": "<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"></path><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"></path>", "chat": "<path d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"></path>", "sunrise": "<path d=\"M12 2v8\"></path><path d=\"m4.93 10.93 1.41 1.41\"></path><path d=\"M2 18h2\"></path><path d=\"M20 18h2\"></path><path d=\"m19.07 10.93-1.41 1.41\"></path><path d=\"M22 22H2\"></path><path d=\"m8 6 4-4 4 4\"></path><path d=\"M16 18a4 4 0 0 0-8 0\"></path>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"></path>", "bus": "<path d=\"M8 6v6\"></path><path d=\"M15 6v6\"></path><path d=\"M2 12h19.6\"></path><path d=\"M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3\"></path><circle cx=\"7\" cy=\"18\" r=\"2\"></circle><path d=\"M9 18h5\"></path><circle cx=\"16\" cy=\"18\" r=\"2\"></circle>", "calweek": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"></rect><path d=\"M16 2v4\"></path><path d=\"M8 2v4\"></path><path d=\"M3 10h18\"></path><path d=\"M8 14h.01\"></path><path d=\"M12 14h.01\"></path><path d=\"M16 14h.01\"></path><path d=\"M8 18h.01\"></path><path d=\"M12 18h.01\"></path>", "target": "<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><circle cx=\"12\" cy=\"12\" r=\"6\"></circle><circle cx=\"12\" cy=\"12\" r=\"2\"></circle>", "money": "<rect width=\"20\" height=\"12\" x=\"2\" y=\"6\" rx=\"2\"></rect><circle cx=\"12\" cy=\"12\" r=\"2\"></circle><path d=\"M6 12h.01M18 12h.01\"></path>", "timer": "<line x1=\"10\" x2=\"14\" y1=\"2\" y2=\"2\"></line><line x1=\"12\" x2=\"15\" y1=\"14\" y2=\"11\"></line><circle cx=\"12\" cy=\"14\" r=\"8\"></circle>", "eye": "<path d=\"M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle>", "volume": "<path d=\"M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z\"></path><path d=\"M16 9a5 5 0 0 1 0 6\"></path><path d=\"M19.4 18.4a9 9 0 0 0 0-12.7\"></path>", "wifi": "<path d=\"M12 20h.01\"></path><path d=\"M8.5 16.4a5 5 0 0 1 7 0\"></path><path d=\"M5 12.9a10 10 0 0 1 14 0\"></path>", "lock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\"></rect><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"></path>", "card": "<rect width=\"20\" height=\"14\" x=\"2\" y=\"5\" rx=\"2\"></rect><line x1=\"2\" x2=\"22\" y1=\"10\" y2=\"10\"></line>", "phone": "<rect width=\"14\" height=\"20\" x=\"5\" y=\"2\" rx=\"2\"></rect><path d=\"M12 18h.01\"></path>", "arrow": "<path d=\"M5 12h14\"></path><path d=\"m12 5 7 7-7 7\"></path>", "chev": "<path d=\"m9 18 6-6-6-6\"></path>", "sparkle": "<path d=\"M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z\"></path>", "refresh": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"></path><path d=\"M21 3v5h-5\"></path><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"></path><path d=\"M8 16H3v5\"></path>", "simple": "<path d=\"M4 7h16\"></path><path d=\"M4 12h10\"></path><path d=\"M4 17h6\"></path>"};
+return function(n,s,c,w){var d=D[n]||'';if(d.indexOf('FILL')===0)return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="'+c+'" stroke="none" aria-hidden="true">'+d.slice(4)+'</svg>';
+return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="'+w+'" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+d+'</svg>';};})();</script>
+<script>window.VEERA_DATA={
+ "version": "2026-11-04",
+ "locale": "en-GB",
+ "native_demo": "uk",
+ "vars": {
+  "lang": {
+   "step": 1,
+   "default": "en"
+  },
+  "goal": {
+   "step": 2,
+   "values": {
+    "Feel confident at my current job": "confident_job",
+    "Get a better job": "better_job",
+    "Handle daily life with ease": "daily_life",
+    "Pass a job interview": "interview"
+   },
+   "default": "confident_job"
+  },
+  "sector": {
+   "step": 3,
+   "values": {
+    "Factory or warehouse": "factory_warehouse",
+    "Care or healthcare": "care",
+    "Hotel, restaurant or retail": "hospitality_retail",
+    "Construction or trades": "construction",
+    "Office": "office",
+    "Other": "other",
+    "I'm not working right now": "not_working"
+   },
+   "default": "other"
+  },
+  "hardest": {
+   "step": 7,
+   "max": 2,
+   "values": {
+    "Asking to repeat or explain": "repeat",
+    "Talking to my manager": "manager",
+    "Meetings or briefings": "meetings",
+    "Phone calls": "phone",
+    "Small talk with coworkers": "smalltalk",
+    "Doctor, bank, school": "services"
+   },
+   "priority": [
+    "repeat",
+    "manager",
+    "meetings",
+    "phone",
+    "smalltalk",
+    "services"
+   ],
+   "default": [
+    "repeat"
+   ]
+  },
+  "cost": {
+   "step": 11,
+   "values": {
+    "A promotion or better job": "promotion",
+    "Money or extra shifts": "money",
+    "A mistake at work": "mistake",
+    "Feeling embarrassed": "embarrassed",
+    "Not really": "none"
+   },
+   "default": "none"
+  },
+  "trial_ok": {
+   "step": 8,
+   "values": [
+    true,
+    false,
+    "skipped"
+   ],
+   "default": "skipped"
+  }
+ },
+ "voice_trial": {
+  "repeat": {
+   "title": "Asking again feels hard? Let's try it.",
+   "phrase": "Sorry, could you say that again more slowly?",
+   "ua": "Вибачте, можете повторити повільніше?",
+   "tip_ua": "Ця фраза працює з будь-яким акцентом і будь-яким начальником.",
+   "starts_here": "C2",
+   "keywords": [
+    "sorry",
+    "say",
+    "again",
+    "slowly"
+   ],
+   "title_ua": "Важко перепитати? Спробуймо.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "manager": {
+   "title": "Talking to your manager? Start with one line.",
+   "phrase": "Could I talk to you for a minute, please?",
+   "ua": "Можна вас на хвилинку?",
+   "tip_ua": "«Please» в кінці робить прохання ввічливим, але не слабким.",
+   "starts_here": "C8",
+   "keywords": [
+    "talk",
+    "minute",
+    "please"
+   ],
+   "title_ua": "Розмова з менеджером? Почни з однієї фрази.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "phone": {
+   "title": "Phone calls are the hardest — no faces, no gestures.",
+   "phrase": "Hi, it's {name}. I'm calling to say I'll be late today.",
+   "ua": "Привіт, це {name}. Дзвоню сказати, що сьогодні запізнюся.",
+   "tip_ua": "Спершу ім'я, потім причина дзвінка — це все, що чекають у перші 5 секунд.",
+   "starts_here": "C4",
+   "keywords": [
+    "calling",
+    "late",
+    "today"
+   ],
+   "title_ua": "Дзвінки — найважче: ні облич, ні жестів.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "smalltalk": {
+   "title": "Small talk on a break? Here's an easy start.",
+   "phrase": "How was your weekend? Mine was quiet.",
+   "ua": "Як минули вихідні? У мене спокійно.",
+   "tip_ua": "Додай про себе одне речення — і розмова піде сама.",
+   "starts_here": "C9",
+   "keywords": [
+    "weekend",
+    "quiet"
+   ],
+   "title_ua": "Small talk на перерві? Ось легкий початок.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "meetings": {
+   "title": "Missed something in the briefing? Ask like this.",
+   "phrase": "Sorry, what do I need to do first?",
+   "ua": "Вибачте, що мені треба зробити спочатку?",
+   "tip_ua": "Питати про перший крок — це нормально, це звучить відповідально.",
+   "starts_here": "C1",
+   "keywords": [
+    "need",
+    "do",
+    "first"
+   ],
+   "title_ua": "Пропустила щось на брифінгу? Перепитай так.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "services": {
+   "title": "Doctor, bank or school? Start with this.",
+   "phrase": "Hello, I'd like to make an appointment, please.",
+   "ua": "Добрий день, я хочу записатися на прийом.",
+   "tip_ua": "«I'd like…» — універсальний початок для будь-якого запиту.",
+   "starts_here": "D1",
+   "keywords": [
+    "like",
+    "appointment"
+   ],
+   "title_ua": "Лікар, банк чи школа? Почни з цього.",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "none": {
+   "title": "Let's try it. Say this out loud:",
+   "phrase": "Sorry, could you say that again more slowly?",
+   "ua": "Вибачте, можете повторити повільніше?",
+   "tip_ua": "Ця фраза працює з будь-яким акцентом і будь-яким начальником.",
+   "starts_here": "C2",
+   "keywords": [
+    "sorry",
+    "say",
+    "again",
+    "slowly"
+   ],
+   "title_ua": "Спробуймо. Скажи це вголос:",
+   "designer": [
+    "title_ua"
+   ]
+  },
+  "rules": {
+   "pass_ratio": 0.7,
+   "max_attempts": 2,
+   "name_not_checked": true
+  }
+ },
+ "interstitial": {
+  "money": {
+   "number": "25–40%",
+   "label": "Earn more",
+   "title": "People with limited English earn 25–40% less.",
+   "sub": "Asking for more hours is a skill you can train.",
+   "source": "Brookings, 2014",
+   "region": "US study",
+   "url": "https://www.brookings.edu/research/investing-in-english-skills-the-limited-english-proficient-workfo",
+   "reliability": "high",
+   "title_ua": "Люди з обмеженою англійською заробляють на 25–40% менше.",
+   "sub_ua": "Просити більше годин — це навичка, яку можна натренувати.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ]
+  },
+  "promotion": {
+   "number": "2×",
+   "label": "Get noticed",
+   "title": "Skilled people without confident English are twice as likely to work in jobs below their skills.",
+   "sub": "Speaking up is how people get noticed. You can train it.",
+   "source": "Brookings, 2014",
+   "region": "US study",
+   "url": "https://www.brookings.edu/wp-content/uploads/2014/09/metro_20140924_investing_in_english_skils_report.pdf",
+   "reliability": "high",
+   "title_ua": "Кваліфіковані люди без впевненої англійської вдвічі частіше працюють нижче своєї кваліфікації.",
+   "sub_ua": "Говорити вголос — так тебе помічають. Це можна натренувати.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ]
+  },
+  "mistake": {
+   "number": "1 in 4",
+   "label": "Stay safe",
+   "title": "Employers say 1 in 4 workplace accidents could have been avoided without a language barrier.",
+   "sub": "Knowing how to ask and report keeps you safe.",
+   "source": "IOSH pilot study, 2008",
+   "region": "UK",
+   "url": "https://www.personneltoday.com/?p=31111",
+   "reliability": "medium",
+   "todo": "TODO: потрібен рісерч — оригінальний звіт IOSH або HSE RR502",
+   "title_ua": "Роботодавці кажуть: 1 з 4 нещасних випадків можна було б уникнути без мовного бар'єру.",
+   "sub_ua": "Уміння спитати й повідомити береже тебе.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ]
+  },
+  "embarrassed": {
+   "number": "1 in 3",
+   "label": "Speak up",
+   "title": "1 in 3 people have nodded along without understanding. You're not alone.",
+   "sub": "Asking again is normal. We'll practise exactly how.",
+   "source": "Promova survey, June 2026",
+   "region": "US study",
+   "url": "https://www.have-clothes-will-travel.com/nearly-half-of-americans-have-talked-louder-to-someone-who-doesnt-speak-english-a-new-survey-explains-why/",
+   "reliability": "low",
+   "decision": "Запасний варіант: KFF/LA Times 2023 — 53%, «More than half of people in your shoes have felt this.»",
+   "title_ua": "1 з 3 людей кивали, не розуміючи. Ти не одна.",
+   "sub_ua": "Перепитати — нормально. Ми потренуємо, як саме.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ]
+  },
+  "none": {
+   "number": null,
+   "label": null,
+   "title": "Good — let's keep it that way.",
+   "sub": "5 minutes on your break, before the talk that matters.",
+   "source": null,
+   "how_lesson_works": [
+    "Briefing — who you'll talk to and why",
+    "Talk — a real conversation with Veera",
+    "Phrases — save the lines you'll use tomorrow"
+   ],
+   "title_ua": "Добре — хай так і буде.",
+   "sub_ua": "5 хвилин на перерві — перед розмовою, яка важлива.",
+   "designer": [
+    "title_ua",
+    "sub_ua"
+   ],
+   "how_ua": [
+    "Брифінг — з ким говориш і навіщо",
+    "Розмова — справжній діалог з Veera",
+    "Фрази — збережи те, що скажеш завтра"
+   ]
+  }
+ },
+ "now_in4": {
+  "hardest": {
+   "repeat": [
+    "You nod and pretend you understood",
+    "You ask again — calmly, in English"
+   ],
+   "manager": [
+    "You avoid asking your manager for things",
+    "Talking to your manager — you handle it yourself"
+   ],
+   "phone": [
+    "You text, or ask someone to call for you",
+    "You make the call yourself"
+   ],
+   "smalltalk": [
+    "You stay quiet on breaks",
+    "You chat on breaks without planning every word"
+   ],
+   "meetings": [
+    "You miss part of the morning briefing",
+    "You know what to do after the briefing"
+   ],
+   "services": [
+    "You bring someone to translate at the doctor's",
+    "You book and explain things yourself"
+   ]
+  },
+  "cost": {
+   "promotion": [
+    "Someone else gets the better role",
+    "You ask for more responsibility"
+   ],
+   "money": [
+    "You don't ask for extra shifts",
+    "You ask for more hours with the right words"
+   ],
+   "mistake": [
+    "You guess instead of asking",
+    "You report a problem clearly"
+   ],
+   "embarrassed": [
+    "You stay silent a few times a week",
+    "You speak up, even when it's hard"
+   ]
+  },
+  "rule": "Now = hardest_1 + cost (cost=none → hardest_2). In 4 weeks = hardest_1 + cost goal.",
+  "chart": {
+   "title": "Work talks you've practised",
+   "format": "{done} of {n}"
+  }
+ },
+ "plan_rules": {
+  "tracks": {
+   "interview": {
+    "when": "sector=not_working OR goal=interview",
+    "lessons": [
+     "I1",
+     "I2",
+     "I3",
+     "C1",
+     "C2",
+     "C9"
+    ]
+   },
+   "daily": {
+    "when": "goal=daily_life",
+    "lessons": [
+     "D1",
+     "D2",
+     "D3",
+     "C2",
+     "C4",
+     "C9"
+    ]
+   },
+   "work": {
+    "when": "otherwise",
+    "lessons": [
+     "C1",
+     "C2",
+     "C3",
+     "C4",
+     "C5",
+     "C6",
+     "C7",
+     "C8",
+     "C9",
+     "C10",
+     "C11",
+     "C12"
+    ]
+   }
+  },
+  "week1": {
+   "title": "Understand and ask again",
+   "lessons": [
+    "C1",
+    "C2",
+    "C3"
+   ]
+  },
+  "starts_here_by_hardest": {
+   "repeat": "C2",
+   "manager": "C8",
+   "phone": "C4",
+   "smalltalk": "C9",
+   "meetings": "C1",
+   "services": "D1"
+  },
+  "blocks": {
+   "wrong": {
+    "title": "When something goes wrong",
+    "lessons": [
+     "C4",
+     "C5",
+     "C12"
+    ],
+    "chosen_by": [
+     "phone",
+     "meetings"
+    ]
+   },
+   "ask": {
+    "title": "Ask for what you need",
+    "lessons": [
+     "C6",
+     "C7"
+    ],
+    "chosen_by": [
+     "manager"
+    ],
+    "sector_lesson": true
+   },
+   "belong": {
+    "title": "Speak up and belong",
+    "lessons": [
+     "C9",
+     "C11",
+     "C10"
+    ],
+    "chosen_by": [
+     "smalltalk"
+    ]
+   }
+  },
+  "block_default_order": [
+   "wrong",
+   "ask",
+   "belong"
+  ],
+  "meetings_rule": "meetings → C5 first in its block",
+  "goal_by_cost": {
+   "promotion": {
+    "chip": "Goal: Ask for more responsibility",
+    "lesson": "C8",
+    "variant": "promotion"
+   },
+   "money": {
+    "chip": "Goal: Ask for more hours",
+    "lesson": "C8"
+   },
+   "mistake": {
+    "chip": "Goal: Report a problem clearly",
+    "lesson": "C12",
+    "also": "C5"
+   },
+   "embarrassed": {
+    "chip": "Goal: Speak up at work",
+    "lesson": "C10"
+   },
+   "none+better_job": {
+    "chip": "Goal: Pass a job interview",
+    "lesson": "I3"
+   },
+   "none+interview": {
+    "chip": "Goal: Pass a job interview",
+    "lesson": "I3"
+   },
+   "none+confident_job": {
+    "chip": "Goal: Talk to your manager",
+    "lesson": "C8"
+   },
+   "none+daily_life": {
+    "chip": "Goal: Handle daily life",
+    "lesson": "D1",
+    "todo": "TODO: у документі немає рядка для none + daily_life"
+   }
+  },
+  "sector_lesson_week3": {
+   "factory_warehouse": "F1",
+   "care": "K1",
+   "hospitality_retail": "H1",
+   "construction": "B1"
+  }
+ },
+ "substitutions": {
+  "factory_warehouse": {
+   "boss": "team leader",
+   "area_1": "line 3",
+   "area_2": "packing",
+   "task_1": "picking the Tesco order",
+   "task_hard": "the handheld scanner",
+   "problem_1": "The scanner keeps freezing",
+   "hazard_1": "A pallet is leaking oil on the floor",
+   "item": "the labels",
+   "slang_1": "crack on",
+   "next_role": "team leader",
+   "payroll": "the agency",
+   "colleague": "Dave",
+   "task_2": "the Asda order",
+   "task_1_plain": "go to line 3",
+   "quick_fix": "scan the barcode twice",
+   "thing": "the scanner",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to run the line",
+   "site": "Goods in",
+   "shift": "the morning shift",
+   "sector_job": "a warehouse"
+  },
+  "care": {
+   "boss": "senior carer",
+   "area_1": "Room 4",
+   "area_2": "the dining room",
+   "task_1": "morning personal care for Mrs Brown",
+   "task_hard": "the hoist",
+   "problem_1": "The call bell in Room 4 isn't working",
+   "hazard_1": "A resident has fallen in the bathroom",
+   "item": "the care notes",
+   "slang_1": "handover",
+   "next_role": "senior carer",
+   "payroll": "the office",
+   "colleague": "Grace",
+   "task_2": "the medication round",
+   "task_1_plain": "help Mrs Brown first",
+   "quick_fix": "lock the wheels first",
+   "thing": "the call bell",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to do the handover",
+   "site": "Oak House",
+   "shift": "the early shift",
+   "sector_job": "care"
+  },
+  "hospitality_retail": {
+   "boss": "duty manager",
+   "area_1": "the bar",
+   "area_2": "the stockroom",
+   "task_1": "setting up tables for lunch",
+   "task_hard": "the till refund",
+   "problem_1": "A guest says their room wasn't cleaned",
+   "hazard_1": "There's broken glass behind the bar",
+   "item": "the table settings",
+   "slang_1": "86'd",
+   "next_role": "supervisor",
+   "payroll": "the GM",
+   "colleague": "Ana",
+   "task_2": "the lunch covers",
+   "task_1_plain": "set up the tables",
+   "quick_fix": "press refund, then manager code",
+   "thing": "the till",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to close the till",
+   "site": "the front desk",
+   "shift": "the lunch shift",
+   "sector_job": "a hotel"
+  },
+  "construction": {
+   "boss": "site manager",
+   "area_1": "level 2",
+   "area_2": "the loading area",
+   "task_1": "putting up plasterboard",
+   "task_hard": "the mixer",
+   "problem_1": "The delivery is missing half the blocks",
+   "hazard_1": "A scaffold board is loose",
+   "item": "the measurements",
+   "slang_1": "snagging",
+   "next_role": "chargehand",
+   "payroll": "the office",
+   "colleague": "Mick",
+   "task_2": "the second fix",
+   "task_1_plain": "go to level 2",
+   "quick_fix": "add the water slowly",
+   "thing": "the mixer",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to read the drawings",
+   "site": "the site office",
+   "shift": "the day shift",
+   "sector_job": "construction"
+  },
+  "other": {
+   "boss": "manager",
+   "area_1": "the front desk",
+   "area_2": "the stockroom",
+   "task_1": "checking deliveries",
+   "task_hard": "the printer",
+   "problem_1": "The system is down",
+   "hazard_1": "A cable is across the walkway",
+   "item": "the report",
+   "slang_1": "ASAP",
+   "next_role": "team lead",
+   "payroll": "HR",
+   "colleague": "Sam",
+   "task_2": "the emails",
+   "task_1_plain": "check the deliveries",
+   "quick_fix": "restart it",
+   "thing": "the system",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to plan the week",
+   "site": "the office",
+   "shift": "the morning shift",
+   "sector_job": "an office"
+  },
+  "office": {
+   "boss": "manager",
+   "area_1": "the front desk",
+   "area_2": "the stockroom",
+   "task_1": "checking deliveries",
+   "task_hard": "the printer",
+   "problem_1": "The system is down",
+   "hazard_1": "A cable is across the walkway",
+   "item": "the report",
+   "slang_1": "ASAP",
+   "next_role": "team lead",
+   "payroll": "HR",
+   "colleague": "Sam",
+   "task_2": "the emails",
+   "task_1_plain": "check the deliveries",
+   "quick_fix": "restart it",
+   "thing": "the system",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to plan the week",
+   "site": "the office",
+   "shift": "the morning shift",
+   "sector_job": "an office"
+  },
+  "not_working": {
+   "boss": "manager",
+   "area_1": "the front desk",
+   "area_2": "the stockroom",
+   "task_1": "checking deliveries",
+   "task_hard": "the printer",
+   "problem_1": "The system is down",
+   "hazard_1": "A cable is across the walkway",
+   "item": "the report",
+   "slang_1": "ASAP",
+   "next_role": "team lead",
+   "payroll": "HR",
+   "colleague": "Sam",
+   "task_2": "the emails",
+   "task_1_plain": "check the deliveries",
+   "quick_fix": "restart it",
+   "thing": "the system",
+   "slang_hours": "overtime going",
+   "next_role_task": "how to plan the week",
+   "site": "the office",
+   "shift": "the morning shift",
+   "sector_job": "an office"
+  }
+ },
+ "substitutions_designer_keys": [
+  "colleague",
+  "task_2",
+  "task_1_plain",
+  "quick_fix",
+  "thing",
+  "slang_hours",
+  "next_role_task",
+  "site",
+  "shift",
+  "sector_job"
+ ],
+ "substitutions_note": "Ключі colleague, task_2, task_1_plain, quick_fix, thing, slang_hours, next_role_task, site, shift, sector_job — дописано дизайнером (їх немає в таблиці 6.1).",
+ "slang": {
+  "factory_warehouse": {
+   "crack on": "продовжуй",
+   "pick rate": "норма відбору",
+   "goods in": "прийомка",
+   "on the line": "на лінії",
+   "give us a hand": "допоможи"
+  },
+  "care": {
+   "handover": "передача зміни",
+   "obs": "огляд показників",
+   "PRN": "за потреби",
+   "on the floor": "у відділенні",
+   "double up": "удвох"
+  },
+  "hospitality_retail": {
+   "86'd": "закінчилось",
+   "covers": "гості за столами",
+   "behind!": "обережно, позаду",
+   "on the floor": "у залі",
+   "cashing up": "закриття каси"
+  },
+  "construction": {
+   "snagging": "дрібні доробки",
+   "chippy": "тесляр",
+   "toolbox talk": "інструктаж",
+   "gaffer": "бос",
+   "RAMS": "оцінка ризиків"
+  },
+  "common": {
+   "sharpish": "швидко",
+   "innit": "так же?",
+   "at the mo": "зараз",
+   "leave it with me": "я цим займуся",
+   "sort cover": "знайти заміну",
+   "pay run": "виплата зарплати",
+   "all over the shop": "безлад",
+   "short-staffed": "бракує людей",
+   "get it logged": "записати",
+   "cone it off": "огородити",
+   "absolute shambles": "повний безлад",
+   "we got battered": "нас розгромили",
+   "footy": "футбол",
+   "nip up": "швиденько піднятися",
+   "ticketed": "має допуск",
+   "earlies and lates": "ранні й пізні зміни",
+   "all being well": "якщо все буде добре",
+   "poorly": "хворенька",
+   "callback": "передзвонять",
+   "duty doctor": "черговий лікар",
+   "mains": "основні страви"
+  }
+ },
+ "lessons": {
+  "C1": {
+   "id": "C1",
+   "title": "Supervisor's instructions",
+   "track": "work",
+   "briefing": {
+    "who": "{boss} gives you today's tasks at the start of the shift.",
+    "goal": "Understand the first task and check one detail."
+   },
+   "phrases": [
+    [
+     "So first I need to go to {area_1}, right?",
+     "Тобто спочатку мені треба на {area_1}, так?"
+    ],
+    [
+     "Where do I need to go?",
+     "Куди мені йти?"
+    ],
+    [
+     "Sorry, could you say that again more slowly?",
+     "Повторіть повільніше, будь ласка"
+    ],
+    [
+     "Who do I ask if I have a question?",
+     "До кого звернутися з питанням?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Morning! You're on {area_1} today.",
+     "ua": "Доброго ранку! Сьогодні ти на {area_1}.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Crack on with {task_1}, then give us a hand on {area_2} after break, yeah?",
+     "ua": "Починай з {task_1}, а після перерви допоможи на {area_2}, добре?",
+     "fast": true,
+     "slang": [
+      "crack on",
+      "give us a hand"
+     ]
+    },
+    {
+     "en": "Any questions?",
+     "ua": "Є питання?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Spot on. Shout if you need me.",
+     "ua": "Саме так. Клич, якщо що.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Morning! So I'm on {area_1}?",
+    "Sorry, could you say that again more slowly?",
+    "So first I need to go to {area_1}, right?"
+   ],
+   "feedback": {
+    "worked": [
+     "«So first I need to go to {area_1}, right?»",
+     "You checked the task — that's what good workers do."
+    ],
+    "better": {
+     "said": "First I go to {area_1}.",
+     "try": "So first I need to go to {area_1}, right?",
+     "why_ua": "«…, right?» в кінці перетворює фразу на перевірку — так звучить впевнено."
+    }
+   },
+   "designer": [
+    "phrases[0] filled with {area_1}",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C2": {
+   "id": "C2",
+   "title": "Ask to repeat or slow down",
+   "track": "work",
+   "briefing": {
+    "who": "{boss} speaks fast and you miss a word.",
+    "goal": "Ask again without apologising too much."
+   },
+   "phrases": [
+    [
+     "Sorry, could you say that again more slowly?",
+     "Повторіть повільніше, будь ласка"
+    ],
+    [
+     "What does ‘{slang_1}’ mean?",
+     "Що означає ‘{slang_1}’?"
+    ],
+    [
+     "So you mean I start on {area_1}?",
+     "Тобто ви маєте на увазі, що я починаю на {area_1}?"
+    ],
+    [
+     "Could you show me?",
+     "Можете показати?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Right, {slang_1} — {area_1}, sharpish, then {task_2}.",
+     "ua": "Так, {slang_1} — {area_1}, швиденько, потім {task_2}.",
+     "fast": true,
+     "slang": [
+      "{slang_1}",
+      "sharpish"
+     ]
+    },
+    {
+     "en": "Sure. First, {task_1_plain}. Then {task_2}.",
+     "ua": "Звісно. Спочатку — {task_1_plain}. Потім — {task_2}.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Got it?",
+     "ua": "Зрозуміло?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Spot on. Off you go.",
+     "ua": "Саме так. Вперед.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Sorry, could you say that again more slowly?",
+    "What does ‘{slang_1}’ mean?",
+    "So you mean I start on {area_1}?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, could you say that again more slowly?»",
+     "You asked instead of guessing."
+    ],
+    "better": {
+     "said": "Sorry, sorry, I don't understand.",
+     "try": "Sorry, could you say that again?",
+     "why_ua": "Одного «sorry» досить — так звучить спокійно, а не винувато."
+    }
+   },
+   "designer": [
+    "AI line 1: «on» → «—», щоб «crack on on» не дублювалось",
+    "AI line 4",
+    "phrases[2] filled",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C3": {
+   "id": "C3",
+   "title": "Ask a colleague for help",
+   "track": "work",
+   "briefing": {
+    "who": "You're stuck with {task_hard}. {colleague} is nearby.",
+    "goal": "Ask for help and say thank you."
+   },
+   "phrases": [
+    [
+     "Hey, have you got a minute?",
+     "Маєш хвилинку?"
+    ],
+    [
+     "How do I use {task_hard}?",
+     "Як мені користуватися {task_hard}?"
+    ],
+    [
+     "Sorry, could you show me again?",
+     "Покажеш ще раз?"
+    ],
+    [
+     "Cheers, that really helps.",
+     "Дякую, це дуже допомагає."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Yeah, what's up?",
+     "ua": "Так, що таке?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Oh, that? Easy — you just {quick_fix}, innit.",
+     "ua": "А, це? Легко — просто {quick_fix}, так же?",
+     "fast": true,
+     "slang": [
+      "innit"
+     ]
+    },
+    {
+     "en": "Try it now. Better?",
+     "ua": "Спробуй тепер. Краще?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "No worries, mate.",
+     "ua": "Нема за що.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Hey, have you got a minute? How do I use {task_hard}?",
+    "Sorry, could you show me again?",
+    "Cheers, that really helps."
+   ],
+   "feedback": {
+    "worked": [
+     "«Hey, have you got a minute?»",
+     "You started politely, so people want to help."
+    ],
+    "better": {
+     "said": "Help me.",
+     "try": "Could you help me with this?",
+     "why_ua": "«Could you…» звучить як прохання, а не як наказ."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C4": {
+   "id": "C4",
+   "title": "Call in sick or late",
+   "track": "work",
+   "briefing": {
+    "who": "You're ill or your bus is late. You call {boss} before the shift.",
+    "goal": "Say who you are, what happened, and when you'll come."
+   },
+   "phrases": [
+    [
+     "Hi, it's {name} from {shift}.",
+     "Привіт, це {name} з {shift}"
+    ],
+    [
+     "I'm sorry, I'm not well today and can't come in.",
+     "Вибачте, я хворію і не прийду"
+    ],
+    [
+     "Sorry, the line is bad — could you repeat that?",
+     "Погано чути, повторіть?"
+    ],
+    [
+     "I'll be about 20 minutes late.",
+     "Я запізнюся хвилин на 20."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Hello, {site}.",
+     "ua": "Алло, {site}.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Right, are you off sick, then? Have you filled in the absence thing on the app?",
+     "ua": "Так, ти на лікарняному? Ти заповнила форму відсутності в застосунку?",
+     "fast": true,
+     "slang": [
+      "off sick"
+     ]
+    },
+    {
+     "en": "When d'you reckon you'll be back?",
+     "ua": "Як думаєш, коли повернешся?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "OK, get well soon.",
+     "ua": "Добре, одужуй.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Hi, it's {name} from {shift}. I'm sorry, I'm not well today and can't come in.",
+    "Sorry, the line is bad — could you repeat that?",
+    "I think I'll be back on Monday."
+   ],
+   "feedback": {
+    "worked": [
+     "«Hi, it's {name} from {shift}.»",
+     "You said who you are in the first second — your manager doesn't have to guess."
+    ],
+    "better": {
+     "said": "I am sick, no work.",
+     "try": "I'm not well today, so I can't come in.",
+     "why_ua": "«Can't come in» — стандартна фраза, коли не виходиш на зміну."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C5": {
+   "id": "C5",
+   "title": "Report a problem",
+   "track": "work",
+   "briefing": {
+    "who": "{problem_1}.",
+    "goal": "Tell {boss} what's wrong and where."
+   },
+   "phrases": [
+    [
+     "There's a problem with {thing}.",
+     "Є проблема з {thing}."
+    ],
+    [
+     "It's not working.",
+     "Воно не працює."
+    ],
+    [
+     "Sorry, what should I do now?",
+     "Що мені зараз робити?"
+    ],
+    [
+     "It happened about ten minutes ago.",
+     "Це сталося хвилин 10 тому."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "What's up?",
+     "ua": "Що сталося?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Where exactly?",
+     "ua": "Де саме?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Right, leave it, I'll get maintenance to have a look. Crack on with {task_2} for now.",
+     "ua": "Добре, залиш, я покличу техніків. Поки займайся {task_2}.",
+     "fast": true,
+     "slang": [
+      "crack on"
+     ]
+    }
+   ],
+   "me": [
+    "There's a problem with {thing}. It's not working.",
+    "On {area_1}. It happened about ten minutes ago.",
+    "OK. Sorry, what should I do now?"
+   ],
+   "feedback": {
+    "worked": [
+     "«There's a problem with {thing}.»",
+     "You said what and where — that's all your manager needs."
+    ],
+    "better": {
+     "said": "Machine bad.",
+     "try": "There's a problem with the machine on {area_1}.",
+     "why_ua": "Що + де в одному реченні — і тобі відразу допоможуть."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C6": {
+   "id": "C6",
+   "title": "Swap a shift or ask for a day off",
+   "track": "work",
+   "briefing": {
+    "who": "You need Friday off.",
+    "goal": "Ask {boss} and offer a swap."
+   },
+   "phrases": [
+    [
+     "Could I have Friday off, please?",
+     "Можна мені вихідний у п'ятницю?"
+    ],
+    [
+     "I can swap with {colleague} — they're OK with it.",
+     "Я можу помінятися з {colleague}, вони не проти"
+    ],
+    [
+     "Sorry, do I need to put it on the rota?",
+     "Мені треба вписати це в графік?"
+    ],
+    [
+     "I can work Saturday instead.",
+     "Зате можу вийти в суботу."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Friday? Bit short notice.",
+     "ua": "П'ятниця? Трохи пізно попереджаєш.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "You'll need to stick a holiday request in, and sort cover.",
+     "ua": "Тобі треба подати заяву на відпустку і знайти заміну.",
+     "fast": true,
+     "slang": [
+      "sort cover"
+     ]
+    },
+    {
+     "en": "Alright, if {colleague}'s happy, I'm happy.",
+     "ua": "Гаразд, якщо {colleague} не проти, то і я не проти.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Could I have Friday off, please?",
+    "I can swap with {colleague} — they're OK with it.",
+    "Sorry, do I need to put it on the rota?"
+   ],
+   "feedback": {
+    "worked": [
+     "«I can swap with {colleague}.»",
+     "You offered a solution — managers say yes more often."
+    ],
+    "better": {
+     "said": "I want Friday free.",
+     "try": "Could I have Friday off, please?",
+     "why_ua": "«Could I have…, please?» — ввічливе прохання, а не вимога."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C7": {
+   "id": "C7",
+   "title": "Pay, overtime, payslip mistake",
+   "track": "work",
+   "briefing": {
+    "who": "Your payslip is missing 6 hours of overtime.",
+    "goal": "Explain the problem and agree what happens next."
+   },
+   "phrases": [
+    [
+     "I think there's a mistake on my payslip.",
+     "Здається, у моєму розрахунковому помилка"
+    ],
+    [
+     "My overtime from last week isn't there.",
+     "Немає моїх понаднормових за минулий тиждень"
+    ],
+    [
+     "Sorry, who do I need to talk to?",
+     "З ким мені треба поговорити?"
+    ],
+    [
+     "When will it be fixed?",
+     "Коли це виправлять?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "What seems to be the problem?",
+     "ua": "У чому проблема?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Which week was it?",
+     "ua": "Який це був тиждень?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Right, I'll flag it with {payroll} — should be sorted in the next pay run.",
+     "ua": "Добре, я передам це в {payroll} — має виправитися в наступну виплату.",
+     "fast": true,
+     "slang": [
+      "pay run"
+     ]
+    }
+   ],
+   "me": [
+    "I think there's a mistake on my payslip. My overtime isn't there.",
+    "It was last week — six hours.",
+    "Thank you. When will it be fixed?"
+   ],
+   "feedback": {
+    "worked": [
+     "«I think there's a mistake on my payslip.»",
+     "You named the problem calmly — that's how it gets fixed fast."
+    ],
+    "better": {
+     "said": "Money is wrong.",
+     "try": "I think there's a mistake on my payslip.",
+     "why_ua": "«Payslip» — так у UK називають розрахунковий лист."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C8": {
+   "id": "C8",
+   "title": "Ask for more hours",
+   "track": "work",
+   "briefing": {
+    "who": "You want more shifts or a better shift.",
+    "goal": "Ask clearly and give one reason."
+   },
+   "phrases": [
+    [
+     "Could I talk to you for a minute, please?",
+     "Можна вас на хвилинку?"
+    ],
+    [
+     "I'd like to pick up more hours, if there are any.",
+     "Я хотіла б більше годин, якщо є"
+    ],
+    [
+     "Sorry, what do you mean by ‘{slang_hours}’?",
+     "Що ви маєте на увазі?"
+    ],
+    [
+     "I'm reliable and I know {area_1} well.",
+     "На мене можна покластися, і я добре знаю {area_1}"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Sure, what's on your mind?",
+     "ua": "Звісно, що таке?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Things are a bit tight at the mo, but there might be some overtime going on nights.",
+     "ua": "Зараз трохи туго, але можуть бути понаднормові на нічних.",
+     "fast": true,
+     "slang": [
+      "at the mo"
+     ]
+    },
+    {
+     "en": "Would you be up for that?",
+     "ua": "Тобі це підходить?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Leave it with me.",
+     "ua": "Я цим займуся.",
+     "fast": false,
+     "slang": [
+      "leave it with me"
+     ]
+    }
+   ],
+   "me": [
+    "Could I talk to you for a minute, please? I'd like to pick up more hours.",
+    "I'm reliable and I know {area_1} well.",
+    "Yes, nights are fine for me."
+   ],
+   "feedback": {
+    "worked": [
+     "«I'm reliable and I know {area_1} well.»",
+     "You gave a reason — that makes it easy to say yes."
+    ],
+    "better": {
+     "said": "I want more money.",
+     "try": "I'd like to pick up more hours, if there are any.",
+     "why_ua": "Проси години, а не гроші, — так звучить як пропозиція допомогти."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ],
+   "variants": {
+    "promotion": {
+     "title": "Ask for more responsibility",
+     "goal": "Ask to learn more and train for {next_role}.",
+     "phrase": [
+      "I'd like to learn {next_role_task}. Is there a chance to train for {next_role}?",
+      "Я хотіла б навчитися {next_role_task}. Чи є можливість навчитися на {next_role}?"
+     ]
+    }
+   }
+  },
+  "C9": {
+   "id": "C9",
+   "title": "Small talk on a break",
+   "track": "work",
+   "briefing": {
+    "who": "It's break time. {colleague} sits next to you.",
+    "goal": "Keep the chat going for 3 turns."
+   },
+   "phrases": [
+    [
+     "How was your weekend?",
+     "Як вихідні?"
+    ],
+    [
+     "Mine was quiet — I just rested.",
+     "У мене спокійно, відпочивала"
+    ],
+    [
+     "Sorry, I didn't catch that.",
+     "Вибач, не розчула"
+    ],
+    [
+     "Really? What happened?",
+     "Справді? І що сталося?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Alright? Busy one today.",
+     "ua": "Привіт. Сьогодні завал.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Went to watch the footy Saturday, absolute shambles, we got battered.",
+     "ua": "У суботу ходив на футбол — повний провал, нас розгромили.",
+     "fast": true,
+     "slang": [
+      "footy",
+      "absolute shambles",
+      "we got battered"
+     ]
+    },
+    {
+     "en": "You do anything nice?",
+     "ua": "А ти робила щось цікаве?",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Yeah, busy. How was your weekend?",
+    "Sorry, I didn't catch that. Really? What happened?",
+    "Mine was quiet — I just rested."
+   ],
+   "feedback": {
+    "worked": [
+     "«Really? What happened?»",
+     "You asked a question back — that's what keeps a chat going."
+    ],
+    "better": {
+     "said": "Weekend good.",
+     "try": "Mine was quiet — I just rested.",
+     "why_ua": "Коротке речення про себе — і розмова йде далі."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C10": {
+   "id": "C10",
+   "title": "Say no politely",
+   "track": "work",
+   "briefing": {
+    "who": "{boss} asks you to stay 2 extra hours today.",
+    "goal": "Say no calmly and offer another day."
+   },
+   "phrases": [
+    [
+     "Sorry, I can't stay late today.",
+     "Вибачте, сьогодні не можу залишитися"
+    ],
+    [
+     "I can do another day.",
+     "Можу в інший день"
+    ],
+    [
+     "Sorry, can I explain what happened?",
+     "Можна я поясню, що сталося?"
+    ],
+    [
+     "That wasn't me — I was on {area_2} then.",
+     "Це була не я, я тоді була на {area_2}"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Can you stay on till eight tonight?",
+     "ua": "Можеш залишитися до восьмої сьогодні?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Come on, we're short-staffed, it's only a couple of hours.",
+     "ua": "Ну давай, людей бракує, це лише пару годин.",
+     "fast": true,
+     "slang": [
+      "short-staffed"
+     ]
+    },
+    {
+     "en": "Fair enough. What about Thursday?",
+     "ua": "Гаразд. А в четвер?",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Sorry, I can't stay late today.",
+    "I'm sorry, I really can't today. I can do another day.",
+    "Yes, Thursday is fine."
+   ],
+   "feedback": {
+    "worked": [
+     "«I can do another day.»",
+     "You said no and offered something — that's fair and clear."
+    ],
+    "better": {
+     "said": "Sorry, sorry, maybe no…",
+     "try": "Sorry, I can't today. I can do Thursday.",
+     "why_ua": "Одне «sorry» і чітке «can't» — так тебе почують."
+    }
+   },
+   "designer": [
+    "worked",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C11": {
+   "id": "C11",
+   "title": "Take feedback",
+   "track": "work",
+   "briefing": {
+    "who": "{boss} says you made a mistake with {task_1}.",
+    "goal": "Understand what was wrong and say what you'll do."
+   },
+   "phrases": [
+    [
+     "OK, I understand.",
+     "Зрозуміла"
+    ],
+    [
+     "So next time I should check {item} first?",
+     "Тобто наступного разу мені треба спершу перевірити {item}?"
+    ],
+    [
+     "Sorry, could you show me the right way?",
+     "Покажете, як правильно?"
+    ],
+    [
+     "Thanks for telling me.",
+     "Дякую, що сказали."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Got a sec? About yesterday.",
+     "ua": "Є хвилинка? Про вчорашнє.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "{item} on {area_1} were all over the shop — that can't happen again.",
+     "ua": "{item} на {area_1} були в повному безладі — так не можна.",
+     "fast": true,
+     "slang": [
+      "all over the shop"
+     ]
+    },
+    {
+     "en": "So what will you do differently?",
+     "ua": "То що ти робитимеш інакше?",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Yes, of course.",
+    "OK, I understand. Sorry, could you show me the right way?",
+    "So next time I should check {item} first. Thanks for telling me."
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, could you show me the right way?»",
+     "You stayed calm and asked how to fix it."
+    ],
+    "better": {
+     "said": "Not my fault.",
+     "try": "OK, I understand. Could you show me the right way?",
+     "why_ua": "Спершу «зрозуміла», потім питання — так розмова не стає сваркою."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "C12": {
+   "id": "C12",
+   "title": "Report an injury or hazard",
+   "track": "work",
+   "briefing": {
+    "who": "{hazard_1}.",
+    "goal": "Warn {boss} quickly and clearly."
+   },
+   "phrases": [
+    [
+     "Excuse me, there's something dangerous here.",
+     "Вибачте, тут небезпечно"
+    ],
+    [
+     "I've hurt my hand.",
+     "Я травмувала руку"
+    ],
+    [
+     "Sorry, where is the first aid kit?",
+     "Де аптечка?"
+    ],
+    [
+     "Do I need to fill in the accident book?",
+     "Мені треба записати це в журнал нещасних випадків?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "What's happened?",
+     "ua": "Що сталося?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Are you OK? Where is it?",
+     "ua": "Ти в порядку? Де це?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "Right, don't touch it. I'll cone it off and get it logged.",
+     "ua": "Так, не чіпай. Я огороджу і запишу.",
+     "fast": true,
+     "slang": [
+      "cone it off",
+      "get it logged"
+     ]
+    }
+   ],
+   "me": [
+    "Excuse me, there's something dangerous here. {hazard_1}.",
+    "I'm OK. It's on {area_1}.",
+    "Do I need to fill in the accident book?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Excuse me, there's something dangerous here.»",
+     "You said what and where first — that's exactly right in an emergency."
+    ],
+    "better": {
+     "said": "Problem! Problem!",
+     "try": "Excuse me, there's something dangerous on {area_1}.",
+     "why_ua": "Що + де — і тобі допоможуть за секунди."
+    }
+   },
+   "designer": [
+    "better",
+    "AI ua",
+    "me",
+    "why_ua"
+   ]
+  },
+  "F1": {
+   "id": "F1",
+   "title": "Behind on your pick rate",
+   "track": "sector",
+   "briefing": {
+    "who": "Your team leader says you're slow today.",
+    "goal": "Explain why and ask for help."
+   },
+   "phrases": [
+    [
+     "Sorry, the scanner kept freezing.",
+     "Вибачте, сканер постійно зависав."
+    ],
+    [
+     "What rate do I need to hit?",
+     "Яку норму мені треба виконати?"
+    ],
+    [
+     "Sorry, could you say the number again?",
+     "Вибачте, можете повторити число?"
+    ],
+    [
+     "Could someone show me a faster way?",
+     "Чи може хтось показати швидший спосіб?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "You're on 80 an hour, you need to be hitting 110, yeah?",
+     "ua": "У тебе 80 на годину, а треба 110, ясно?",
+     "fast": true,
+     "slang": [
+      "pick rate"
+     ]
+    },
+    {
+     "en": "What's slowing you down?",
+     "ua": "Що тебе гальмує?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "OK, I'll get Dave to show you.",
+     "ua": "Добре, попрошу Дейва тобі показати.",
+     "fast": false,
+     "slang": []
+    }
+   ],
+   "me": [
+    "Sorry, could you say the number again?",
+    "Sorry, the scanner kept freezing.",
+    "Could someone show me a faster way?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, the scanner kept freezing.»",
+     "You gave the real reason — now they can help, not blame."
+    ],
+    "better": {
+     "said": "I am slow, sorry, sorry.",
+     "try": "Sorry, the scanner kept freezing.",
+     "why_ua": "Назви причину — це не виправдання, а факт."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "F2": {
+   "id": "F2",
+   "title": "Not trained on this machine",
+   "track": "sector",
+   "briefing": {
+    "who": "You're asked to use equipment you haven't been trained on.",
+    "goal": "Say no safely."
+   },
+   "phrases": [
+    [
+     "Sorry, I'm not trained on the forklift.",
+     "Вибачте, я не навчена працювати на навантажувачі."
+    ],
+    [
+     "Can someone else do it?",
+     "Може хтось інший це зробити?"
+    ],
+    [
+     "Sorry, what did you say I should use?",
+     "Вибачте, що ви сказали мені використати?"
+    ],
+    [
+     "Can I get the training?",
+     "Можна мені пройти навчання?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Just jump on the reach truck and shift those pallets.",
+     "ua": "Просто сідай на штабелер і перевези ті палети.",
+     "fast": true,
+     "slang": [
+      "jump on"
+     ]
+    },
+    {
+     "en": "Ah, you're not ticketed? Fair enough.",
+     "ua": "А, у тебе немає допуску? Гаразд.",
+     "fast": false,
+     "slang": [
+      "ticketed"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, what did you say I should use?",
+    "Sorry, I'm not trained on it. Can I get the training?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, I'm not trained on the forklift.»",
+     "You said no to something unsafe — that protects you and everyone."
+    ],
+    "better": {
+     "said": "I can't, no.",
+     "try": "Sorry, I'm not trained on it. Can someone else do it?",
+     "why_ua": "Поясни чому — і «ні» звучить професійно."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "K1": {
+   "id": "K1",
+   "title": "Shift handover",
+   "track": "sector",
+   "briefing": {
+    "who": "The night carer tells you about residents.",
+    "goal": "Understand and check one detail."
+   },
+   "phrases": [
+    [
+     "How was Mrs Brown last night?",
+     "Як Місіс Браун провела ніч?"
+    ],
+    [
+     "Does she need anything this morning?",
+     "Їй щось потрібно зранку?"
+    ],
+    [
+     "Sorry, could you repeat the time?",
+     "Вибачте, можете повторити час?"
+    ],
+    [
+     "Is it in the care notes?",
+     "Це є в записах догляду?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Room 4 was unsettled, had PRN at two, obs are fine, she's on a fluid chart.",
+     "ua": "Кімната 4 була неспокійна, о другій дали ліки за потреби, показники в нормі, ведемо облік рідини.",
+     "fast": true,
+     "slang": [
+      "PRN",
+      "obs"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, could you repeat the time?",
+    "Is it in the care notes?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, could you repeat the time?»",
+     "You checked the detail that matters — that keeps residents safe."
+    ],
+    "better": {
+     "said": "What time? What?",
+     "try": "Sorry, could you repeat the time?",
+     "why_ua": "Перепитай саме деталь — так швидше і впевненіше."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "K2": {
+   "id": "K2",
+   "title": "Talking to a resident's family",
+   "track": "sector",
+   "briefing": {
+    "who": "A daughter asks how her mum is.",
+    "goal": "Answer kindly and send her to the nurse for medical questions."
+   },
+   "phrases": [
+    [
+     "She ate well today.",
+     "Вона сьогодні добре поїла."
+    ],
+    [
+     "I'll ask the nurse to talk to you.",
+     "Я попрошу медсестру з вами поговорити."
+    ],
+    [
+     "Sorry, could you say that again?",
+     "Вибачте, можете повторити?"
+    ],
+    [
+     "Is there anything else I can do?",
+     "Чи можу я ще чимось допомогти?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Is she eating? She looked thin on Sunday.",
+     "ua": "Вона їсть? У неділю здавалася худою.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "And has the GP been round about her meds?",
+     "ua": "А лікар приходив щодо її ліків?",
+     "fast": true,
+     "slang": [
+      "GP",
+      "meds"
+     ]
+    }
+   ],
+   "me": [
+    "She ate well today.",
+    "I'll ask the nurse to talk to you."
+   ],
+   "feedback": {
+    "worked": [
+     "«I'll ask the nurse to talk to you.»",
+     "You were kind and stayed in your role — that's exactly right."
+    ],
+    "better": {
+     "said": "I don't know medicine.",
+     "try": "I'll ask the nurse to talk to you.",
+     "why_ua": "Не «не знаю», а «попрошу того, хто знає»."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "H1": {
+   "id": "H1",
+   "title": "A guest or customer complains",
+   "track": "sector",
+   "briefing": {
+    "who": "A guest says the food is late.",
+    "goal": "Apologise, offer help, and call the manager if needed."
+   },
+   "phrases": [
+    [
+     "I'm sorry about that.",
+     "Мені шкода."
+    ],
+    [
+     "Let me get that sorted for you.",
+     "Дозвольте, я це владнаю."
+    ],
+    [
+     "Sorry, could you say the table number again?",
+     "Вибачте, можете повторити номер столика?"
+    ],
+    [
+     "I'll ask my manager now.",
+     "Я зараз покличу менеджера."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "This is ridiculous, we've been waiting forty minutes for our mains.",
+     "ua": "Це смішно, ми чекаємо основні страви сорок хвилин.",
+     "fast": true,
+     "slang": [
+      "mains"
+     ]
+    }
+   ],
+   "me": [
+    "I'm sorry about that. Let me get that sorted for you.",
+    "I'll ask my manager now."
+   ],
+   "feedback": {
+    "worked": [
+     "«Let me get that sorted for you.»",
+     "You apologised once and moved to a solution."
+    ],
+    "better": {
+     "said": "Not my fault, kitchen slow.",
+     "try": "I'm sorry about that. Let me get that sorted for you.",
+     "why_ua": "Гостю потрібне рішення, а не винуватий."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "H2": {
+   "id": "H2",
+   "title": "Help a customer find something",
+   "track": "sector",
+   "briefing": {
+    "who": "A customer asks where an item is.",
+    "goal": "Help them find it or say when it's back."
+   },
+   "phrases": [
+    [
+     "It's in aisle 5, next to the bread.",
+     "Це в 5-му ряду, біля хліба."
+    ],
+    [
+     "Let me show you.",
+     "Давайте я покажу."
+    ],
+    [
+     "Sorry, which one do you mean?",
+     "Вибачте, яке саме?"
+    ],
+    [
+     "We've run out, sorry. It's back on Friday.",
+     "Закінчилося, вибачте. Буде в п'ятницю."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Hiya, d'you have any of them gluten-free wraps, the big ones?",
+     "ua": "Привіт, у вас є безглютенові лаваші, великі?",
+     "fast": true,
+     "slang": [
+      "hiya"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, which one do you mean?",
+    "Let me show you."
+   ],
+   "feedback": {
+    "worked": [
+     "«Let me show you.»",
+     "You walked them there — that's great service."
+    ],
+    "better": {
+     "said": "There.",
+     "try": "It's in aisle 5, next to the bread. Let me show you.",
+     "why_ua": "Місце + орієнтир — і людина знайде сама."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "B1": {
+   "id": "B1",
+   "title": "Toolbox talk",
+   "track": "sector",
+   "briefing": {
+    "who": "Morning safety briefing on site.",
+    "goal": "Understand the main risk today and ask one question."
+   },
+   "phrases": [
+    [
+     "So the main risk today is the crane?",
+     "Тобто головний ризик сьогодні — кран?"
+    ],
+    [
+     "Where's the exclusion zone?",
+     "Де небезпечна зона?"
+    ],
+    [
+     "Sorry, could you say that slower?",
+     "Вибачте, можете повільніше?"
+    ],
+    [
+     "Do I need to sign the RAMS?",
+     "Мені треба підписати RAMS?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Crane's lifting on the east side from ten, so nobody under the load, harnesses on above two metres.",
+     "ua": "З десятої кран піднімає на східній стороні, тож ніхто під вантажем, вище двох метрів — у страховці.",
+     "fast": true,
+     "slang": [
+      "harness"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, could you say that slower?",
+    "Where's the exclusion zone?"
+   ],
+   "feedback": {
+    "worked": [
+     "«Where's the exclusion zone?»",
+     "You asked about the one thing that keeps you safe today."
+    ],
+    "better": {
+     "said": "OK OK.",
+     "try": "So the main risk today is the crane, right?",
+     "why_ua": "Повтори ризик своїми словами — так видно, що ти зрозуміла."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "B2": {
+   "id": "B2",
+   "title": "Refuse unsafe work",
+   "track": "sector",
+   "briefing": {
+    "who": "You're asked to work at height without a harness.",
+    "goal": "Say no and ask for the right kit."
+   },
+   "phrases": [
+    [
+     "Sorry, I'm not going up without a harness.",
+     "Вибачте, я не полізу без страховки."
+    ],
+    [
+     "Can we get the right kit first?",
+     "Можна спершу отримати правильне спорядження?"
+    ],
+    [
+     "Sorry, what did you say?",
+     "Вибачте, що ви сказали?"
+    ],
+    [
+     "I'm happy to do it once it's safe.",
+     "Я охоче зроблю, коли буде безпечно."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "It's two minutes' work, just nip up and do it.",
+     "ua": "Там роботи на дві хвилини, просто швиденько залізь і зроби.",
+     "fast": true,
+     "slang": [
+      "nip up"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, I'm not going up without a harness.",
+    "I'm happy to do it once it's safe."
+   ],
+   "feedback": {
+    "worked": [
+     "«I'm happy to do it once it's safe.»",
+     "You said no and showed you're willing — that's professional."
+    ],
+    "better": {
+     "said": "No, dangerous.",
+     "try": "Sorry, I'm not going up without a harness.",
+     "why_ua": "Назви, чого бракує, — так «ні» стає конкретним."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "I1": {
+   "id": "I1",
+   "title": "Tell me about yourself",
+   "track": "interview",
+   "briefing": {
+    "who": "A recruiter starts the interview.",
+    "goal": "Introduce yourself in 2–3 sentences."
+   },
+   "phrases": [
+    [
+     "I've worked in {sector_job} for two years.",
+     "Я два роки працюю в {sector_job}."
+    ],
+    [
+     "I'm reliable and I learn fast.",
+     "На мене можна покластися, і я швидко вчуся."
+    ],
+    [
+     "Sorry, could you repeat the question?",
+     "Вибачте, можете повторити питання?"
+    ],
+    [
+     "I'm looking for full-time work.",
+     "Я шукаю роботу на повний день."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "So, tell me a bit about yourself.",
+     "ua": "Розкажіть трохи про себе.",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "And what made you leave your last place?",
+     "ua": "А чому ви пішли з попередньої роботи?",
+     "fast": true,
+     "slang": [
+      "last place"
+     ]
+    }
+   ],
+   "me": [
+    "I've worked in {sector_job} for two years. I'm reliable and I learn fast.",
+    "Sorry, could you repeat the question?"
+   ],
+   "feedback": {
+    "worked": [
+     "«I'm reliable and I learn fast.»",
+     "Short and clear — recruiters remember that."
+    ],
+    "better": {
+     "said": "I am worker, good worker.",
+     "try": "I'm reliable and I learn fast.",
+     "why_ua": "Два прикметники про себе — краще, ніж «good worker»."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "I2": {
+   "id": "I2",
+   "title": "Availability and shifts",
+   "track": "interview",
+   "briefing": {
+    "who": "The recruiter asks when you can work.",
+    "goal": "Say your availability and check the contract."
+   },
+   "phrases": [
+    [
+     "I can work nights and weekends.",
+     "Я можу працювати ночами і на вихідних."
+    ],
+    [
+     "I can start on Monday.",
+     "Можу почати в понеділок."
+    ],
+    [
+     "Sorry, is that a zero-hours contract?",
+     "Вибачте, це контракт без гарантованих годин?"
+    ],
+    [
+     "How many hours a week is it?",
+     "Скільки годин на тиждень?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "It's four on, four off, earlies and lates, are you flexible?",
+     "ua": "Чотири дні через чотири, ранні й пізні зміни — ви гнучкі?",
+     "fast": true,
+     "slang": [
+      "earlies and lates",
+      "four on, four off"
+     ]
+    }
+   ],
+   "me": [
+    "Sorry, is that a zero-hours contract?",
+    "I can work nights and weekends. I can start on Monday."
+   ],
+   "feedback": {
+    "worked": [
+     "«How many hours a week is it?»",
+     "You asked about the contract — that's smart, not rude."
+    ],
+    "better": {
+     "said": "Any time OK.",
+     "try": "I can work nights and weekends.",
+     "why_ua": "Конкретні дні звучать надійніше, ніж «будь-коли»."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "I3": {
+   "id": "I3",
+   "title": "Your questions at the end",
+   "track": "interview",
+   "briefing": {
+    "who": "The interview is ending.",
+    "goal": "Ask about pay and next steps, and thank them."
+   },
+   "phrases": [
+    [
+     "What's the hourly rate?",
+     "Яка погодинна ставка?"
+    ],
+    [
+     "Is there training?",
+     "Чи є навчання?"
+    ],
+    [
+     "Sorry, when will I hear back?",
+     "Вибачте, коли я дізнаюся результат?"
+    ],
+    [
+     "Thank you for your time.",
+     "Дякую за ваш час."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Any questions for us?",
+     "ua": "У вас є питання до нас?",
+     "fast": false,
+     "slang": []
+    },
+    {
+     "en": "We'll be in touch end of the week, all being well.",
+     "ua": "Ми зв'яжемося наприкінці тижня, якщо все буде добре.",
+     "fast": true,
+     "slang": [
+      "all being well"
+     ]
+    }
+   ],
+   "me": [
+    "What's the hourly rate? Is there training?",
+    "Thank you for your time."
+   ],
+   "feedback": {
+    "worked": [
+     "«Thank you for your time.»",
+     "You ended politely — that's the last thing they remember."
+    ],
+    "better": {
+     "said": "No questions.",
+     "try": "Is there training?",
+     "why_ua": "Одне питання показує, що тобі не байдуже."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "D1": {
+   "id": "D1",
+   "title": "GP appointment",
+   "track": "daily",
+   "briefing": {
+    "who": "You call the GP surgery.",
+    "goal": "Book an appointment and explain the problem."
+   },
+   "phrases": [
+    [
+     "Hello, I'd like to make an appointment, please.",
+     "Добрий день, я хочу записатися на прийом."
+    ],
+    [
+     "I've had a bad back for a week.",
+     "У мене вже тиждень болить спина."
+    ],
+    [
+     "Sorry, could you spell that?",
+     "Вибачте, можете продиктувати по літерах?"
+    ],
+    [
+     "Is there anything earlier?",
+     "Чи є щось раніше?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Have you tried the online form? Otherwise it's a callback from the duty doctor.",
+     "ua": "Ви пробували онлайн-форму? Інакше вам передзвонить черговий лікар.",
+     "fast": true,
+     "slang": [
+      "callback",
+      "duty doctor"
+     ]
+    }
+   ],
+   "me": [
+    "Hello, I'd like to make an appointment, please. I've had a bad back for a week.",
+    "Is there anything earlier?"
+   ],
+   "feedback": {
+    "worked": [
+     "«I've had a bad back for a week.»",
+     "You said what and how long — that's what the receptionist needs."
+    ],
+    "better": {
+     "said": "Back pain, doctor.",
+     "try": "I've had a bad back for a week.",
+     "why_ua": "«For a week» показує, що це серйозно."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "D2": {
+   "id": "D2",
+   "title": "At the bank",
+   "track": "daily",
+   "briefing": {
+    "who": "You want to open an account.",
+    "goal": "Ask what documents you need."
+   },
+   "phrases": [
+    [
+     "I'd like to open an account.",
+     "Я хочу відкрити рахунок."
+    ],
+    [
+     "What documents do I need?",
+     "Які документи мені потрібні?"
+    ],
+    [
+     "Sorry, could you say that slower?",
+     "Вибачте, можете повільніше?"
+    ],
+    [
+     "Can I do it online?",
+     "Можна зробити це онлайн?"
+    ]
+   ],
+   "ai": [
+    {
+     "en": "We'll need proof of address, so a utility bill or a council tax letter.",
+     "ua": "Нам потрібне підтвердження адреси: рахунок за комуналку або лист про муніципальний податок.",
+     "fast": true,
+     "slang": [
+      "proof of address",
+      "council tax"
+     ]
+    }
+   ],
+   "me": [
+    "What documents do I need?",
+    "Sorry, could you say that slower? Can I do it online?"
+   ],
+   "feedback": {
+    "worked": [
+     "«What documents do I need?»",
+     "One clear question saves a second trip."
+    ],
+    "better": {
+     "said": "Account, please, what need?",
+     "try": "I'd like to open an account. What documents do I need?",
+     "why_ua": "«I'd like…» + питання — ввічливо і зрозуміло."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  },
+  "D3": {
+   "id": "D3",
+   "title": "Call from your child's school",
+   "track": "daily",
+   "briefing": {
+    "who": "The school calls you.",
+    "goal": "Find out what happened and agree when you'll come."
+   },
+   "phrases": [
+    [
+     "Hello, this is Anna's mum.",
+     "Добрий день, це мама Анни."
+    ],
+    [
+     "Is everything OK?",
+     "Усе гаразд?"
+    ],
+    [
+     "Sorry, I didn't understand — what happened?",
+     "Вибачте, я не зрозуміла — що сталося?"
+    ],
+    [
+     "I can come at four.",
+     "Я можу прийти о четвертій."
+    ]
+   ],
+   "ai": [
+    {
+     "en": "Nothing to worry about, she's just a bit poorly, could someone collect her?",
+     "ua": "Нічого страшного, вона трохи нездужає — чи може хтось її забрати?",
+     "fast": true,
+     "slang": [
+      "poorly",
+      "collect"
+     ]
+    }
+   ],
+   "me": [
+    "Hello, this is Anna's mum. Is everything OK?",
+    "Sorry, I didn't understand — what happened? I can come at four."
+   ],
+   "feedback": {
+    "worked": [
+     "«Sorry, I didn't understand — what happened?»",
+     "You asked again instead of guessing — exactly right with school."
+    ],
+    "better": {
+     "said": "What? Anna what?",
+     "try": "Sorry, I didn't understand — what happened?",
+     "why_ua": "Перепитати — краще, ніж хвилюватися здогадками."
+    }
+   },
+   "designer": [
+    "phrases ua",
+    "AI ua",
+    "me",
+    "feedback"
+   ]
+  }
+ },
+ "designer_note": "Поле designer перелічує, що дописано дизайнером: переклади реплік AI (ua), репліки користувачки для демо (me), пояснення why_ua, фідбек для уроків сфер і треків, а також What worked/Say it better, де в документі був лише один з них.",
+ "personas": {
+  "persona-a": {
+   "label": "Olena · factory",
+   "name": "Olena",
+   "lang": "uk",
+   "goal": "confident_job",
+   "sector": "factory_warehouse",
+   "hardest": [
+    "repeat",
+    "phone"
+   ],
+   "cost": "money",
+   "trial_ok": true
+  },
+  "persona-b": {
+   "label": "Ana · hotel",
+   "name": "Ana",
+   "lang": "uk",
+   "goal": "confident_job",
+   "sector": "hospitality_retail",
+   "hardest": [
+    "manager"
+   ],
+   "cost": "embarrassed",
+   "trial_ok": true
+  }
+ }
+};</script>
+<script>/* Veera personalisation core — reads window.VEERA_DATA (veera-data.json) */
+(function () {
+  var D = window.VEERA_DATA;
+  function sortHard(h) { var P = D.vars.hardest.priority; return (h || []).slice().sort(function (a, b) { return P.indexOf(a) - P.indexOf(b); }); }
+  function prof(p) {
+    p = Object.assign({ goal: 'confident_job', sector: 'other', hardest: [], cost: 'none', name: '' }, p || {});
+    p.hardest = sortHard(p.hardest);
+    p.h1 = p.hardest[0] || 'repeat'; p.h2 = p.hardest[1] || null;
+    return p;
+  }
+  function subs(p) { var s = Object.assign({}, D.substitutions[p.sector] || D.substitutions.other); s.name = p.name || 'Olena'; return s; }
+  function fill(t, p) { if (t == null) return t; var s = subs(p); return String(t).replace(/\{(\w+)\}/g, function (m, k) { return s[k] != null ? s[k] : m; }); }
+  function cap(t) { return t ? t.charAt(0).toUpperCase() + t.slice(1) : t; }
+  function label(kind, key) { var v = D.vars[kind].values; for (var k in v) if (v[k] === key) return k; return key; }
+  function track(p) {
+    if (p.sector === 'not_working' || p.goal === 'interview') return 'interview';
+    if (p.goal === 'daily_life') return 'daily';
+    return 'work';
+  }
+  function goalOf(p) {
+    var g = D.plan_rules.goal_by_cost;
+    if (p.cost !== 'none') return g[p.cost];
+    return g['none+' + p.goal] || g['none+confident_job'];
+  }
+  function lessonTitle(id, p) {
+    var L = D.lessons[id]; if (!L) return id;
+    if (id === 'C8' && p.cost === 'promotion') return L.variants.promotion.title;
+    return fill(L.title, p);
+  }
+  // 4.2 — build the 4-week plan
+  function buildPlan(p) {
+    p = prof(p);
+    var R = D.plan_rules, goal = goalOf(p), tr = track(p), weeks = [];
+    var starts = R.starts_here_by_hardest[p.h1] || 'C2';
+    var because = {}; // id -> hardest key
+    function item(id) { return { id: id, title: lessonTitle(id, p), starts: false, goal: false, because: because[id] ? label('hardest', because[id]) : null }; }
+    if (tr !== 'work') {
+      var ids = R.tracks[tr].lessons.slice();
+      if (ids.indexOf(starts) > 0 && tr === 'daily') { ids.splice(ids.indexOf(starts), 1); ids.unshift(starts); }
+      var gid = tr === 'interview' ? 'I3' : 'D1';
+      if (ids.indexOf(gid) >= 0) ids.splice(ids.indexOf(gid), 1);
+      var split = [ids.slice(0, 2), ids.slice(2, 4), ids.slice(4, 5), ids.slice(5).concat([gid])];
+      var tt = tr === 'interview' ? ['Introduce yourself', 'Shifts and contracts', 'Understand and ask again', 'Your interview'] : ['Appointments and calls', 'Everyday questions', 'Understand and ask again', 'Your goal'];
+      weeks = split.map(function (w, i) { return { title: tt[i], lessons: w.map(item) }; });
+    } else {
+      var used = {};
+      var w1 = R.week1.lessons.slice();
+      if (w1.indexOf(starts) >= 0) w1.splice(w1.indexOf(starts), 1);
+      w1.unshift(starts); if (p.hardest.length) because[starts] = p.h1;
+      w1.forEach(function (id) { used[id] = 1; });
+      var chosen = [], order = R.block_default_order;
+      p.hardest.forEach(function (h) { order.forEach(function (b) { if (R.blocks[b].chosen_by.indexOf(h) >= 0 && chosen.indexOf(b) < 0) chosen.push(b); }); });
+      var blocks = chosen.concat(order.filter(function (b) { return chosen.indexOf(b) < 0; }));
+      var gl = goal.lesson;
+      weeks.push({ title: R.week1.title, lessons: w1 });
+      blocks.forEach(function (b) {
+        var B = R.blocks[b], ids = B.lessons.slice();
+        if (B.sector_lesson && R.sector_lesson_week3[p.sector]) ids.push(R.sector_lesson_week3[p.sector]);
+        if (b === 'wrong' && p.hardest.indexOf('meetings') >= 0) { ids.splice(ids.indexOf('C5'), 1); ids.unshift('C5'); }
+        ids = ids.filter(function (id) { return !used[id]; });
+        var ch = chosen.indexOf(b) >= 0 ? p.hardest.filter(function (h) { return B.chosen_by.indexOf(h) >= 0; })[0] : null;
+        if (ch) ids.forEach(function (id) { if (!because[id]) because[id] = ch; });
+        ids.forEach(function (id) { used[id] = 1; });
+        weeks.push({ title: B.title, lessons: ids });
+      });
+      // goal lesson → end of week 4 (unless it is today's starting lesson)
+      if (gl !== starts) {
+        weeks.forEach(function (w) { var j = w.lessons.indexOf(gl); if (j >= 0) w.lessons.splice(j, 1); });
+        weeks[3].lessons.push(gl);
+      }
+      weeks = weeks.map(function (w) { return { title: w.title, lessons: w.lessons.map(item) }; });
+    }
+    weeks[0].lessons[0].starts = true;
+    weeks.forEach(function (w) { w.lessons.forEach(function (l) { if (l.id === goal.lesson) l.goal = true; }); });
+    var n = 0; weeks.forEach(function (w) { n += w.lessons.length; });
+    return { track: tr, goal: goal, weeks: weeks, n: n, starts: weeks[0].lessons[0].id };
+  }
+  function nowIn4(p) {
+    p = prof(p); var T = D.now_in4, rows = [T.hardest[p.h1]];
+    if (p.cost !== 'none' && T.cost[p.cost]) rows.push(T.cost[p.cost]);
+    else if (p.h2) rows.push(T.hardest[p.h2]);
+    return rows;
+  }
+  function voice(p) { p = prof(p); return D.voice_trial[p.hardest.length ? p.h1 : 'none']; }
+  function inter(p) { return D.interstitial[(p && p.cost) || 'none']; }
+  // a lesson with all placeholders filled for this persona
+  function lesson(id, p) {
+    p = prof(p); var L = D.lessons[id], f = function (t) { return fill(t, p); };
+    var ph = L.phrases.map(function (x) { return [cap(f(x[0])), f(x[1])]; });
+    var goal = f(L.briefing.goal), title = lessonTitle(id, p);
+    if (id === 'C8' && p.cost === 'promotion') { var V = L.variants.promotion; goal = f(V.goal); ph[1] = [f(V.phrase[0]), f(V.phrase[1])]; }
+    return { id: id, title: title, who: cap(f(L.briefing.who)), goal: goal, phrases: ph,
+      ai: L.ai.map(function (a) { return { en: cap(f(a.en)), ua: f(a.ua), fast: a.fast, slang: a.slang.map(f) }; }),
+      me: L.me.map(function (m) { return cap(f(m)); }),
+      worked: L.feedback.worked.map(f), better: { said: f(L.feedback.better.said), try: f(L.feedback.better.try), why: f(L.feedback.better.why_ua) }, designer: L.designer };
+  }
+  function slang(term, p) { var s = D.slang[p.sector] || {}, c = D.slang.common; term = (term || '').toLowerCase(); return s[term] || c[term] || null; }
+  window.VeeraCore = { D: D, prof: prof, fill: fill, buildPlan: buildPlan, nowIn4: nowIn4, voice: voice, inter: inter, lesson: lesson, slang: slang, label: label, subs: subs, persona: function (k) { return D.personas[k]; } };
+})();
+</script>
+<script>/* Veera app — first session flow (calm UI) */
+(function () {
+  var I = window.__ICONS;
+  function ic(n, s, c, w) { return I(n, s || 20, c || 'currentColor', w || 2); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function log(ev, d) { try { console.log('[veera-app]', ev, d || {}); } catch (e) {} }
+  function say(t, r) { try { var u = new SpeechSynthesisUtterance(t); u.lang = 'en-GB'; u.rate = r || 0.85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
+
+  var C = window.VeeraCore;
+  var SPEAKER = { C3: 'colleague', C9: 'colleague', K2: "Resident's daughter", H1: 'Guest', H2: 'Customer', I1: 'Recruiter', I2: 'Recruiter', I3: 'Recruiter', D1: 'GP receptionist', D2: 'Bank adviser', D3: 'School office' };
+  var PER, PL, LES, BRIEF, ASK, AI, ME, SAVED, WHO, SLANG;
+  function cap(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
+  function load(persona, lessonId) {
+    PER = C.prof(C.persona(persona) || C.persona('persona-a')); PER.key = persona;
+    PL = C.buildPlan(PER); LES = C.lesson(lessonId || PL.starts, PER);
+    var sb = C.subs(PER), sp = SPEAKER[LES.id] || 'boss';
+    WHO = sp === 'boss' ? cap(sb.boss) : sp === 'colleague' ? sb.colleague + ', your colleague' : sp;
+    BRIEF = [LES.phrases[0], LES.phrases[1], LES.phrases[3]]; ASK = LES.phrases[2];
+    AI = LES.ai; ME = LES.me;
+    SLANG = []; AI.forEach(function (a) { a.slang.forEach(function (w) { var g = C.slang(w, PER); if (g && SLANG.indexOf(w) < 0) SLANG.push(w); }); });
+    SAVED = [LES.phrases[0], LES.phrases[1], ASK].concat(SLANG.slice(0, 1).map(function (w) { return ['You\'ll hear: “' + w + '”', C.slang(w, PER)]; }));
+    log('lesson_load', { persona: persona, lesson: LES.id, sector: PER.sector });
+  }
+  function gloss(a) { return a.slang.map(function (w) { var g = C.slang(w, PER); return g ? w + ' = ' + g : ''; }).filter(Boolean).join(' · '); }
+  function nextLesson() { var all = []; PL.weeks.forEach(function (w) { all = all.concat(w.lessons); }); return all[1]; }
+  var S = { persona: 'persona-a', v: 'brief', briefHint: true, playing: -1, saved: {}, t: null, toast: false, save: { 0: true, 1: true, 2: true, 3: true }, remind: '', said: {} };
+  function newTalk() { return { step: 0, phase: 'idle', rev: {}, tr: {}, used: false, status: {}, text: false, mic: true, typed: '' }; }
+  S.t = newTalk();
+
+  function orb(state, size) { return '<span class="orb ' + (size || '') + ' ' + (state || 'idle') + '" aria-hidden="true"><span class="lh"></span><span class="sw"><span class="glow"></span><span class="core"></span><span class="lsw"></span><span class="core mint"></span><span class="gloss"></span></span></span>'; }
+  function scr(inner, cls) { return '<div class="scr a2 ' + (cls || '') + '"><div class="halo" aria-hidden="true"><i></i></div>' + inner + '</div>'; }
+  function tabs(on) {
+    return '<nav class="tabs2" aria-label="Main">' + [['today', 'Today', 'home'], ['plan', 'Plan', 'list'], ['phrases', 'Phrases', 'book']].map(function (t) {
+      return '<button class="tab2' + (on === t[0] ? ' on' : '') + '" data-a="tab" data-t="' + t[0] + '" aria-current="' + (on === t[0] ? 'page' : 'false') + '">' + ic(t[2], 22) + '<span>' + t[1] + '</span></button>';
+    }).join('') + '</nav>';
+  }
+  function seg(text) { return '<div class="seg2" role="group" aria-label="Mode"><button class="' + (text ? '' : 'on') + '" data-a="mode" data-m="voice">Voice</button><button class="' + (text ? 'on' : '') + '" data-a="mode" data-m="text">Text</button></div>'; }
+
+  var R = {};
+  // A4 Briefing
+  R.brief = function () {
+    var rows = BRIEF.map(function (p, i) {
+      var pl = S.playing === i;
+      return '<div class="prow' + (pl ? ' playing' : '') + '"><button class="pplay" data-a="play" data-i="' + i + '" aria-label="Listen">' + (pl ? '<span class="eq"><i></i><i></i><i></i></span>' : ic('play', 16, '#3F46A8')) + '</button>' +
+        '<div class="ptext"><p class="phr">' + esc(p[0]) + '</p><p class="nat">' + esc(p[1]) + '</p></div>' +
+        '<div class="pacts"><button class="iconbtn" data-a="slowp" data-i="' + i + '" aria-label="Slower">' + ic('slow', 18, '#4A4F63') + '</button><button class="iconbtn' + (S.saved[i] ? ' on' : '') + '" data-a="savep" data-i="' + i + '" aria-label="Save">' + ic(S.saved[i] ? 'starf' : 'star', 18, S.saved[i] ? '#3F46A8' : '#4A4F63') + '</button></div></div>';
+    }).join('');
+    return scr('<header class="bar"><button class="iconbtn" data-a="tab" data-t="today" aria-label="Close">' + ic('x', 22) + '</button><span class="bar-t">' + esc(LES.title) + '</span>' + seg(false) + '</header>' +
+      '<div class="body scroll" style="gap:20px">' +
+      '<div class="ctx">' + orb(S.playing >= 0 ? 'speak' : 'idle', 's40') + '<div class="stack" style="gap:6px"><p class="cl2"><span class="lbl">Who</span>' + esc(LES.who) + '</p><p class="cl2"><span class="lbl">Goal</span>' + esc(LES.goal) + '</p></div></div>' +
+      '<section class="stack" style="gap:10px"><div class="sechead"><h2 class="h2">3 phrases you\'ll need</h2>' + (S.briefHint ? '<span class="hint">' + ic('play', 12, '#4A4F63') + 'Tap ▶ to hear</span>' : '') + '</div><div class="plist">' + rows + '</div></section>' +
+      '<section class="ask"><span class="lbl">If you don\'t understand</span><div class="prow" style="padding:0;border:0"><button class="pplay" data-a="play" data-i="3" aria-label="Listen">' + ic('play', 16, '#3F46A8') + '</button><div class="ptext"><p class="phr">' + esc(ASK[0]) + '</p><p class="nat">' + esc(ASK[1]) + '</p></div></div></section>' +
+      '</div><div class="dock2"><button class="btn2" data-a="start">I\'m ready — start the talk</button><p class="meta">About 3 min</p></div>');
+  };
+  // A5 Conversation
+  function feed() {
+    var t = S.t, out = '';
+    for (var k = 0; k <= t.step; k++) {
+      if (k > 0) { out += '<div class="me2"><p>' + esc(ME[k - 1]) + '</p></div>' + (k === 1 ? '<p class="ok2">' + ic('check', 14, '#0B6B44', 3) + esc(WHO.split(',')[0]) + ' understood you</p>' : ''); }
+      var A = AI[k]; if (!A) continue;
+      var rev = t.rev[k] || t.tr[k], latest = k === t.step && t.phase !== 'done';
+      out += '<div class="ai2' + (A.fast ? ' fast' : '') + '">' + (A.fast ? '<span class="fastb">' + ic('bolt', 12, '#8A5A00') + 'Fast</span>' : '') + (rev ? '<p>' + esc(A.en) + '</p>' : '<button class="reveal2" data-a="rev" data-i="' + k + '"><p class="blur">' + esc(A.en) + '</p><span>' + ic('eye', 14, '#3F46A8') + 'Tap to see the words</span></button>') +
+        (t.tr[k] ? '<div class="tr2"><p>' + esc(A.ua) + '</p>' + (gloss(A) ? '<p class="gl">' + esc(gloss(A)) + '</p>' : '') + '</div>' : '') + '</div>';
+      if (A.fast && latest) out += '<p class="tipc fast">' + ic('slow', 14, '#4A4F63') + 'Tap <b>Slower</b> — that\'s normal.</p>';
+      if (t.status[k]) out += '<p class="sys2">' + ic('volume', 14, '#6B7083') + esc(t.status[k]) + '</p>';
+      if (latest) {
+        out += '<div class="helpers">' + (t.text ? '<button class="hb" data-a="simpler" data-i="' + k + '">' + ic('simple', 16) + 'Simpler</button>' : '<button class="hb' + (A.fast ? ' pulse' : '') + '" data-a="slower" data-i="' + k + '">' + ic('slow', 16) + 'Slower</button><button class="hb" data-a="repeat" data-i="' + k + '">' + ic('repeat', 16) + 'Repeat</button>') +
+          '<button class="hb' + (t.tr[k] ? ' on' : '') + '" data-a="tr" data-i="' + k + '">' + ic('translate', 16) + 'Translate</button></div>';
+      }
+    }
+    if (t.phase === 'typing' || t.phase === 'sent') { out += '<div class="me2"><p>' + esc(t.text && t.typed ? t.typed : ME[t.step]) + '</p></div>' + (t.step === 0 ? '<p class="ok2">' + ic('check', 14, '#0B6B44', 3) + esc(WHO.split(',')[0]) + ' understood you</p>' : '') + (AI[t.step + 1] ? '<div class="ai2 typing" aria-label="Typing"><span class="dots"><i></i><i></i><i></i></span></div>' : ''); }
+    if (t.phase === 'done') out += '<div class="done2" role="status">' + orb('happy', 's28') + 'Talk complete</div>';
+    return out;
+  }
+  R.talk = function () {
+    var t = S.t;
+    var banner = !t.mic ? '<div class="banner" role="alert">' + ic('micoff', 20, '#8A5A00') + '<div class="stack" style="gap:0;flex:1"><b>Microphone is off</b><span>You can type instead.</span></div><button class="bnb" data-a="micon">Turn on</button></div>' : '';
+    var dock;
+    if (t.text) {
+      var chips = (ME[t.step] || '').split(/(?<=[.?!])\s+/).slice(0, 3).map(function (c) { return '<button class="qc" data-a="qc" data-v="' + esc(c) + '">' + esc(c) + '</button>'; }).join('');
+      dock = '<div class="dock3 text"><div class="qcs">' + chips + '</div><div class="row" style="gap:8px"><input class="inp2" data-in="typed" value="' + esc(t.typed) + '" placeholder="Type your answer…" aria-label="Type your answer"><button class="send" data-a="send" aria-label="Send">' + ic('send', 20, '#fff') + '</button></div></div>';
+    } else {
+      var lab = t.phase === 'listening' ? 'Listening… tap to stop' : t.phase === 'done' ? 'Talk complete' : 'Tap Veera to speak';
+      var st = t.phase === 'listening' ? 'listen' : t.phase === 'typing' ? 'think' : t.phase === 'done' ? 'happy' : 'idle';
+      dock = '<div class="dock3"><button class="side" data-a="phrases">' + ic('book', 20) + '<span>Phrases</span></button>' +
+        '<div class="speak"><button class="orbbtn' + (t.phase === 'listening' ? ' live' : '') + '" data-a="speak" aria-label="' + lab + '">' + orb(st, 's72') + '<span class="micg">' + ic(t.phase === 'listening' ? 'pause' : 'mic', 18, '#fff') + '</span></button><span class="meta" role="status">' + lab + '</span></div>' +
+        '<button class="side" data-a="mode" data-m="text">' + ic('chat', 20) + '<span>Type</span></button></div>';
+    }
+    return scr('<header class="bar"><button class="endb" data-a="end">End</button><span class="bar-t">' + esc(LES.title) + '</span>' + seg(t.text) + '</header>' + banner +
+      '<div class="who"><span class="av">' + esc(WHO.charAt(0)) + '</span><span><b>' + esc(WHO) + '</b></span></div>' +
+      '<div class="feed scroll"><div style="margin-top:auto"></div>' + feed() + '</div>' + dock, 'talk');
+  };
+  // A6 Feedback
+  R.feedback = function () {
+    var rows = SAVED.map(function (p, i) { var on = S.save[i]; return '<button class="chk" data-a="chk" data-i="' + i + '" aria-pressed="' + on + '"><span class="cbx' + (on ? ' on' : '') + '">' + ic('check', 14, '#fff', 3) + '</span><span class="stack" style="gap:0;text-align:left"><span class="phr s">' + esc(p[0]) + '</span><span class="nat">' + esc(p[1]) + '</span></span></button>'; }).join('');
+    var n = Object.keys(S.save).filter(function (k) { return S.save[k]; }).length;
+    return scr('<header class="bar"><span style="width:44px"></span><span class="bar-t"></span><button class="iconbtn" data-a="finish" aria-label="Close">' + ic('x', 22) + '</button></header>' +
+      '<div class="body scroll" style="gap:18px;padding-top:4px">' +
+      '<div class="row" style="gap:14px">' + orb('happy', 's56') + '<div class="stack" style="gap:2px"><h1 class="h1">You did it ✓</h1><p class="sub">' + esc(WHO.split(',')[0]) + ' understood you.</p></div></div>' +
+      '<section class="fb good"><span class="lbl">What worked</span><p class="phr">' + esc(LES.worked[0]) + '</p><p class="nat">' + esc(LES.worked[1]) + '</p></section>' +
+      '<section class="fb"><span class="lbl">Say it better</span><p class="was">You said: “' + esc(LES.better.said) + '”</p><div class="row" style="gap:10px;justify-content:space-between"><p class="phr">Try: “' + esc(LES.better.try) + '”</p><button class="pplay" data-a="playtxt" aria-label="Listen">' + ic('play', 16, '#3F46A8') + '</button></div><p class="nat">' + esc(LES.better.why) + '</p></section>' +
+      '<section class="fb"><span class="lbl">Save your phrases</span>' + rows + '</section>' +
+      '<section class="fb tint"><span class="lbl">Use it tomorrow at work</span><p class="phr">Before your shift, remember: “' + esc(LES.phrases[0][0]) + '”</p></section>' +
+      '<section class="fb"><span class="lbl">Reminder</span><p class="cl2" style="margin:0">' + ic('cal', 16, '#3F46A8') + ' Remind me tomorrow at 7:30</p>' +
+      (S.remind ? '<p class="ok2" style="align-self:flex-start">' + ic('check', 14, '#0B6B44', 3) + 'Added to ' + S.remind + '</p>' : '<div class="row" style="gap:8px"><button class="btn3" data-a="cal" data-c="Google Calendar">Google Calendar</button><button class="btn3" data-a="cal" data-c="Apple Calendar">Apple Calendar</button></div>') + '</section>' +
+      '</div><div class="dock2"><button class="btn2" data-a="finish">Save ' + n + ' phrases &amp; finish</button><button class="lnk2" data-a="again">Try this talk again</button></div>');
+  };
+  // A2 Today
+  R.today = function () {
+    var ph = SAVED.slice(0, 3).map(function (p, i) { return '<div class="prow"><button class="pplay" data-a="play2" data-i="' + i + '" aria-label="Listen">' + ic('play', 14, '#3F46A8') + '</button><div class="ptext"><p class="phr s">' + esc(p[0]) + '</p><p class="nat">' + esc(p[1]) + '</p></div></div>'; }).join('');
+    var days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(function (d, i) { return '<span class="d2' + (i === 2 ? ' done' : '') + (i === 2 ? ' today' : '') + '"><b>' + (i === 2 ? ic('check', 12, '#fff', 3) : '') + '</b>' + d + '</span>'; }).join('');
+    return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">Wednesday</span><h1 class="h1">Today</h1></div><div class="row" style="gap:8px"><span class="tag2">Demo</span><button class="iconbtn" data-a="settings" aria-label="Settings">' + ic('sliders', 20) + '</button></div></header>' +
+      '<div class="body scroll" style="gap:14px">' +
+      '<section class="cardx next"><div class="row" style="justify-content:space-between"><span class="lbl">Up next</span><span class="meta">Week 1 · 4 min</span></div><div class="row" style="justify-content:space-between;gap:12px"><h2 class="h2" style="font-size:19px">' + esc(nextLesson().title) + '</h2><button class="startb" data-a="startnext">Start ' + ic('arrow', 16, '#fff') + '</button></div></section>' +
+      '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">' + ic('sunrise', 14, '#4A4F63') + ' Before your shift</span><span class="meta">1 min</span></div><div class="plist flat">' + ph + '</div><button class="btn3" style="width:100%" data-a="practise">Practise 3 phrases</button></section>' +
+      '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">This week</span><span class="meta">1 of 3 days</span></div><div class="days2">' + days + '</div></section>' +
+      '</div>' + (S.toast ? '<div class="toast2" role="status">' + ic('check', 18, '#A6F0C8', 3) + 'Phrases saved to My phrases</div>' : '') + tabs('today'), 'tabsc');
+  };
+  R.plan = function () {
+    var n = 0;
+    var secs = PL.weeks.map(function (w, i) {
+      return '<section class="cardx" style="gap:2px"><span class="lbl" style="margin-bottom:6px">Week ' + (i + 1) + ' · ' + esc(w.title) + '</span>' + w.lessons.map(function (l) {
+        var st = n === 0 ? 'done' : n === 1 ? 'next' : l.goal ? 'goal' : 'open'; n++;
+        var icn = st === 'done' ? '<span class="sd done">' + ic('check', 12, '#fff', 3) + '</span>' : st === 'next' ? '<span class="sd next"></span>' : st === 'goal' ? '<span class="sd goal">' + ic('flag', 12, '#12B76A') + '</span>' : '<span class="sd"></span>';
+        var meta = st === 'done' ? 'Done' : st === 'next' ? 'Up next' : st === 'goal' ? 'Goal' : '3 min';
+        return '<button class="srow" data-a="opensit" data-l="' + l.id + '">' + icn + '<span class="stack" style="gap:1px;flex:1;min-width:0;text-align:left"><span class="t">' + esc(l.title) + '</span>' +
+          (l.starts ? '<span class="bc">Starts here' + (l.because ? ' · because you chose: ' + esc(l.because) : '') + '</span>' : l.because ? '<span class="bc">Because you chose: ' + esc(l.because) + '</span>' : '') + '</span><span class="meta">' + meta + '</span>' + ic('chev', 16, '#9AA0B4') + '</button>';
+      }).join('') + '</section>';
+    }).join('');
+    return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">Week 1 of 4 · ' + PL.n + ' talks</span><h1 class="h1">Your plan</h1></div><span class="tag2">Demo</span></header>' +
+      '<div class="body scroll" style="gap:12px"><p class="goalline">' + ic('flag', 16, '#12B76A') + esc(PL.goal.chip) + '</p><p class="meta" style="text-align:left">Need one for tomorrow? Open any talk.</p>' + secs + '</div>' + tabs('plan'), 'tabsc');
+  };
+  R.phrases = function () {
+    var rows = SAVED.map(function (p, i) {
+      var said = S.said[i];
+      return '<div class="frow"><p class="phr s">' + esc(p[0]) + '</p><p class="nat">' + esc(p[1]) + '</p><div class="row" style="gap:6px;margin-top:6px"><button class="hb" data-a="play2" data-i="' + i + '">' + ic('play', 14) + 'Listen</button><button class="hb" data-a="play2" data-i="' + i + '">' + ic('slow', 16) + 'Slow</button>' +
+        (said ? '<span class="ok2" style="margin:0 0 0 4px">' + ic('check', 14, '#0B6B44', 3) + 'Said it</span>' : '<button class="hb" data-a="sayit" data-i="' + i + '">' + ic('mic', 16) + 'Say it</button>') + '<button class="iconbtn" style="margin-left:auto" aria-label="More">' + ic('more', 18, '#6B7083') + '</button></div></div>';
+    }).join('');
+    return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">' + SAVED.length + ' saved</span><h1 class="h1">My phrases</h1></div><button class="btn3" data-a="practise">Practise 3</button></header>' +
+      '<div class="body scroll" style="gap:8px"><span class="lbl">' + esc(LES.title) + '</span><div class="cardx" style="padding:0 16px">' + rows + '</div></div>' + tabs('phrases'), 'tabsc');
+  };
+  R.settings = function () {
+    var rows = [['Demo persona', '<div class="seg2"><button class="' + (S.persona === 'persona-a' ? 'on' : '') + '" data-a="persona" data-p="persona-a">Olena · factory</button><button class="' + (S.persona === 'persona-b' ? 'on' : '') + '" data-a="persona" data-p="persona-b">Ana · hotel</button></div>'], ['Tips language', '<span class="val">Українська ' + ic('chev', 14, '#9AA0B4') + '</span>'], ['Start talks in', '<div class="seg2"><button class="on">Voice</button><button>Text</button></div>'], ['Accent', '<div class="seg2"><button class="on">UK</button><button>US</button></div>'], ['Speaking speed', '<div class="seg2"><button class="on">Slower</button><button>Normal</button></div>'], ['Daily reminder', '<span class="val">7:30 ' + ic('chev', 14, '#9AA0B4') + '</span>'], ['Subscription', '<span class="val">Free trial · 6 days left ' + ic('chev', 14, '#9AA0B4') + '</span>']];
+    return scr('<header class="bar"><button class="iconbtn" data-a="tab" data-t="today" aria-label="Back">' + ic('back', 22) + '</button><span class="bar-t">Settings</span><span style="width:44px"></span></header>' +
+      '<div class="body scroll"><div class="cardx" style="padding:0 16px;gap:0">' + rows.map(function (r) { return '<div class="setr"><span>' + r[0] + '</span>' + r[1] + '</div>'; }).join('') + '</div></div>');
+  };
+
+  // ---------- engine ----------
+  var app, timers = [];
+  function later(f, ms) { timers.push(setTimeout(f, ms)); }
+  function clearT() { timers.forEach(clearTimeout); timers = []; }
+  function render(keep) {
+    var sc = app.querySelector('.scroll'), y = sc ? sc.scrollTop : 0;
+    app.innerHTML = R[S.v](); app.setAttribute('data-screen', S.v);
+    var sc2 = app.querySelector('.scroll'); if (sc2) { if (S.v === 'talk') sc2.scrollTop = sc2.scrollHeight; else if (keep) sc2.scrollTop = y; }
+  }
+  function go(v) { clearT(); S.v = v; S.toast = v === 'today' && S.toastNext; S.toastNext = false; log('screen_view', { screen: v }); render(); if (S.toast) later(function () { S.toast = false; render(true); }, 2600); }
+  function tset(p) { Object.assign(S.t, p); render(); }
+  function finishTurn() {
+    var t = S.t; if (t.phase !== 'listening' && t.phase !== 'sent') return;
+    tset({ phase: 'typing' });
+    later(function () {
+      var n = S.t.step + 1, end = n >= ME.length; tset({ step: n, phase: end ? 'done' : 'idle', typed: '' });
+      if (end) { log('conversation_complete', { lesson: LES.id }); later(function () { go('feedback'); }, 2600); }
+      var A = AI[n]; if (A) say(A.en, A.fast ? 1.1 : 0.85);
+    }, 1300);
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-a]'); if (!b) return;
+    var a = b.getAttribute('data-a'), i = +b.getAttribute('data-i');
+    if (a === 'play' || a === 'slowp') { S.briefHint = false; S.playing = i; render(true); say(i === 3 ? ASK[0] : BRIEF[i][0], a === 'slowp' ? 0.65 : 0.85); later(function () { S.playing = -1; render(true); }, 2200); return; }
+    if (a === 'savep') { S.saved[i] = !S.saved[i]; return render(true); }
+    if (a === 'start') { S.t = newTalk(); go('talk'); log('conversation_start'); later(function () { say(AI[0].en, AI[0].fast ? 1.1 : 0.85); }, 400); return; }
+    if (a === 'mode') { var m = b.getAttribute('data-m'); if (S.v === 'talk') { tset({ text: m === 'text' }); } return; }
+    if (a === 'rev') { var r = Object.assign({}, S.t.rev); r[i] = true; return tset({ rev: r }); }
+    if (a === 'tr') { var tr = Object.assign({}, S.t.tr); tr[i] = !tr[i]; log('helper_tap', { type: 'translate' }); return tset({ tr: tr, used: true }); }
+    if (a === 'slower' || a === 'repeat' || a === 'simpler') {
+      var st = Object.assign({}, S.t.status); st[i] = a === 'slower' ? 'Speaking slower now' : a === 'repeat' ? 'Playing again' : 'Said more simply';
+      log('helper_tap', { type: a }); say(AI[i].en, a === 'slower' ? 0.65 : 0.85); return tset({ status: st, used: true });
+    }
+    if (a === 'speak') {
+      var t = S.t;
+      if (t.phase === 'idle') { try { speechSynthesis.cancel(); } catch (e2) {} tset({ phase: 'listening', used: true }); later(finishTurn, 2800); return; }
+      if (t.phase === 'listening') { return finishTurn(); }
+      return;
+    }
+    if (a === 'qc') { tset({ typed: (S.t.typed ? S.t.typed + ' ' : '') + b.getAttribute('data-v') }); return; }
+    if (a === 'send') { if (S.t.phase !== 'idle') return; tset({ phase: 'sent' }); finishTurn(); return; }
+    if (a === 'micon') { return tset({ mic: true, text: false }); }
+    if (a === 'end') { return go(S.t.step >= 1 ? 'feedback' : 'today'); }
+    if (a === 'phrases') { return; }
+    if (a === 'chk') { S.save[i] = !S.save[i]; return render(true); }
+    if (a === 'cal') { S.remind = b.getAttribute('data-c'); log('reminder_set', { calendar: S.remind }); return render(true); }
+    if (a === 'playtxt') { say(LES.better.try); return; }
+    if (a === 'finish') { log('phrase_saved'); S.toastNext = true; return go('today'); }
+    if (a === 'again') { S.t = newTalk(); return go('brief'); }
+    if (a === 'tab') { return go(b.getAttribute('data-t') === 'today' ? 'today' : b.getAttribute('data-t')); }
+    if (a === 'settings') { return go('settings'); }
+    if (a === 'startnext' || a === 'opensit') { load(S.persona, a === 'startnext' ? nextLesson().id : b.getAttribute('data-l')); S.t = newTalk(); S.saved = {}; return go('brief'); }
+    if (a === 'persona') { S.persona = b.getAttribute('data-p'); load(S.persona); S.t = newTalk(); return go('settings'); }
+    if (a === 'play2') { say(SAVED[i][0].replace(/^You'll hear: /, ''), 0.85); return; }
+    if (a === 'sayit') { S.said[i] = true; return render(true); }
+    if (a === 'practise') { return go('phrases'); }
+  });
+  document.addEventListener('input', function (e) { if (e.target.getAttribute('data-in') === 'typed') S.t.typed = e.target.value; });
+  window.__app = { S: S, go: go, render: render, newTalk: newTalk, load: function (p, l) { S.persona = p; load(p, l); } };
+  app = document.getElementById('app');
+  var h = (location.hash || '').slice(1), m = h.match(/^(persona-[ab])(?:-(\w+))?$/);
+  if (m) { S.persona = m[1]; h = m[2] || 'brief'; }
+  load(S.persona); go(R[h] ? h : 'brief');
+})();
+</script>
+</body>
+</html>
