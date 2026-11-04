@@ -326,6 +326,46 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .rv2 blockquote{margin:0;font-size:16px;line-height:1.45;color:var(--ink)}
 .chip.sm{height:auto;min-height:36px;padding:6px 12px;white-space:normal}
 
+/* ---------- desktop web layout (no phone frame) ---------- */
+.webbrand{display:none}
+@media (min-width:900px){
+ body{display:block;background:#fff}
+ #app{max-width:none;width:100%;height:100dvh;max-height:none;border-radius:0;box-shadow:none;background:radial-gradient(900px 600px at 12% -10%,rgba(139,92,246,.10),transparent 70%),radial-gradient(800px 600px at 100% 0%,rgba(59,130,246,.08),transparent 70%),#fff}
+ .scr{background:transparent;overflow-y:auto;overflow-x:hidden}
+ .scr.noscroll{overflow:hidden}
+ .halo{display:none}
+ .webbrand{display:flex;align-items:center;gap:8px;position:absolute;top:22px;left:32px;z-index:2;text-decoration:none;color:var(--ink);font-family:var(--fd);font-size:18px}
+ .top,.uarow,.body,.dock,.pw-top{width:100%;max-width:640px;margin-left:auto;margin-right:auto}
+ .top{padding:22px 8px 8px;min-height:76px}
+ .body{flex:0 0 auto;padding:16px 24px 0}
+ .body.scroll{overflow:visible;padding-bottom:8px}
+ .dock{padding:20px 24px 48px}
+ .dock.sticky{background:none}
+ .dock .btn{max-width:420px}
+ .t-title{font-size:30px}
+ .t-display{font-size:40px}
+ .bignum{font-size:96px}
+ .illo{max-height:220px}
+ .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+ .opts .opt{min-height:72px}
+ .pw2{padding-top:8px}
+ .pwcta .btn{max-width:none}
+ .sheet{top:0;bottom:0;left:0;right:0;margin:auto;height:fit-content;max-width:480px;border-radius:28px;padding:20px 24px 24px}
+ .grab{display:none}
+ /* landing: two-column hero */
+ #app[data-screen=landing] .scr{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);grid-template-areas:"h1 hero" "p hero" "dock hero";grid-template-rows:auto auto auto;column-gap:72px;align-content:center;max-width:1160px;margin:0 auto;padding:72px 48px 40px}
+ #app[data-screen=landing] .webbrand{display:none}
+ #app[data-screen=landing] .brand{position:absolute;top:22px;left:48px;padding:0}
+ #app[data-screen=landing] .body{display:contents}
+ #app[data-screen=landing] .hero{grid-area:hero;height:460px;align-self:center;grid-row:1 / span 3}
+ #app[data-screen=landing] .hero .btxt{font-size:20px}
+ #app[data-screen=landing] h1{grid-area:h1;align-self:end;font-size:48px!important;line-height:1.08!important}
+ #app[data-screen=landing] .body>p{grid-area:p;font-size:19px;margin-top:16px}
+ #app[data-screen=landing] .dock{grid-area:dock;align-self:start;padding:28px 0 0;margin:0;max-width:420px}
+ #app[data-screen=landing] .demo{justify-content:flex-start}
+}
+@media (min-width:900px) and (prefers-reduced-motion:reduce){.scr{scroll-behavior:auto}}
+
 .opt.off{opacity:.45}
 .nm{color:var(--ink-2);font-style:italic;font-weight:600}
 .demo{display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:var(--ink-2)}
@@ -3066,7 +3106,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     var ua = L ? '<button class="uabtn' + (S.ua ? ' on' : '') + '" data-a="ua" aria-pressed="' + S.ua + '">' + ic('translate', 18, '#2E6BF0') + (S.ua ? 'English' : L[1]) + '</button>' : '';
     return '<div class="top">' + back + '<div class="prog"><b style="width:' + pct + '%"></b></div><span class="count">' + n + ' of ' + total + '</span></div><div class="uarow">' + ua + '</div>';
   }
-  function scr(inner, cls) { return '<div class="scr ' + (cls || '') + '"><div class="halo" aria-hidden="true"><i></i></div>' + inner + '</div>'; }
+  function scr(inner, cls) { return '<div class="scr ' + (cls || '') + '"><div class="halo" aria-hidden="true"><i></i></div><a class="webbrand" href="../" aria-label="Veera — overview">' + orb('idle', 's28') + '<b>Veera</b></a>' + inner + '</div>'; }
   function lc() { var l = LANGS[S.ans.lang]; return l ? l[0] : null; }
   function nat(en, ua) { var c = lc(); if (!c || !S.ua) return ''; if (c === 'uk') return ua || ''; return (TR[c] || {})[en] || ''; }
   function natLine(en, ua) { var t = nat(en, ua); return t ? '<p class="t-native ua">' + esc(t) + '</p>' : ''; }
@@ -3304,7 +3344,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     var k = cur();
     app.innerHTML = R[k]();
     app.setAttribute('data-screen', k);
-    var sc = app.querySelector('.scroll'); if (sc) sc.scrollTop = 0;
+    if (S._lastK !== k) { S._lastK = k; var sc = app.querySelector('.scroll'); if (sc) sc.scrollTop = 0; var sr = app.querySelector('.scr'); if (sr) sr.scrollTop = 0; }
   }
   function go(i) {
     clear(); S.i = Math.max(0, Math.min(FLOW.length - 1, i)); var k = cur();
@@ -3373,7 +3413,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     if (a === 'vskip') { return next(); }
     if (a === 'email') { log('email_submit'); return next(); }
     if (a === 'sheet') { S.sheetDone[S.sheet] = true; log('loader_question', { q: S.sheet, answer: b.textContent }); S.sheet = null; render(); later(S._tick, 300); return; }
-    if (a === 'wk') { var wi = +b.getAttribute('data-i'); S.open = Object.assign({}, S.open || {}); S.open[wi] = !S.open[wi]; log('plan_week_toggle', { week: wi + 1 }); var sc0 = app.querySelector('.scroll'), y0 = sc0 ? sc0.scrollTop : 0; render(); var sc1 = app.querySelector('.scroll'); if (sc1) sc1.scrollTop = y0; return; }
+    if (a === 'wk') { var wi = +b.getAttribute('data-i'); S.open = Object.assign({}, S.open || {}); S.open[wi] = !S.open[wi]; log('plan_week_toggle', { week: wi + 1 }); var sc0 = app.querySelector('.scroll'), y0 = sc0 ? sc0.scrollTop : 0, r0 = app.querySelector('.scr').scrollTop; render(); var sc1 = app.querySelector('.scroll'); if (sc1) sc1.scrollTop = y0; app.querySelector('.scr').scrollTop = r0; return; }
     if (a === 'py' || a === 'pm') { S.plan = a === 'py' ? 'yearly' : 'monthly'; log('plan_select', { plan: S.plan }); return render(); }
     if (a === 'rem5' || a === 'rem6') { S.remind = a === 'rem5' ? 5 : 6; log('reminder_day_select', { day: S.remind }); return render(); }
     if (a === 'trial') { log('trial_start', { plan: S.plan, reminder_day: S.remind }); return next(); }
