@@ -183,7 +183,7 @@ textarea.inp{height:96px;padding:14px 16px;resize:none;line-height:1.4}
 html,body{height:100%}
 body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;font-family:var(--ft)}
 #app{position:relative;width:100%;max-width:430px;height:100dvh;max-height:932px;background:#fff;overflow:hidden}
-@media (min-width:600px){#app{height:min(860px,calc(100dvh - 32px));max-width:390px;border-radius:36px;box-shadow:0 30px 80px rgba(17,19,34,.18)}}
+
 .scr{position:absolute;inset:0}
 .body{min-height:0}
 .body.scroll{overflow-y:auto;padding-bottom:16px}
@@ -338,46 +338,12 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .opt:active{transform:scale(.985)}
 @media (prefers-reduced-motion:reduce){.scr.enter,.scr.enter-back{animation:fade 1ms both}}
 
-/* ---------- desktop web layout (no phone frame) ---------- */
+/* ---------- desktop: one centred column, like a phone screen ---------- */
 .webbrand{display:none}
-@media (min-width:900px){
- body{display:block;background:#fff}
- #app{max-width:none;width:100%;height:100dvh;max-height:none;border-radius:0;box-shadow:none;background:radial-gradient(900px 600px at 12% -10%,rgba(139,92,246,.10),transparent 70%),radial-gradient(800px 600px at 100% 0%,rgba(59,130,246,.08),transparent 70%),#fff}
- .scr{background:transparent;overflow-y:auto;overflow-x:hidden}
- .scr.noscroll{overflow:hidden}
- .halo{display:none}
- .webbrand{display:flex;align-items:center;gap:8px;position:absolute;top:22px;left:32px;z-index:2;text-decoration:none;color:var(--ink);font-family:var(--fd);font-size:18px}
- .top,.uarow,.body,.dock,.pw-top{width:100%;max-width:640px;margin-left:auto;margin-right:auto}
- .top{padding:16px 8px 4px;min-height:64px}
- .body{flex:0 0 auto;padding:16px 24px 0}
- .body.scroll{overflow:visible;padding-bottom:8px}
- .dock{padding:20px 24px 48px}
- .dock.sticky{background:none}
- .dock .btn{max-width:420px}
- .t-title{font-size:26px}
- .t-display{font-size:34px}
- .bignum{font-size:80px}
- .illo{max-height:180px}
- .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
- .opts .opt{min-height:64px}
- .pw2{padding-top:8px}
- .pwcta .btn{max-width:none}
- .sheet{top:0;bottom:0;left:0;right:0;margin:auto;height:fit-content;max-width:480px;border-radius:28px;padding:20px 24px 24px}
- .grab{display:none}
- /* landing: two-column hero */
- #app[data-screen=landing] .scr{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);grid-template-areas:"h1 hero" "p hero" "dock hero";grid-template-rows:auto auto auto;column-gap:72px;align-content:center;max-width:1160px;margin:0 auto;padding:72px 48px 40px}
- #app[data-screen=landing] .webbrand{display:none}
- #app[data-screen=landing] .brand{position:absolute;top:22px;left:48px;padding:0}
- #app[data-screen=landing] .body{display:contents}
- #app[data-screen=landing] .hero{grid-area:hero;height:min(440px,62vh);align-self:center;grid-row:1 / span 3}
- #app[data-screen=landing] .hero .btxt{font-size:20px}
- #app[data-screen=landing] h1{grid-area:h1;align-self:end;font-size:clamp(34px,3.6vw,46px)!important;line-height:1.08!important}
- #app[data-screen=landing] .body>p{grid-area:p;font-size:19px;margin-top:16px}
- #app[data-screen=landing] .dock{grid-area:dock;align-self:start;padding:28px 0 0;margin:0;max-width:420px}
- #app[data-screen=landing] .demo{justify-content:flex-start}
+@media (min-width:600px){
+ body{background:radial-gradient(900px 620px at 15% -10%,rgba(139,92,246,.12),transparent 70%),radial-gradient(800px 600px at 90% 110%,rgba(59,130,246,.10),transparent 70%),#F5F6FA}
+ #app{max-width:440px;height:100dvh;max-height:none;border-radius:0;box-shadow:0 0 0 1px rgba(17,19,34,.04),0 20px 60px rgba(17,19,34,.10)}
 }
-@media (min-width:600px) and (max-width:899px) and (max-height:900px){#app{zoom:.88;height:calc((100dvh - 24px) / .88)}}
-@media (min-width:900px) and (prefers-reduced-motion:reduce){.scr{scroll-behavior:auto}}
 
 .opt.off{opacity:.45}
 .nm{color:var(--ink-2);font-style:italic;font-weight:600}
@@ -1676,8 +1642,8 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
    ],
    "ai": [
     {
-     "en": "Sure, what's on your mind?",
-     "ua": "Звісно, що таке?",
+     "en": "Hiya, you alright? You wanted a word?",
+     "ua": "Привіт, усе гаразд? Ти хотіла поговорити?",
      "fast": false,
      "slang": []
     },
@@ -1722,6 +1688,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
    },
    "designer": [
     "better",
+    "AI line 1: відкриття від менеджера (у документі розмова починалась з відповіді)",
     "AI ua",
     "me",
     "why_ua"
@@ -2883,6 +2850,60 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   }
  },
  "designer_note": "Поле designer перелічує, що дописано дизайнером: переклади реплік AI (ua), репліки користувачки для демо (me), пояснення why_ua, фідбек для уроків сфер і треків, а також What worked/Say it better, де в документі був лише один з них.",
+ "slang_en": {
+  "86'd": "we've run out of it",
+  "PRN": "medicine given only when needed",
+  "RAMS": "the risk assessment and method statement",
+  "absolute shambles": "a total mess",
+  "all being well": "if nothing goes wrong",
+  "all over the shop": "in a mess, not in order",
+  "at the mo": "at the moment",
+  "behind!": "watch out, I'm behind you",
+  "callback": "they'll phone you back",
+  "cashing up": "counting the money in the till",
+  "chippy": "a carpenter",
+  "cone it off": "put cones round it so nobody walks there",
+  "covers": "guests eating",
+  "crack on": "get started, carry on",
+  "double up": "do it with two people",
+  "duty doctor": "the doctor on call today",
+  "earlies and lates": "early and late shifts",
+  "footy": "football",
+  "gaffer": "the boss",
+  "get it logged": "write it down in the report",
+  "give us a hand": "help me",
+  "goods in": "where deliveries arrive",
+  "handover": "telling the next shift what happened",
+  "innit": "isn't it",
+  "leave it with me": "I'll deal with it",
+  "mains": "main courses",
+  "nip up": "go up quickly",
+  "obs": "checks like blood pressure and temperature",
+  "on the floor": "out working, not in the office",
+  "on the line": "working on the production line",
+  "pay run": "the day wages are paid",
+  "pick rate": "how many items you pick per hour",
+  "poorly": "a bit ill",
+  "sharpish": "quickly",
+  "short-staffed": "we don't have enough people",
+  "snagging": "fixing small last jobs",
+  "sort cover": "find someone to do your shift",
+  "ticketed": "trained and certified to use it",
+  "toolbox talk": "the short safety briefing",
+  "we got battered": "we lost badly",
+  "harness": "a safety belt for working high up",
+  "jump on": "start using",
+  "hiya": "hi",
+  "GP": "family doctor",
+  "meds": "medicines",
+  "proof of address": "a letter showing where you live",
+  "council tax": "the local tax for your home",
+  "collect": "pick up",
+  "last place": "your last job",
+  "four on, four off": "four days working, four days off",
+  "off sick": "not at work because you're ill"
+ },
+ "designer_note_slang_en": "slang_en — дописано дизайнером: прості англійські пояснення, які співрозмовник дає, коли людина питає «what does … mean?».",
  "personas": {
   "persona-a": {
    "label": "Olena · factory",

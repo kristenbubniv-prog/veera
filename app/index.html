@@ -1600,8 +1600,8 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
    ],
    "ai": [
     {
-     "en": "Sure, what's on your mind?",
-     "ua": "Звісно, що таке?",
+     "en": "Hiya, you alright? You wanted a word?",
+     "ua": "Привіт, усе гаразд? Ти хотіла поговорити?",
      "fast": false,
      "slang": []
     },
@@ -1646,6 +1646,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
    },
    "designer": [
     "better",
+    "AI line 1: відкриття від менеджера (у документі розмова починалась з відповіді)",
     "AI ua",
     "me",
     "why_ua"
@@ -2807,6 +2808,60 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   }
  },
  "designer_note": "Поле designer перелічує, що дописано дизайнером: переклади реплік AI (ua), репліки користувачки для демо (me), пояснення why_ua, фідбек для уроків сфер і треків, а також What worked/Say it better, де в документі був лише один з них.",
+ "slang_en": {
+  "86'd": "we've run out of it",
+  "PRN": "medicine given only when needed",
+  "RAMS": "the risk assessment and method statement",
+  "absolute shambles": "a total mess",
+  "all being well": "if nothing goes wrong",
+  "all over the shop": "in a mess, not in order",
+  "at the mo": "at the moment",
+  "behind!": "watch out, I'm behind you",
+  "callback": "they'll phone you back",
+  "cashing up": "counting the money in the till",
+  "chippy": "a carpenter",
+  "cone it off": "put cones round it so nobody walks there",
+  "covers": "guests eating",
+  "crack on": "get started, carry on",
+  "double up": "do it with two people",
+  "duty doctor": "the doctor on call today",
+  "earlies and lates": "early and late shifts",
+  "footy": "football",
+  "gaffer": "the boss",
+  "get it logged": "write it down in the report",
+  "give us a hand": "help me",
+  "goods in": "where deliveries arrive",
+  "handover": "telling the next shift what happened",
+  "innit": "isn't it",
+  "leave it with me": "I'll deal with it",
+  "mains": "main courses",
+  "nip up": "go up quickly",
+  "obs": "checks like blood pressure and temperature",
+  "on the floor": "out working, not in the office",
+  "on the line": "working on the production line",
+  "pay run": "the day wages are paid",
+  "pick rate": "how many items you pick per hour",
+  "poorly": "a bit ill",
+  "sharpish": "quickly",
+  "short-staffed": "we don't have enough people",
+  "snagging": "fixing small last jobs",
+  "sort cover": "find someone to do your shift",
+  "ticketed": "trained and certified to use it",
+  "toolbox talk": "the short safety briefing",
+  "we got battered": "we lost badly",
+  "harness": "a safety belt for working high up",
+  "jump on": "start using",
+  "hiya": "hi",
+  "GP": "family doctor",
+  "meds": "medicines",
+  "proof of address": "a letter showing where you live",
+  "council tax": "the local tax for your home",
+  "collect": "pick up",
+  "last place": "your last job",
+  "four on, four off": "four days working, four days off",
+  "off sick": "not at work because you're ill"
+ },
+ "designer_note_slang_en": "slang_en — дописано дизайнером: прості англійські пояснення, які співрозмовник дає, коли людина питає «what does … mean?».",
  "personas": {
   "persona-a": {
    "label": "Olena · factory",
@@ -3042,28 +3097,105 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   var ASK_RE = /\b(sorry|again|repeat|slow(er|ly)?|pardon|what does|what do you mean|mean by|didn'?t (catch|get|understand)|don'?t understand|say that|one more time)\b/i;
   var CLARIFY = ['Sorry, I didn\'t quite get that.', 'Sorry — what was that?', 'Hmm, say that again?'];
   function bestPhrase(txt) { var best = { s: 0, t: '' }; ME.concat(LES.phrases.map(function (p) { return p[0]; })).forEach(function (t) { var sc = C.score(txt, t); if (sc > best.s) best = { s: sc, t: t }; }); return best; }
-  function respond(txt) {
-    var t = S.t, k = t.step, target = ME[k], sc = C.score(txt, target), any = bestPhrase(txt).s, ask = ASK_RE.test(txt), words = txt.split(/\s+/).filter(Boolean).length;
-    var onTarget = sc >= 0.45 || any >= 0.6 || (ask && ASK_RE.test(target));
-    var kind = onTarget ? 'ok' : ask ? 'repeat' : (t.tries < 1 ? 'clarify' : 'pass');
-    log('turn_judged', { step: k, said: txt, score: Math.round(sc * 100) / 100, kind: kind });
-    t.log.push({ who: 'me', text: txt, ok: kind === 'ok' && !t.log.some(function (e) { return e.ok; }) });
+  // ===== Conversation engines =====
+  // 1) Claude (when the page runs inside claude.ai and the viewer allows it): real replies in context.
+  // 2) Rules (everywhere else, e.g. GitHub Pages): reacts to intent — asking to repeat, asking what a word means,
+  //    questions, yes / no, thanks, off-topic — then carries the talk towards the lesson goal.
+  var AIENG = null; // resolved sample() or null
+  try { if (window.claude && window.claude.use) window.claude.use('sample').then(function (x) { AIENG = x; log('engine', { claude: !!x }); if (S.v === 'talk') render(); }).catch(function () {}); } catch (e) {}
+  function engineName() { return AIENG ? 'claude' : 'rules'; }
+  function lastAi() { for (var i = S.t.log.length - 1; i >= 0; i--) if (S.t.log[i].who === 'ai') return S.t.log[i]; return null; }
+  var YES_RE = /^(ok(ay)?|yes|yeah|yep|sure|fine|alright|all right|got it|no problem|right|cool|great|will do|i will|i'?ll do it)\b/i;
+  var NO_RE = /\b(no|can'?t|cannot|not today|i'?m not able)\b/i;
+  var THX_RE = /\b(thanks|thank you|cheers)\b/i, HI_RE = /^(hi|hello|hey|morning|good morning|hiya)\b/i;
+  var Q_RE = /\b(where|when|what time|who|how|which|can i|could i|do i|should i|is it|are we)\b|\?$/i;
+  function meaningOf(txt) {
+    var lo = txt.toLowerCase(), D = C.D.slang_en || {}, hit = null;
+    S.t.log.forEach(function (e) { if (e.who === 'ai') (e.slang || []).forEach(function (w) { if (lo.indexOf(w.toLowerCase().replace(/[!']/g, '').split(' ')[0]) >= 0 && D[w]) hit = [w, D[w]]; }); });
+    if (!hit) Object.keys(D).forEach(function (w) { if (!hit && w.length > 3 && lo.indexOf(w.toLowerCase()) >= 0) hit = [w, D[w]]; });
+    return hit;
+  }
+  function answerQuestion(txt) {
+    var sb = C.subs(PER), lo = txt.toLowerCase();
+    if (/where/.test(lo)) return 'Just past ' + sb.area_2 + ', on your left.';
+    if (/when|what time/.test(lo)) return 'Right now, then straight after your break.';
+    if (/who/.test(lo)) return 'Ask me, or ' + sb.colleague + ' if I\'m busy.';
+    if (/how/.test(lo)) return 'Easy — ' + sb.quick_fix + '. I\'ll show you.';
+    if (/can i|could i|should i|do i/.test(lo)) return 'Yes, that\'s fine.';
+    return 'Good question. ';
+  }
+  function ack(txt) { return THX_RE.test(txt) ? 'No worries. ' : HI_RE.test(txt) ? 'Morning! ' : YES_RE.test(txt) ? 'Great. ' : NO_RE.test(txt) ? 'Fair enough. ' : ''; }
+  function pushAi(en, ua, how, fast, slang) { S.t.log.push({ who: 'ai', k: S.t.step, en: en, ua: ua || '', fast: !!fast, slang: slang || [], how: how || '' }); say(en, how === 'slow' ? 0.7 : fast ? 1.1 : 0.88); }
+  function advance(prefix, asked) {
+    var t = S.t, n = t.step + 1, end = n >= ME.length; t.tries = 0;
+    var A = AI[n];
+    if (A && (!end || n < AI.length)) {
+      var en = A.en; if (!asked) en = en.replace(/^Sure[.,]\s*/, '');
+      pushAi((prefix || '') + en, A.ua, '', A.fast, A.slang);
+    } else if (prefix) pushAi(prefix.trim(), '');
+    tset({ step: n, phase: end ? 'done' : 'idle' });
+    if (end) { log('conversation_complete', { lesson: LES.id, turns: t.turns.length, asks: t.asks || 0, engine: engineName() }); later(function () { go('feedback'); }, 2400); }
+  }
+  function record(txt, kind, score) {
+    var t = S.t; t.log.push({ who: 'me', text: txt, ok: (kind === 'ok') && !t.log.some(function (e) { return e.ok; }) });
     if (ASK_RE.test(txt)) t.asks = (t.asks || 0) + 1;
-    if (kind === 'ok' || kind === 'pass') t.turns.push({ k: k, said: txt, target: target, score: Math.max(sc, any), kind: kind });
-    tset({ phase: 'typing', typed: '', live: '' });
+    if (['clarify', 'repeat', 'meaning', 'pending', 'nudge'].indexOf(kind) < 0) t.turns.push({ k: t.step, said: txt, target: ME[t.step], score: score, kind: kind });
+  }
+  function respondRules(txt) {
+    var t = S.t, k = t.step, target = ME[k], sc = Math.max(C.score(txt, target), bestPhrase(txt).s * 0.9);
+    var mean = /\bmean\b|what('?s| is| does)\s+['‘’"]?[a-z]/i.test(txt) ? meaningOf(txt) : null;
+    var ask = ASK_RE.test(txt), q = Q_RE.test(txt), targetIsAsk = ASK_RE.test(target);
+    // she may jump ahead and say what fits a later line — follow her, don't drag her back
+    var jump = -1; for (var j = k + 1; j < ME.length; j++) if (C.score(txt, ME[j]) >= 0.5) { jump = j; break; }
+    var short = (YES_RE.test(txt) || THX_RE.test(txt) || HI_RE.test(txt) || NO_RE.test(txt)) && txt.split(/\s+/).length <= 4;
+    var kind = mean ? 'meaning' : (ask && !targetIsAsk) ? 'repeat' : (sc >= 0.45 || (ask && targetIsAsk) || (short && YES_RE.test(target))) ? 'ok' : jump > 0 ? 'jump' : q ? 'question' : short ? 'nudge' : (t.tries < 1 && txt.split(/\s+/).length < 4) ? 'clarify' : 'pass';
+    log('turn_judged', { step: k, said: txt, score: Math.round(sc * 100) / 100, kind: kind, engine: 'rules' });
+    record(txt, kind, sc); tset({ phase: 'typing', typed: '', live: '' });
     later(function () {
-      if (kind === 'repeat') { aiPush(k, 'slow'); return tset({ phase: 'idle' }); }
-      if (kind === 'clarify') {
-        t.tries++; t.log.push({ who: 'ai', k: k, en: CLARIFY[k % CLARIFY.length], ua: 'Вибач, я не зовсім зрозумів.', fast: false, slang: [], how: 'clarify' }); say(CLARIFY[k % CLARIFY.length], 0.9);
-        t.log.push({ who: 'coach', text: 'Veera: you could say', tip: target });
+      if (kind === 'meaning') {
+        pushAi('‘' + mean[0] + '’? It just means ' + mean[1] + '.', '‘' + mean[0] + '’ = ' + (C.slang(mean[0], PER) || mean[1]));
+        if (targetIsAsk || /mean/i.test(target)) { t.turns.push({ k: k, said: txt, target: target, score: 0.9, kind: 'ok' }); return advance('', true); }
         return tset({ phase: 'idle' });
       }
-      var n = k + 1, end = n >= ME.length; t.tries = 0;
-      if (AI[n] && (!end || n < AI.length)) aiPush(n);
-      tset({ step: n, phase: end ? 'done' : 'idle' });
-      if (end) { log('conversation_complete', { lesson: LES.id, turns: t.turns.length, asks: t.asks || 0 }); later(function () { go('feedback'); }, 2400); }
-    }, 1100);
+      if (kind === 'repeat') { var la = lastAi(); pushAi(la ? la.en : AI[k].en, la ? la.ua : AI[k].ua, 'slow'); return tset({ phase: 'idle' }); }
+      if (kind === 'question') return advance(answerQuestion(txt) + ' ', false);
+      if (kind === 'jump') { t.step = jump - 1; return advance(ack(txt), ask); }
+      if (kind === 'nudge') {
+        var nud = HI_RE.test(txt) ? 'Hiya! What can I do for you?' : THX_RE.test(txt) ? 'No worries — anything else?' : NO_RE.test(txt) ? 'No? What\'s the problem?' : (/\?\s*$/.test((lastAi() || {}).en || '') ? 'Okay — go on.' : 'Great. Any questions before you start?');
+        t.tries++; pushAi(nud, ''); if (t.tries >= 1) t.log.push({ who: 'coach', text: 'Veera: you could say', tip: target }); return tset({ phase: 'idle' });
+      }
+      if (kind === 'clarify') {
+        t.tries++; pushAi(CLARIFY[k % CLARIFY.length], 'Вибач, я не зовсім зрозумів.', 'clarify');
+        t.log.push({ who: 'coach', text: 'Veera: you could say', tip: target }); return tset({ phase: 'idle' });
+      }
+      advance(ack(txt) || (kind === 'pass' ? 'Right. ' : ''), ask);
+    }, 900);
   }
+  function respondClaude(txt) {
+    var t = S.t, k = t.step;
+    record(txt, 'pending', 0); tset({ phase: 'typing', typed: '', live: '' });
+    var sb = C.subs(PER), history = t.log.filter(function (e) { return e.who === 'ai' || e.who === 'me'; }).map(function (e) { return (e.who === 'ai' ? 'YOU: ' : 'WORKER: ') + (e.en || e.text); }).join('\n');
+    var prompt = 'You are role-playing ' + WHO + ' at a UK workplace (' + PER.sector.replace('_', ' / ') + '). Scene: ' + LES.who + ' The worker is practising English; their goal: ' + LES.goal +
+      '\nSuggested script you can follow loosely: ' + AI.map(function (a) { return a.en; }).join(' | ') +
+      '\nRules: reply in British English as the ' + WHO + ', max 14 words, natural and friendly. React to exactly what the worker said. If they ask you to repeat or slow down, say the same thing again more simply. If they ask what a word means, explain it simply. If what they said is unclear, ask one short clarifying question. Use at most one slang expression in the whole talk. Move the talk towards the goal and wrap up once it is reached or after ' + (ME.length + 2) + ' worker turns.' +
+      '\nConversation so far:\n' + history +
+      '\n\nReturn JSON only: {"reply": string, "reply_ua": string (Ukrainian translation), "understood": boolean (would a manager understand the worker\'s last line?), "asked_to_repeat": boolean, "on_goal": boolean (the last line moves towards the goal), "goal_reached": boolean, "coach_tip": string|null (a better English line the worker could say next, only if they struggled)}';
+    var timeout = setTimeout(function () { if (S.t === t && t.phase === 'typing') { log('engine_fallback', { reason: 'timeout' }); t.log.pop(); AIENG = null; respondRules(txt); } }, 15000);
+    AIENG.json(prompt, { modelTier: 'quick', cache: false }).then(function (r) {
+      clearTimeout(timeout); if (S.t !== t || t.phase !== 'typing') return;
+      var me = t.log[t.log.length - 1]; me.ok = !!r.understood && !t.log.some(function (e) { return e !== me && e.ok; });
+      var sc = Math.max(C.score(txt, ME[k]), r.on_goal ? 0.7 : r.understood ? 0.5 : 0.2);
+      if (!r.asked_to_repeat) t.turns.push({ k: k, said: txt, target: ME[k] || LES.better.try, score: sc, kind: r.understood ? 'ok' : 'pass' });
+      log('turn_judged', { step: k, said: txt, engine: 'claude', understood: r.understood, goal: r.goal_reached });
+      pushAi(String(r.reply || '').trim() || 'Sorry, say that again?', r.reply_ua || '', r.asked_to_repeat ? 'slow' : '');
+      if (r.coach_tip && !r.understood) t.log.push({ who: 'coach', text: 'Veera: you could say', tip: r.coach_tip });
+      var n = r.asked_to_repeat ? k : k + 1, worker = t.log.filter(function (e) { return e.who === 'me'; }).length;
+      var end = r.goal_reached || worker >= ME.length + 2;
+      tset({ step: Math.min(n, ME.length - 1), phase: end ? 'done' : 'idle' });
+      if (end) { log('conversation_complete', { lesson: LES.id, engine: 'claude' }); later(function () { go('feedback'); }, 2600); }
+    }).catch(function (e) { clearTimeout(timeout); log('engine_fallback', { reason: e && e.code }); if (S.t !== t) return; t.log.pop(); if (e && e.code === 'not_granted') AIENG = null; respondRules(txt); });
+  }
+  function respond(txt) { if (AIENG) return respondClaude(txt); respondRules(txt); }
   R.talk = function () {
     var t = S.t;
     var banner = !t.mic ? '<div class="banner" role="alert">' + ic('micoff', 20, '#8A5A00') + '<div class="stack" style="gap:0;flex:1"><b>Microphone is off</b><span>You can type instead.</span></div><button class="bnb" data-a="micon">Turn on</button></div>' : '';
