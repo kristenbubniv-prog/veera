@@ -191,6 +191,7 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .orb.s72{--o:72px}
 .bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px 8px 12px;min-height:60px}
 .bar.home{padding:14px 20px 8px 20px;align-items:flex-end}
+.bar.home .backb{margin:0 2px 0 -12px;align-self:center}
 .bar-t{font-size:16px;font-weight:600}
 .iconbtn{width:44px;height:44px;border:0;background:transparent;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;color:var(--ink);flex:none}
 .iconbtn.on{background:var(--accent-tint)}
@@ -2900,7 +2901,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     p.h1 = p.hardest[0] || 'repeat'; p.h2 = p.hardest[1] || null;
     return p;
   }
-  function subs(p) { var s = Object.assign({}, D.substitutions[p.sector] || D.substitutions.other); s.name = p.name || 'Olena'; return s; }
+  function subs(p) { var s = Object.assign({}, D.substitutions[p.sector] || D.substitutions.other); s.name = p.name || 'me'; return s; }
   function fill(t, p) { if (t == null) return t; var s = subs(p); return String(t).replace(/\{(\w+)\}/g, function (m, k) { return s[k] != null ? s[k] : m; }); }
   function cap(t) { return t ? t.charAt(0).toUpperCase() + t.slice(1) : t; }
   function label(kind, key) { var v = D.vars[kind].values; for (var k in v) if (v[k] === key) return k; return key; }
@@ -3026,7 +3027,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   var PER, PL, LES, BRIEF, ASK, AI, ME, SAVED, WHO, SLANG;
   function cap(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
   function load(persona, lessonId) {
-    PER = C.prof(C.persona(persona) || C.persona('persona-a')); PER.key = persona;
+    PER = C.prof(persona === 'custom' && S.custom ? S.custom : (C.persona(persona) || C.persona('persona-a'))); PER.key = persona;
     PL = C.buildPlan(PER); LES = C.lesson(lessonId || PL.starts, PER);
     var sb = C.subs(PER), sp = SPEAKER[LES.id] || 'boss';
     WHO = sp === 'boss' ? cap(sb.boss) : sp === 'colleague' ? sb.colleague + ', your colleague' : sp;
@@ -3039,7 +3040,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   function gloss(a) { return a.slang.map(function (w) { var g = C.slang(w, PER); return g ? w + ' = ' + g : ''; }).filter(Boolean).join(' · '); }
   function allLessons() { var all = []; PL.weeks.forEach(function (w) { all = all.concat(w.lessons); }); return all; }
   function nextLesson() { var a = allLessons(); return a[Math.min(S.done, a.length - 1)]; }
-  var S = { done: 0, persona: 'persona-a', v: 'brief', briefHint: true, playing: -1, saved: {}, t: null, toast: false, save: { 0: true, 1: true, 2: true, 3: true }, remind: '', said: {} };
+  var S = { hist: [], done: 0, persona: 'persona-a', v: 'brief', briefHint: true, playing: -1, saved: {}, t: null, toast: false, save: { 0: true, 1: true, 2: true, 3: true }, remind: '', said: {} };
   function newTalk() { return { step: 0, phase: 'idle', rev: {}, tr: {}, used: false, status: {}, text: false, mic: true, typed: '', live: '', miss: false, log: [], turns: [], tries: 0 }; }
   function aiPush(k, how) { var A = AI[k]; S.t.log.push({ who: 'ai', k: k, en: A.en, ua: A.ua, fast: A.fast && how !== 'slow', slang: A.slang, how: how || '' }); say(A.en, how === 'slow' ? 0.7 : A.fast ? 1.1 : 0.85); }
   S.t = newTalk();
@@ -3062,7 +3063,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
         '<div class="ptext"><p class="phr">' + esc(p[0]) + '</p><p class="nat">' + esc(p[1]) + '</p></div>' +
         '<div class="pacts"><button class="iconbtn" data-a="slowp" data-i="' + i + '" aria-label="Slower">' + ic('slow', 18, '#4A4F63') + '</button><button class="iconbtn' + (S.saved[i] ? ' on' : '') + '" data-a="savep" data-i="' + i + '" aria-label="Save">' + ic(S.saved[i] ? 'starf' : 'star', 18, S.saved[i] ? '#3F46A8' : '#4A4F63') + '</button></div></div>';
     }).join('');
-    return scr('<header class="bar"><button class="iconbtn" data-a="tab" data-t="today" aria-label="Close">' + ic('x', 22) + '</button><span class="bar-t">' + esc(LES.title) + '</span>' + seg(false) + '</header>' +
+    return scr('<header class="bar"><button class="iconbtn backb" data-a="back" aria-label="Back">' + ic('back', 22) + '</button><span class="bar-t">' + esc(LES.title) + '</span>' + seg(false) + '</header>' +
       '<div class="body scroll" style="gap:20px">' +
       '<div class="ctx">' + orb(S.playing >= 0 ? 'speak' : 'idle', 's40') + '<div class="stack" style="gap:6px"><p class="cl2"><span class="lbl">Who</span>' + esc(LES.who) + '</p><p class="cl2"><span class="lbl">Goal</span>' + esc(LES.goal) + '</p></div></div>' +
       '<section class="stack" style="gap:10px"><div class="sechead"><h2 class="h2">3 phrases you\'ll need</h2>' + (S.briefHint ? '<span class="hint">' + ic('play', 12, '#4A4F63') + 'Tap to hear</span>' : '') + '</div><div class="plist">' + rows + '</div></section>' +
@@ -3291,23 +3292,23 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
           (l.starts ? '<span class="bc">Starts here' + (l.because ? ' · because you chose: ' + esc(l.because) : '') + '</span>' : l.because ? '<span class="bc">Because you chose: ' + esc(l.because) + '</span>' : '') + '</span><span class="meta">' + meta + '</span>' + ic('chev', 16, '#9AA0B4') + '</button>';
       }).join('') + '</section>';
     }).join('');
-    return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">Week 1 of 4 · ' + PL.n + ' talks</span><h1 class="h1">Your plan</h1></div><span class="tag2">Demo</span></header>' +
+    return scr('<header class="bar home">' + backIf() + '<div class="stack" style="gap:0;flex:1"><span class="meta" style="text-align:left">Week 1 of 4 · ' + PL.n + ' talks</span><h1 class="h1">Your plan</h1></div><span class="tag2">Demo</span></header>' +
       '<div class="body scroll" style="gap:12px"><p class="goalline">' + ic('flag', 16, '#12B76A') + esc(PL.goal.chip) + '</p><p class="meta" style="text-align:left">Need one for tomorrow? Open any talk.</p>' + secs + '</div>' + tabs('plan'), 'tabsc');
   };
   R.phrases = function () {
-    if (!S.done) return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">0 saved</span><h1 class="h1">My phrases</h1></div></header>' +
+    if (!S.done) return scr('<header class="bar home">' + backIf() + '<div class="stack" style="gap:0;flex:1"><span class="meta" style="text-align:left">0 saved</span><h1 class="h1">My phrases</h1></div></header>' +
       '<div class="body scroll" style="gap:14px;align-items:center;justify-content:center;text-align:center">' + orb('idle', 's56') + '<h2 class="h2">No phrases yet</h2><p class="meta" style="max-width:260px">Finish your first talk and save the phrases you\'ll use at work.</p><button class="btn3" data-a="startnext">Start your first talk</button></div>' + tabs('phrases'), 'tabsc');
     var rows = SAVED.map(function (p, i) {
       var said = S.said[i];
       return '<div class="frow"><p class="phr s">' + esc(p[0]) + '</p><p class="nat">' + esc(p[1]) + '</p><div class="row" style="gap:6px;margin-top:6px"><button class="hb" data-a="play2" data-i="' + i + '">' + ic('play', 14) + 'Listen</button><button class="hb" data-a="play2" data-i="' + i + '">' + ic('slow', 16) + 'Slow</button>' +
         (said ? '<span class="ok2" style="margin:0 0 0 4px">' + ic('check', 14, '#0B6B44', 3) + 'Said it</span>' : '<button class="hb" data-a="sayit" data-i="' + i + '">' + ic('mic', 16) + 'Say it</button>') + '<button class="iconbtn" style="margin-left:auto" aria-label="More">' + ic('more', 18, '#6B7083') + '</button></div></div>';
     }).join('');
-    return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">' + SAVED.length + ' saved</span><h1 class="h1">My phrases</h1></div><button class="btn3" data-a="practise">Practise 3</button></header>' +
+    return scr('<header class="bar home">' + backIf() + '<div class="stack" style="gap:0;flex:1"><span class="meta" style="text-align:left">' + SAVED.length + ' saved</span><h1 class="h1">My phrases</h1></div><button class="btn3" data-a="practise">Practise 3</button></header>' +
       '<div class="body scroll" style="gap:8px"><span class="lbl">' + esc(LES.title) + '</span><div class="cardx" style="padding:0 16px">' + rows + '</div></div>' + tabs('phrases'), 'tabsc');
   };
   R.settings = function () {
-    var rows = [['Demo persona', '<div class="seg2"><button class="' + (S.persona === 'persona-a' ? 'on' : '') + '" data-a="persona" data-p="persona-a">Olena · factory</button><button class="' + (S.persona === 'persona-b' ? 'on' : '') + '" data-a="persona" data-p="persona-b">Ana · hotel</button></div>'], ['Tips language', '<span class="val">Українська ' + ic('chev', 14, '#9AA0B4') + '</span>'], ['Start talks in', '<div class="seg2"><button class="on">Voice</button><button>Text</button></div>'], ['Accent', '<div class="seg2"><button class="on">UK</button><button>US</button></div>'], ['Speaking speed', '<div class="seg2"><button class="on">Slower</button><button>Normal</button></div>'], ['Daily reminder', '<span class="val">7:30 ' + ic('chev', 14, '#9AA0B4') + '</span>'], ['Subscription', '<span class="val">Free trial · 6 days left ' + ic('chev', 14, '#9AA0B4') + '</span>']];
-    return scr('<header class="bar"><button class="iconbtn" data-a="tab" data-t="today" aria-label="Back">' + ic('back', 22) + '</button><span class="bar-t">Settings</span><span style="width:44px"></span></header>' +
+    var rows = [['Demo persona', '<div class="seg2">' + (S.custom ? '<button class="' + (S.persona === 'custom' ? 'on' : '') + '" data-a="persona" data-p="custom">' + esc(S.custom.name || 'You') + ' · quiz</button>' : '') + '<button class="' + (S.persona === 'persona-a' ? 'on' : '') + '" data-a="persona" data-p="persona-a">Olena · factory</button><button class="' + (S.persona === 'persona-b' ? 'on' : '') + '" data-a="persona" data-p="persona-b">Ana · hotel</button></div>'], ['Tips language', '<span class="val">Українська ' + ic('chev', 14, '#9AA0B4') + '</span>'], ['Start talks in', '<div class="seg2"><button class="on">Voice</button><button>Text</button></div>'], ['Accent', '<div class="seg2"><button class="on">UK</button><button>US</button></div>'], ['Speaking speed', '<div class="seg2"><button class="on">Slower</button><button>Normal</button></div>'], ['Daily reminder', '<span class="val">7:30 ' + ic('chev', 14, '#9AA0B4') + '</span>'], ['Subscription', '<span class="val">Free trial · 6 days left ' + ic('chev', 14, '#9AA0B4') + '</span>']];
+    return scr('<header class="bar"><button class="iconbtn backb" data-a="back" aria-label="Back">' + ic('back', 22) + '</button><span class="bar-t">Settings</span><span style="width:44px"></span></header>' +
       '<div class="body scroll"><div class="cardx" style="padding:0 16px;gap:0">' + rows.map(function (r) { return '<div class="setr"><span>' + r[0] + '</span>' + r[1] + '</div>'; }).join('') + '</div></div>');
   };
 
@@ -3342,7 +3343,8 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     var sc2 = app.querySelector('.scroll'); if (sc2) { if (S.v === 'talk') sc2.scrollTop = sc2.scrollHeight; else if (keep) sc2.scrollTop = y; }
     side();
   }
-  function go(v) { clearT(); S.v = v; S.toast = v === 'today' && S.toastNext; S.toastNext = false; log('screen_view', { screen: v }); render(); if (S.toast) later(function () { S.toast = false; render(true); }, 2600); }
+  function backIf() { return S.hist.length ? '<button class="iconbtn backb" data-a="back" aria-label="Back">' + ic('back', 22) + '</button>' : ''; }
+  function go(v, noPush) { clearT(); if (!noPush && S.v && S.v !== v && S.v !== 'talk') S.hist.push(S.v); if (v === 'today') S.hist = []; S.v = v; S.toast = v === 'today' && S.toastNext; S.toastNext = false; log('screen_view', { screen: v }); render(); if (S.toast) later(function () { S.toast = false; render(true); }, 2600); }
   function tset(p) { Object.assign(S.t, p); render(); }
   function startListen() {
     tset({ phase: 'listening', used: true, live: '', miss: false });
@@ -3387,6 +3389,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     if (a === 'playtxt') { say(S._fixTry || LES.better.try); return; }
     if (a === 'finish') { log('phrase_saved'); if (LES.id === allLessons()[S.done].id) S.done++; S.toastNext = true; return go('today'); }
     if (a === 'again') { S.t = newTalk(); return go('brief'); }
+    if (a === 'back') { if (S.rec) { S.rec.stop(); S.rec = null; } var pv = S.hist.pop() || 'today'; return go(pv, true); }
     if (a === 'tab') { return go(b.getAttribute('data-t') === 'today' ? 'today' : b.getAttribute('data-t')); }
     if (a === 'settings') { return go('settings'); }
     if (a === 'startnext' || a === 'opensit') { load(S.persona, a === 'startnext' ? nextLesson().id : b.getAttribute('data-l')); S.briefHint = true; S.t = newTalk(); S.saved = {}; return go('brief'); }
@@ -3398,8 +3401,12 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   document.addEventListener('input', function (e) { if (e.target.getAttribute('data-in') === 'typed') S.t.typed = e.target.value; });
   window.__app = { setAI: function (u) { AI_URL = u; remoteOff = false; }, respond: function (x) { respond(x); }, expected: function () { return ME[S.t.step]; }, S: S, go: go, render: render, newTalk: newTalk, load: function (p, l) { S.persona = p; load(p, l); } };
   app = document.getElementById('app');
-  var h = (location.hash || '').slice(1), m = h.match(/^(persona-[ab])(?:-(\w+))?$/);
-  if (m) { S.persona = m[1]; h = m[2] || 'today'; }
+  var h = (location.hash || '').slice(1), m = h.match(/^(persona-[ab])(?:-(\w+))?$/), pm = h.match(/^profile\.([A-Za-z0-9_-]+)$/);
+  function okProf(x) { return x && typeof x === 'object' && C.D.substitutions[x.sector] && Array.isArray(x.hardest); }
+  if (pm) { try { var js = decodeURIComponent(escape(atob(pm[1].replace(/-/g, '+').replace(/_/g, '/')))); var pr = JSON.parse(js); if (okProf(pr)) { S.custom = pr; S.persona = 'custom'; try { localStorage.setItem('veera_profile', js); } catch (e) {} } } catch (e) {} h = 'today'; try { history.replaceState(null, '', location.pathname); } catch (e) {} }
+  else if (m) { S.persona = m[1]; h = m[2] || 'today'; }
+  else { try { var st = JSON.parse(localStorage.getItem('veera_profile') || 'null'); if (okProf(st)) { S.custom = st; S.persona = 'custom'; } } catch (e) {} }
+  if (S.custom && S.custom.name) S.custom.name = String(S.custom.name).slice(0, 24);
   load(S.persona); if (['feedback', 'phrases'].indexOf(h) >= 0 || (h === 'today' && /done/.test(location.hash))) S.done = 1; go(R[h] ? h : 'today');
 })();
 </script>
