@@ -328,6 +328,10 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .rv2 blockquote{margin:0;font-size:16px;line-height:1.45;color:var(--ink)}
 .chip.sm{height:auto;min-height:36px;padding:6px 12px;white-space:normal}
 
+.body.scroll:has(> .row:first-child > .orb), .body.scroll:has(> .orb:first-child), .body.scroll:has(> .stack:first-child > .orb:first-child){padding-top:30px!important}
+button.store{cursor:pointer;font:inherit;font-weight:600;background:#fff;color:var(--ink)}
+button.store:hover{background:#ECEEF6}
+
 .rvsample{font-size:12px;color:var(--ink-2);margin-top:2px}
 .rv2 blockquote{margin:0}
 .scr.enter{animation:scrIn 280ms cubic-bezier(.2,.8,.2,1) both}
@@ -3187,7 +3191,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   function reviewCard() {
     var r = REVIEWS[P().sector] || REVIEWS.other;
     return '<figure class="rv2"><div class="row" style="gap:10px"><span class="rvav" aria-hidden="true">' + r[0].charAt(0) + '</span><div class="stack" style="gap:0;flex:1"><span class="rvn">' + esc(r[0]) + '</span><span class="rvm">' + esc(r[1]) + '</span></div><span class="rvs" aria-label="5 out of 5">★★★★★</span></div>' +
-      '<blockquote>“' + esc(r[2]) + '”</blockquote><figcaption class="rvsample">Sample review · demo</figcaption></figure>';
+      '<blockquote>' + esc(r[2]) + '</blockquote><figcaption class="rvsample">Sample review · demo</figcaption></figure>';
   }
   // ---------- screens ----------
   var R = {};
@@ -3381,7 +3385,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   };
   R.success = function () {
     return scr('<div class="body" style="align-items:center;justify-content:center;text-align:center;gap:18px">' + orb('happy', 's120') + '<h1 class="t-display" style="font-size:36px">You\'re in, ' + esc(first(S.name)) + '!</h1><p class="t-body muted">Your 7-day free trial has started.</p>' +
-      '<div class="row" style="gap:10px"><span class="store">' + ic('phone', 18) + 'App Store</span><span class="store">' + ic('phone', 18) + 'Google Play</span></div></div>' +
+      '<div class="row" style="gap:10px"><button class="store" data-a="toapp" aria-label="Open the app — App Store">' + ic('phone', 18) + 'App Store</button><button class="store" data-a="toapp" aria-label="Open the app — Google Play">' + ic('phone', 18) + 'Google Play</button></div></div>' +
       '<div class="dock">' + btn('Start your first conversation', 'toapp', { icon: 'arrow' }) + '<button class="lnk mute" data-a="restart" style="align-self:center">Restart the demo</button></div>');
   };
 
