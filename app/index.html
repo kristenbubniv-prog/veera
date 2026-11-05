@@ -3172,7 +3172,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     }, 900);
   }
   // Remote AI (Cloudflare Worker) — works for anyone who opens the site, no keys in the page.
-  var AI_URL = '';  // set after the Worker is deployed, e.g. 'https://veera-ai.<name>.workers.dev'
+  var AI_URL = 'https://veera-ai.kristenbubniv.workers.dev';  // the user's own Cloudflare Worker (worker/veera-ai-worker.js)
   try { AI_URL = localStorage.getItem('veera_ai_url') || AI_URL; } catch (e) {}
   var remoteOff = false, remoteFails = 0;
   function buildPrompt() {
