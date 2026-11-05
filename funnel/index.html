@@ -2978,7 +2978,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       var gid = tr === 'interview' ? 'I3' : 'D1';
       if (ids.indexOf(gid) >= 0) ids.splice(ids.indexOf(gid), 1);
       var split = [ids.slice(0, 2), ids.slice(2, 4), ids.slice(4, 5), ids.slice(5).concat([gid])];
-      var tt = tr === 'interview' ? ['Introduce yourself', 'Shifts and contracts', 'Understand and ask again', 'Your interview'] : ['Appointments and calls', 'Everyday questions', 'Understand and ask again', 'Your goal'];
+      var tt = tr === 'interview' ? ['Introduce yourself', 'Understand and ask again', 'Small talk at work', 'Your interview'] : ['Everyday questions', 'Understand and ask again', 'Phone calls', 'Your goal'];
       weeks = split.map(function (w, i) { return { title: tt[i], lessons: w.map(item) }; });
     } else {
       var used = {};
