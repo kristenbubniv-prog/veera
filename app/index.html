@@ -3119,7 +3119,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       var rev = t.rev[i] || t.tr[i] || e.how === 'slow', latest = i === lastAi && t.phase !== 'done';
       out += '<div class="ai2' + (e.fast ? ' fast' : '') + '">' + (e.fast ? '<span class="fastb">' + ic('bolt', 12, '#8A5A00') + 'Fast</span>' : '') + (e.how === 'slow' ? '<span class="fastb calm">' + ic('slow', 12, '#3F46A8') + 'Again, slower</span>' : '') +
         (rev ? '<p>' + esc(e.en) + '</p>' : '<button class="reveal2" data-a="rev" data-i="' + i + '"><p class="blur">' + esc(e.en) + '</p><span>' + ic('eye', 14, '#3F46A8') + 'Tap to see the words</span></button>') +
-        (t.tr[i] ? '<div class="tr2"><p>' + esc(e.ua) + '</p>' + (gloss(e) ? '<p class="gl">' + esc(gloss(e)) + '</p>' : '') + '</div>' : '') + '</div>';
+        (t.tr[i] ? '<div class="tr2"><p>' + (e.uaLoading ? '<span class="meta">Перекладаю…</span>' : e.ua ? esc(e.ua) : '<span class="meta">Переклад зараз недоступний</span>') + '</p>' + (gloss(e) ? '<p class="gl">' + esc(gloss(e)) + '</p>' : '') + '</div>' : '') + '</div>';
       if (e.fast && latest) out += '<p class="tipc fast">' + ic('slow', 14, '#4A4F63') + 'Tap <b>Slower</b> — that\'s normal.</p>';
       if (t.status[i]) out += '<p class="sys2">' + ic('volume', 14, '#6B7083') + esc(t.status[i]) + '</p>';
       if (latest && t.phase === 'idle') {
@@ -3225,7 +3225,21 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       '\nA script you can follow loosely (use its words when they fit): ' + AI.map(function (a) { return a.en; }).join(' | ') +
       '\nRules: reply in British English as the ' + WHO + ', max 16 words, natural, friendly, like real speech. React to exactly what the worker just said — answer their question, acknowledge what they told you, or ask a natural follow-up. If they ask you to repeat or slow down, say the same thing again in simpler words. If they ask what a word means, explain it simply. If their words are unclear or off-topic, ask one short clarifying question. Never correct their English in the reply. Use at most one slang expression in the whole talk. Steer towards the goal and wrap up politely once it is reached or after ' + (ME.length + 2) + ' worker turns.' +
       '\nConversation so far:\n' + history +
-      '\n\nReturn JSON only: {"reply": string, "reply_ua": string (Ukrainian translation of reply), "understood": boolean (would a manager understand the worker\'s last line?), "asked_to_repeat": boolean, "on_goal": boolean (the last line moves towards the goal), "goal_reached": boolean, "coach_tip": string|null (a better English line the worker could say next, only if they struggled)}';
+      '\n\nReturn JSON only: {"reply": string, "reply_ua": string (translation of reply into Ukrainian — українська, NOT Russian; Ukrainian letters і ї є ґ; never ы э ё ъ), "understood": boolean (would a manager understand the worker\'s last line?), "asked_to_repeat": boolean, "on_goal": boolean (the last line moves towards the goal), "goal_reached": boolean, "coach_tip": string|null (a better English line the worker could say next, only if they struggled)}';
+  }
+  // Ukrainian only: Cyrillic with no Russian-only letters and no CJK characters
+  function validUA(t) { t = String(t || ''); return /[а-яіїєґ]/i.test(t) && !/[ыэёъ]/i.test(t) && !/[⺀-鿿가-힯]/.test(t); }
+  function translateUA(e) {
+    var call = AIENG ? callClaude : (AI_URL && !remoteOff) ? callRemote : null;
+    if (!call) { e.ua = e.ua || ''; e.uaFail = true; return render(true); }
+    e.uaLoading = true; render(true);
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      call('Translate this English sentence into Ukrainian (українська мова — NOT Russian). Use Ukrainian letters (і, ї, є, ґ); never use ы, э, ё, ъ. Keep it natural and short. Keep slang meaning, not word-for-word.\nEnglish: "' + e.en + '"\nReturn JSON only: {"ua": string}')
+        .then(function (raw) { var r = parseJSON(raw); if (r && validUA(r.ua)) { e.ua = r.ua; e.uaLoading = false; return render(true); } if (tries < 2) return attempt(); throw new Error('bad_ua'); })
+        .catch(function () { e.uaLoading = false; e.uaFail = true; render(true); });
+    })();
   }
   function parseJSON(x) { if (x && typeof x === 'object') return x; var t = String(x || '').replace(/```(json)?/g, ''), m = t.match(/\{[\s\S]*\}/); if (!m) return null; try { return JSON.parse(m[0]); } catch (e) { var q = m[0].match(/"reply"\s*:\s*"([^"]+)"/); return q ? { reply: q[1], understood: true } : null; } }
   function aiTurn(txt, call, engine) {
@@ -3242,7 +3256,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       var sc = Math.max(C.score(txt, ME[Math.min(k, ME.length - 1)]), r.on_goal ? 0.7 : r.understood ? 0.5 : 0.2);
       if (!r.asked_to_repeat) t.turns.push({ k: k, said: txt, target: ME[Math.min(k, ME.length - 1)], score: sc, kind: r.understood ? 'ok' : 'pass' });
       log('turn_judged', { step: k, said: txt, engine: engine, understood: r.understood, goal: r.goal_reached });
-      pushAi(String(r.reply).trim(), r.reply_ua || '', r.asked_to_repeat ? 'slow' : '');
+      pushAi(String(r.reply).trim(), validUA(r.reply_ua) ? r.reply_ua : '', r.asked_to_repeat ? 'slow' : '');
       if (r.coach_tip && !r.understood) t.log.push({ who: 'coach', text: 'Veera: you could say', tip: r.coach_tip });
       var worker = t.log.filter(function (e) { return e.who === 'me'; }).length, end = !!r.goal_reached || worker >= ME.length + 2;
       tset({ step: r.asked_to_repeat ? k : Math.min(k + 1, ME.length - 1), phase: end ? 'done' : 'idle' });
@@ -3476,7 +3490,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     if (a === 'start') { S.t = newTalk(); S.t.log.push({ who: 'ai', k: 0, en: AI[0].en, ua: AI[0].ua, fast: AI[0].fast, slang: AI[0].slang, how: '' }); go('talk'); log('conversation_start'); later(function () { say(AI[0].en, AI[0].fast ? 1.1 : 0.85); }, 400); return; }
     if (a === 'mode') { var m = b.getAttribute('data-m'); if (S.v === 'talk') { tset({ text: m === 'text' }); } return; }
     if (a === 'rev') { var r = Object.assign({}, S.t.rev); r[i] = true; return tset({ rev: r }); }
-    if (a === 'tr') { var tr = Object.assign({}, S.t.tr); tr[i] = !tr[i]; log('helper_tap', { type: 'translate' }); return tset({ tr: tr, used: true }); }
+    if (a === 'tr') { var tr = Object.assign({}, S.t.tr); tr[i] = !tr[i]; var le = S.t.log[i]; if (tr[i] && le && !validUA(le.ua) && !le.uaLoading) { le.ua = ''; S.t.tr = tr; translateUA(le); } log('helper_tap', { type: 'translate' }); return tset({ tr: tr, used: true }); }
     if (a === 'slower' || a === 'repeat' || a === 'simpler') {
       var st = Object.assign({}, S.t.status); st[i] = a === 'slower' ? 'Speaking slower now' : a === 'repeat' ? 'Playing again' : 'Said more simply';
       log('helper_tap', { type: a }); say(S.t.log[i].en, a === 'slower' ? 0.65 : 0.85); return tset({ status: st, used: true });
