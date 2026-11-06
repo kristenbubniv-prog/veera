@@ -356,6 +356,14 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .gprog{flex:1;height:6px;border-radius:3px;background:#EEF0F4;overflow:hidden;margin:0 10px}
 .gprog i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#3B82F6,#8B5CF6);transition:width 300ms ease}
 
+.wstrip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:16px;background:linear-gradient(135deg,#F3F5FF,#F6F2FF);border:1px solid #E6E8FA}
+.wt{font-size:14px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wdots{display:flex;gap:3px;flex:none}
+.d3{width:22px;height:22px;border-radius:11px;border:1.5px solid #D9DCE8;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--ink-3)}
+.d3.today{border-color:var(--pri);color:var(--pri)}
+.d3.done{background:var(--success);border-color:var(--success)}
+
 </style>
 </head>
 <body>
@@ -3309,16 +3317,16 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   R.today = function () {
     var first = S.done === 0, nx = nextLesson();
     var ph = SAVED.slice(0, 3).map(function (p, i) { return '<div class="prow"><button class="pplay" data-a="play2" data-i="' + i + '" aria-label="Listen">' + ic('play', 14, '#3F46A8') + '</button><div class="ptext"><p class="phr s">' + esc(p[0]) + '</p><p class="nat">' + esc(p[1]) + '</p></div></div>'; }).join('');
-    var days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(function (d, i) { var dn = i === 2 && !first; return '<span class="d2' + (dn ? ' done' : '') + (i === 2 ? ' today' : '') + '"><b>' + (dn ? ic('check', 12, '#fff', 3) : '') + '</b>' + d + '</span>'; }).join('');
+    var days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(function (d, i) { var dn = i === 2 && !first; return '<span class="d3' + (dn ? ' done' : '') + (i === 2 ? ' today' : '') + '" aria-hidden="true">' + (dn ? ic('check', 12, '#fff', 3) : d) + '</span>'; }).join('');
     var upMeta = nx.starts ? 'Starts here · 3 min' : 'Week 1 · 3 min';
     var shift = first
       ? '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">' + ic('sunrise', 14, '#4A4F63') + ' Before your shift</span></div><p class="meta" style="text-align:left;margin:0">After your first talk, the phrases you save will be here — ready to repeat before work.</p></section>'
       : '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">' + ic('sunrise', 14, '#4A4F63') + ' Before your shift</span><span class="meta">1 min</span></div><div class="plist flat">' + ph + '</div><button class="btn3" style="width:100%" data-a="practise">Practise 3 phrases</button></section>';
     return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">Hi, ' + esc(PER.name || 'there') + '</span><h1 class="h1">Today</h1></div><div class="row" style="gap:8px"><span class="tag2">Demo</span><button class="iconbtn" data-a="settings" aria-label="Settings">' + ic('sliders', 20) + '</button></div></header>' +
       '<div class="body scroll" style="gap:14px">' +
+      '<section class="wstrip" aria-label="This week: ' + (first ? 0 : 1) + ' of 3 practice days"><div class="stack" style="gap:1px;min-width:0;flex:1"><span class="wt">' + (first ? 0 : 1) + ' of 3 days</span><span class="ws">' + (first ? 'Start today' : '2 more to go!') + '</span></div><div class="wdots">' + days + '</div></section>' +
       (first ? '<div class="welcome">' + orb('speak', 's40') + '<p>I\'m Veera, your coach. Your first talk takes about 3 minutes — I\'ll help if you get stuck.</p></div>' : '') + '<section class="cardx next"><div class="row" style="justify-content:space-between"><span class="lbl">' + (first ? 'Your first talk' : 'Up next') + '</span><span class="meta">' + upMeta + '</span></div><div class="row" style="justify-content:space-between;gap:12px"><div class="stack" style="gap:2px;min-width:0"><h2 class="h2" style="font-size:19px">' + esc(nx.title) + '</h2>' + (first && nx.because ? '<span class="bc">Because you chose: ' + esc(nx.because) + '</span>' : '') + '</div><button class="startb" data-a="startnext">Start ' + ic('arrow', 16, '#fff') + '</button></div></section>' +
       (first ? firstDay() : shift) +
-      '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">This week</span><span class="meta">' + (first ? '0' : '1') + ' of 3 days</span></div><div class="days2">' + days + '</div></section>' +
       '</div>' + (S.toast ? '<div class="toast2" role="status">' + ic('check', 18, '#A6F0C8', 3) + (S.toastMsg || 'Phrases saved to My phrases') + '</div>' : '') + tabs('today'), 'tabsc');
   };
   R.plan = function () {
