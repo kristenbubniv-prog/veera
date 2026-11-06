@@ -364,6 +364,11 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .d3.today{border-color:var(--pri);color:var(--pri)}
 .d3.done{background:var(--success);border-color:var(--success)}
 
+.eng{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-3);background:#F1F2F6;border-radius:999px;padding:3px 10px;flex:none}
+.eng i{width:7px;height:7px;border-radius:50%;background:#9AA0B4}
+.eng.ai{color:#0B6B3A;background:#ECFDF3}
+.eng.ai i{background:#12B76A;box-shadow:0 0 0 3px rgba(18,183,106,.18)}
+
 </style>
 </head>
 <body>
@@ -3138,6 +3143,10 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   //    questions, yes / no, thanks, off-topic — then carries the talk towards the lesson goal.
   var AIENG = null; // resolved sample() or null
   try { if (window.claude && window.claude.use) window.claude.use('sample').then(function (x) { AIENG = x; log('engine', { claude: !!x }); if (S.v === 'talk') render(); }).catch(function () {}); } catch (e) {}
+  function engChip() {
+    var e = S.engState || (AIENG || (AI_URL && !remoteOff) ? 'ai' : 'practice');
+    return e === 'ai' ? '<span class="eng ai" title="Replies come from the AI model">' + '<i></i>AI</span>' : '<span class="eng" title="' + esc(S.engWhy || 'Scripted replies') + '"><i></i>Practice mode</span>';
+  }
   function engineName() { return AIENG ? 'claude' : (AI_URL && !remoteOff) ? 'remote' : 'rules'; }
   function lastAi() { for (var i = S.t.log.length - 1; i >= 0; i--) if (S.t.log[i].who === 'ai') return S.t.log[i]; return null; }
   var YES_RE = /^(ok(ay)?|yes|yeah|yep|sure|fine|alright|all right|got it|no problem|right|cool|great|will do|i will|i'?ll do it)\b/i;
@@ -3218,17 +3227,17 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       '\nConversation so far:\n' + history +
       '\n\nReturn JSON only: {"reply": string, "reply_ua": string (Ukrainian translation of reply), "understood": boolean (would a manager understand the worker\'s last line?), "asked_to_repeat": boolean, "on_goal": boolean (the last line moves towards the goal), "goal_reached": boolean, "coach_tip": string|null (a better English line the worker could say next, only if they struggled)}';
   }
-  function parseJSON(x) { if (x && typeof x === 'object') return x; var m = String(x || '').match(/\{[\s\S]*\}/); return m ? JSON.parse(m[0]) : null; }
+  function parseJSON(x) { if (x && typeof x === 'object') return x; var t = String(x || '').replace(/```(json)?/g, ''), m = t.match(/\{[\s\S]*\}/); if (!m) return null; try { return JSON.parse(m[0]); } catch (e) { var q = m[0].match(/"reply"\s*:\s*"([^"]+)"/); return q ? { reply: q[1], understood: true } : null; } }
   function aiTurn(txt, call, engine) {
     var t = S.t, k = t.step;
     record(txt, 'pending', 0); tset({ phase: 'typing', typed: '', live: '' });
     var done = false;
-    function fallback(reason) { if (done) return; done = true; log('engine_fallback', { engine: engine, reason: reason }); if (S.t !== t) return; t.log.pop(); if (engine === 'remote') { if (++remoteFails >= 2) remoteOff = true; } else AIENG = null; respondRules(txt); }
-    var timer = setTimeout(function () { fallback('timeout'); }, 12000);
+    function fallback(reason) { if (done) return; done = true; log('engine_fallback', { engine: engine, reason: reason }); S.engState = 'practice'; S.engWhy = 'AI unavailable: ' + reason; if (!t.warned) { t.warned = true; t.log.push({ who: 'coach', text: 'The AI didn\'t answer (' + reason + '), so Veera is using practice mode for this reply.' }); } if (S.t !== t) return; for (var li = t.log.length - 1; li >= 0; li--) if (t.log[li].who === 'me') { t.log.splice(li, 1); break; } if (engine === 'remote') { if (++remoteFails >= 2) remoteOff = true; } else AIENG = null; respondRules(txt); }
+    var timer = setTimeout(function () { fallback('timeout'); }, 15000);
     call(buildPrompt()).then(function (raw) {
       if (done) return; clearTimeout(timer); var r; try { r = parseJSON(raw); } catch (e) { r = null; }
       if (!r || !r.reply) return fallback('bad_json');
-      done = true; remoteFails = 0; if (S.t !== t || t.phase !== 'typing') return;
+      done = true; remoteFails = 0; S.engState = 'ai'; if (S.t !== t || t.phase !== 'typing') return;
       var me = t.log[t.log.length - 1]; me.ok = !!r.understood && !t.log.some(function (e) { return e !== me && e.ok; });
       var sc = Math.max(C.score(txt, ME[Math.min(k, ME.length - 1)]), r.on_goal ? 0.7 : r.understood ? 0.5 : 0.2);
       if (!r.asked_to_repeat) t.turns.push({ k: k, said: txt, target: ME[Math.min(k, ME.length - 1)], score: sc, kind: r.understood ? 'ok' : 'pass' });
@@ -3242,7 +3251,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
   }
   function callRemote(prompt) {
     return fetch(AI_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: prompt }) })
-      .then(function (r) { if (!r.ok) throw new Error('http_' + r.status); return r.json(); }).then(function (j) { return j.text; });
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || !j.text) throw new Error((j && j.error) || ('http_' + r.status)); log('ai_model', { model: j.model }); return j.text; }); });
   }
   function callClaude(prompt) { return AIENG.json(prompt, { modelTier: 'quick', cache: false }); }
   function respond(txt) { if (AIENG) return aiTurn(txt, callClaude, 'claude'); if (AI_URL && !remoteOff) return aiTurn(txt, callRemote, 'remote'); respondRules(txt); }
@@ -3261,7 +3270,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
         '<button class="side" data-a="mode" data-m="text">' + ic('chat', 20) + '<span>Type</span></button></div>';
     }
     return scr('<header class="bar"><button class="endb" data-a="end">End</button><span class="bar-t">' + esc(LES.title) + '</span>' + seg(t.text) + '</header>' + banner +
-      '<div class="who"><span class="av">' + esc(WHO.charAt(0)) + '</span><span><b>' + esc(WHO) + '</b></span></div>' +
+      '<div class="who"><span class="av">' + esc(WHO.charAt(0)) + '</span><span style="flex:1"><b>' + esc(WHO) + '</b></span>' + engChip() + '</div>' +
       '<div class="feed scroll"><div style="margin-top:auto"></div>' + feed() + '</div>' + dock, 'talk');
   };
   // A6 Feedback
