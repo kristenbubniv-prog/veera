@@ -2488,7 +2488,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
    "phrases": [
     [
      "I've worked in {sector_job} for two years.",
-     "Я два роки працюю в {sector_job}."
+     "Я два роки працюю в цій сфері."
     ],
     [
      "I'm reliable and I learn fast.",
@@ -3324,8 +3324,8 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       : '<section class="cardx"><div class="row" style="justify-content:space-between"><span class="lbl">' + ic('sunrise', 14, '#4A4F63') + ' Before your shift</span><span class="meta">1 min</span></div><div class="plist flat">' + ph + '</div><button class="btn3" style="width:100%" data-a="practise">Practise 3 phrases</button></section>';
     return scr('<header class="bar home"><div class="stack" style="gap:0"><span class="meta" style="text-align:left">Hi, ' + esc(PER.name || 'there') + '</span><h1 class="h1">Today</h1></div><div class="row" style="gap:8px"><span class="tag2">Demo</span><button class="iconbtn" data-a="settings" aria-label="Settings">' + ic('sliders', 20) + '</button></div></header>' +
       '<div class="body scroll" style="gap:14px">' +
-      '<section class="wstrip" aria-label="This week: ' + (first ? 0 : 1) + ' of 3 practice days"><div class="stack" style="gap:1px;min-width:0;flex:1"><span class="wt">' + (first ? 0 : 1) + ' of 3 days</span><span class="ws">' + (first ? 'Start today' : '2 more to go!') + '</span></div><div class="wdots">' + days + '</div></section>' +
       (first ? '<div class="welcome">' + orb('speak', 's40') + '<p>I\'m Veera, your coach. Your first talk takes about 3 minutes — I\'ll help if you get stuck.</p></div>' : '') + '<section class="cardx next"><div class="row" style="justify-content:space-between"><span class="lbl">' + (first ? 'Your first talk' : 'Up next') + '</span><span class="meta">' + upMeta + '</span></div><div class="row" style="justify-content:space-between;gap:12px"><div class="stack" style="gap:2px;min-width:0"><h2 class="h2" style="font-size:19px">' + esc(nx.title) + '</h2>' + (first && nx.because ? '<span class="bc">Because you chose: ' + esc(nx.because) + '</span>' : '') + '</div><button class="startb" data-a="startnext">Start ' + ic('arrow', 16, '#fff') + '</button></div></section>' +
+      '<section class="wstrip" aria-label="This week: ' + (first ? 0 : 1) + ' of 3 practice days"><div class="stack" style="gap:1px;min-width:0;flex:1"><span class="wt">' + (first ? 0 : 1) + ' of 3 days</span><span class="ws">' + (first ? 'Start today' : '2 more to go!') + '</span></div><div class="wdots">' + days + '</div></section>' +
       (first ? firstDay() : shift) +
       '</div>' + (S.toast ? '<div class="toast2" role="status">' + ic('check', 18, '#A6F0C8', 3) + (S.toastMsg || 'Phrases saved to My phrases') + '</div>' : '') + tabs('today'), 'tabsc');
   };
