@@ -369,6 +369,10 @@ body{background:#F5F6F9;display:flex;justify-content:center;align-items:center;f
 .eng.ai{color:#0B6B3A;background:#ECFDF3}
 .eng.ai i{background:#12B76A;box-shadow:0 0 0 3px rgba(18,183,106,.18)}
 
+.goal2{align-self:stretch;display:flex;align-items:center;gap:8px;padding:8px 10px 8px 12px;border-radius:14px;background:#ECFDF3;color:#0B6B3A;font-size:14px;font-weight:500}
+.goal2 span{flex:1;line-height:1.35}
+.btn3.sm{min-height:36px;padding:0 14px;font-size:14px}
+
 </style>
 </head>
 <body>
@@ -3130,6 +3134,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     if (t.phase === 'listening' && t.live) out += '<div class="me2 live"><p>' + esc(t.live) + '</p></div>';
     if (t.miss && t.phase === 'idle') out += '<p class="sys2">' + ic('micoff', 14, '#6B7083') + 'Didn\'t catch that. Tap Veera and try again, or type it.</p>';
     if (t.phase === 'typing') out += '<div class="ai2 typing" aria-label="Typing"><span class="dots"><i></i><i></i><i></i></span></div>';
+    if (t.goal && t.phase !== 'done') out += '<div class="goal2" role="status">' + ic('check', 16, '#0B6B44', 3) + '<span>Goal reached — keep talking or finish when you\'re ready.</span><button class="btn3 sm" data-a="finishtalk">Finish</button></div>';
     if (t.phase === 'done') out += '<div class="done2" role="status">' + orb('happy', 's28') + 'Talk complete</div>';
     return out;
   }
@@ -3166,7 +3171,8 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     if (/who/.test(lo)) return 'Ask me, or ' + sb.colleague + ' if I\'m busy.';
     if (/how/.test(lo)) return 'Easy — ' + sb.quick_fix + '. I\'ll show you.';
     if (/can i|could i|should i|do i/.test(lo)) return 'Yes, that\'s fine.';
-    return 'Good question. ';
+    if (/^(is|are|do|does|will|can|could|should|would)\b/.test(lo)) return 'I think so — just ask me if anything\'s unclear.';
+    return 'Good question — let me check and get back to you.';
   }
   function ack(txt) { return THX_RE.test(txt) ? 'No worries. ' : HI_RE.test(txt) ? 'Morning! ' : YES_RE.test(txt) ? 'Great. ' : NO_RE.test(txt) ? 'Fair enough. ' : ''; }
   function pushAi(en, ua, how, fast, slang) { S.t.log.push({ who: 'ai', k: S.t.step, en: en, ua: ua || '', fast: !!fast, slang: slang || [], how: how || '' }); say(en, how === 'slow' ? 0.7 : fast ? 1.1 : 0.88); }
@@ -3177,16 +3183,36 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       var en = A.en; if (!asked) en = en.replace(/^Sure[.,]\s*/, '');
       pushAi((prefix || '') + en, A.ua, '', A.fast, A.slang);
     } else if (prefix) pushAi(prefix.trim(), '');
-    tset({ step: n, phase: end ? 'done' : 'idle' });
-    if (end) { log('conversation_complete', { lesson: LES.id, turns: t.turns.length, asks: t.asks || 0, engine: engineName() }); later(function () { go('feedback'); }, 2400); }
+    if (end && !t.goal) { t.goal = true; log('goal_reached', { lesson: LES.id, engine: engineName() }); }
+    tset({ step: n, phase: 'idle' });
   }
+  var BYE_RE = /\b(bye|goodbye|see you|see ya|that'?s all|have a good (day|one|shift)|i have to go|got to go|gotta go|thanks?,? that'?s it)\b/i;
+  function closeTalk(farewell) {
+    var t = S.t; if (farewell) pushAi(farewell, '');
+    tset({ phase: 'done' }); log('conversation_complete', { lesson: LES.id, turns: t.turns.length, asks: t.asks || 0, engine: engineName() });
+    later(function () { go('feedback'); }, 2400);
+  }
+  var FREE = ['Anything else?', 'Is there anything else you need?', 'Alright. What else is on your mind?'];
   function record(txt, kind, score) {
     var t = S.t; t.log.push({ who: 'me', text: txt, ok: (kind === 'ok') && !t.log.some(function (e) { return e.ok; }) });
     if (ASK_RE.test(txt)) t.asks = (t.asks || 0) + 1;
-    if (['clarify', 'repeat', 'meaning', 'pending', 'nudge'].indexOf(kind) < 0) t.turns.push({ k: t.step, said: txt, target: ME[t.step], score: score, kind: kind });
+    if (['clarify', 'repeat', 'meaning', 'pending', 'nudge'].indexOf(kind) < 0) t.turns.push({ k: t.step, said: txt, target: ME[t.step] || '', score: score, kind: kind });
   }
   function respondRules(txt) {
-    var t = S.t, k = t.step, target = ME[k], sc = Math.max(C.score(txt, target), bestPhrase(txt).s * 0.9);
+    var t = S.t, k = t.step;
+    if (BYE_RE.test(txt) || k >= ME.length) {
+      record(txt, 'ok', 0.6); tset({ phase: 'typing', typed: '', live: '' });
+      return later(function () {
+        if (BYE_RE.test(txt)) return closeTalk(THX_RE.test(txt) ? 'No worries. See you later!' : 'Alright, see you later!');
+        var mean2 = meaningOf(txt);
+        if (mean2 && /mean/i.test(txt)) pushAi('‘' + mean2[0] + '’? It just means ' + mean2[1] + '.', '');
+        else if (ASK_RE.test(txt)) { var la2 = lastAi(); pushAi(la2 ? la2.en : 'Sure.', la2 ? la2.ua : '', 'slow'); }
+        else if (Q_RE.test(txt)) pushAi(answerQuestion(txt), '');
+        else pushAi(ack(txt) + FREE[(t.free = (t.free || 0) + 1) % FREE.length], '');
+        tset({ phase: 'idle' });
+      }, 900);
+    }
+    var target = ME[k], sc = Math.max(C.score(txt, target), bestPhrase(txt).s * 0.9);
     var mean = /\bmean\b|what('?s| is| does)\s+['‘’"]?[a-z]/i.test(txt) ? meaningOf(txt) : null;
     var ask = ASK_RE.test(txt), q = Q_RE.test(txt), targetIsAsk = ASK_RE.test(target);
     // she may jump ahead and say what fits a later line — follow her, don't drag her back
@@ -3223,9 +3249,9 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     var t = S.t, history = t.log.filter(function (e) { return e.who === 'ai' || e.who === 'me'; }).map(function (e) { return (e.who === 'ai' ? 'YOU: ' : 'WORKER: ') + (e.en || e.text); }).join('\n');
     return 'You are role-playing ' + WHO + ' at a UK workplace (' + PER.sector.replace('_', ' / ') + '). Scene: ' + LES.who + ' The worker is practising spoken English; their goal: ' + LES.goal +
       '\nA script you can follow loosely (use its words when they fit): ' + AI.map(function (a) { return a.en; }).join(' | ') +
-      '\nRules: reply in British English as the ' + WHO + ', max 16 words, natural, friendly, like real speech. React to exactly what the worker just said — answer their question, acknowledge what they told you, or ask a natural follow-up. If they ask you to repeat or slow down, say the same thing again in simpler words. If they ask what a word means, explain it simply. If their words are unclear or off-topic, ask one short clarifying question. Never correct their English in the reply. Use at most one slang expression in the whole talk. Steer towards the goal and wrap up politely once it is reached or after ' + (ME.length + 2) + ' worker turns.' +
+      '\nRules: reply in British English as the ' + WHO + ', max 16 words, natural, friendly, like real speech. React to exactly what the worker just said — answer their question, acknowledge what they told you, or ask a natural follow-up. If they ask you to repeat or slow down, say the same thing again in simpler words. If they ask what a word means, explain it simply. If their words are unclear or off-topic, ask one short clarifying question. Never correct their English in the reply. Use at most one slang expression in the whole talk. Steer gently towards the goal, but keep the conversation going as long as the worker keeps talking — never end it yourself, never say goodbye first. Only if the worker says goodbye or clearly ends the talk, reply with a short friendly goodbye.' +
       '\nConversation so far:\n' + history +
-      '\n\nReturn JSON only: {"reply": string, "reply_ua": string (translation of reply into Ukrainian — українська, NOT Russian; Ukrainian letters і ї є ґ; never ы э ё ъ), "understood": boolean (would a manager understand the worker\'s last line?), "asked_to_repeat": boolean, "on_goal": boolean (the last line moves towards the goal), "goal_reached": boolean, "coach_tip": string|null (a better English line the worker could say next, only if they struggled)}';
+      '\n\nReturn JSON only: {"reply": string, "reply_ua": string (translation of reply into Ukrainian — українська, NOT Russian; Ukrainian letters і ї є ґ; never ы э ё ъ), "understood": boolean (would a manager understand the worker\'s last line?), "asked_to_repeat": boolean, "on_goal": boolean (the last line moves towards the goal), "goal_reached": boolean (the goal has been achieved in this talk), "worker_ended": boolean (the worker said goodbye or ended the talk), "coach_tip": string|null (a better English line the worker could say next, only if they struggled)}';
   }
   // Ukrainian only: Cyrillic with no Russian-only letters and no CJK characters
   function validUA(t) { t = String(t || ''); return /[а-яіїєґ]/i.test(t) && !/[ыэёъ]/i.test(t) && !/[⺀-鿿가-힯]/.test(t); }
@@ -3258,9 +3284,10 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
       log('turn_judged', { step: k, said: txt, engine: engine, understood: r.understood, goal: r.goal_reached });
       pushAi(String(r.reply).trim(), validUA(r.reply_ua) ? r.reply_ua : '', r.asked_to_repeat ? 'slow' : '');
       if (r.coach_tip && !r.understood) t.log.push({ who: 'coach', text: 'Veera: you could say', tip: r.coach_tip });
-      var worker = t.log.filter(function (e) { return e.who === 'me'; }).length, end = !!r.goal_reached || worker >= ME.length + 2;
-      tset({ step: r.asked_to_repeat ? k : Math.min(k + 1, ME.length - 1), phase: end ? 'done' : 'idle' });
-      if (end) { log('conversation_complete', { lesson: LES.id, engine: engine }); later(function () { go('feedback'); }, 2600); }
+      var worker = t.log.filter(function (e) { return e.who === 'me'; }).length;
+      if (r.goal_reached && !t.goal) { t.goal = true; log('goal_reached', { lesson: LES.id, engine: engine }); }
+      if (r.worker_ended || BYE_RE.test(txt) || worker >= 20) { tset({ step: Math.min(k + 1, ME.length - 1) }); return closeTalk(''); }
+      tset({ step: r.asked_to_repeat ? k : Math.min(k + 1, ME.length - 1), phase: 'idle' });
     }).catch(function (e) { clearTimeout(timer); fallback(e && (e.code || e.message)); });
   }
   function callRemote(prompt) {
@@ -3294,7 +3321,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     var best = turns.slice().sort(function (a, b) { return b.score - a.score; })[0];
     F.worked = '“' + best.said + '”';
     F.workedWhy = ASK_RE.test(best.said) ? 'You asked instead of guessing.' : /\b(could|please|would|cheers|thank)/i.test(best.said) ? 'Polite and clear — that\'s how it sounds at work.' : best.score >= 0.7 ? 'Clear and to the point — they got it first time.' : LES.worked[1];
-    var weak = turns.filter(function (x) { return x !== best || turns.length === 1; }).filter(function (x) { return x.score < 0.75; }).sort(function (a, b) { return a.score - b.score; })[0];
+    var weak = turns.filter(function (x) { return x !== best || turns.length === 1; }).filter(function (x) { return x.score < 0.75 && x.target; }).sort(function (a, b) { return a.score - b.score; })[0];
     if (weak) {
       var w = weak.said, tw = weak.target, why;
       if ((w.match(/\bsorry\b/gi) || []).length >= 2) why = 'Одного «sorry» досить — так звучить спокійно, а не винувато.';
@@ -3518,6 +3545,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     if (a === 'ng2') { return go('goal3'); }
     if (a === 'nsect') { S.ng.sector = b.getAttribute('data-v'); return render(true); }
     if (a === 'ng3') { return startNewPlan(); }
+    if (a === 'finishtalk') { if (S.rec) { S.rec.stop(); S.rec = null; } return closeTalk(''); }
     if (a === 'sayx') { say(b.getAttribute('data-t'), 0.85); return; }
     if (a === 'back') { if (S.rec) { S.rec.stop(); S.rec = null; } var pv = S.hist.pop() || 'today'; return go(pv, true); }
     if (a === 'tab') { return go(b.getAttribute('data-t') === 'today' ? 'today' : b.getAttribute('data-t')); }
@@ -3529,7 +3557,7 @@ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke
     if (a === 'practise') { return go('phrases'); }
   });
   document.addEventListener('input', function (e) { if (e.target.getAttribute('data-in') === 'typed') S.t.typed = e.target.value; });
-  window.__app = { setAI: function (u) { AI_URL = u; remoteOff = false; }, respond: function (x) { respond(x); }, expected: function () { return ME[S.t.step]; }, S: S, go: go, render: render, newTalk: newTalk, load: function (p, l) { S.persona = p; load(p, l); } };
+  window.__app = { setAI: function (u) { AI_URL = u; remoteOff = false; }, respond: function (x) { respond(x); }, expected: function () { return ME[S.t.step] || 'Thanks, see you later'; }, S: S, go: go, render: render, newTalk: newTalk, load: function (p, l) { S.persona = p; load(p, l); } };
   app = document.getElementById('app');
   var h = (location.hash || '').slice(1), m = h.match(/^(persona-[ab])(?:-(\w+))?$/), pm = h.match(/^profile\.([A-Za-z0-9_-]+)$/);
   function okProf(x) { return x && typeof x === 'object' && C.D.substitutions[x.sector] && Array.isArray(x.hardest); }
