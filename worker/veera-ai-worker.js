@@ -4,7 +4,8 @@
 // The page sends {prompt}; the Worker returns {text, model} — the model's JSON answer as a string.
 
 const ALLOWED = [
-  'https://kristenbubniv-prog.github.io', // the demo site
+  'https://veera-production.up.railway.app', // the demo site (Railway)
+  'https://kristenbubniv-prog.github.io',     // old GitHub Pages address (now redirects)
   'http://localhost:8765'                 // local testing
 ];
 // Tried in order — if a model is unavailable or retired, the next one answers.
